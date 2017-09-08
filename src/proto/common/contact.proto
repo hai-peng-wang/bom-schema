@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package bom;
+
+option java_outer_classname="ContactProto";
+import "common/tag.proto";
+import "common/address.proto";
+
+/// Contact information for a person, team or organisation.
+message Contact {
+  string name = 1; /// Name of individual, team or organisation
+  /// Role/capability/context of the contact. Includes:
+  // researcher, developer, author, custodian, distributor,
+  // originator, owner, point_of_contact, principal_investigator,
+  // processor (when post-processing/modification occurs),
+  // publisher, resource_provider, sponsor, user, co_author,
+  // collaborator, contributor, editor, reviewer, funder,
+  // mediator, rights_holder, stakeholder
+  string role = 2;
+  string organisation = 3; /// The organisation to which the contact belongs
+  URI url = 4; /// URL pointing to contact information
+  /// The email address of the contact person/group/organisation
+  string email = 5;
+  /// The phone numbers that can be used to call the contact
+  repeated int64 phone_nums = 6;
+  /// Other contact mechanisms, e.g. {"Skype", "SkpeUserId"}
+  repeated Tag others = 7;
+}

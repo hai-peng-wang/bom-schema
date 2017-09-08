@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package bom.debug_level;
+
+option java_package = "bom";
+option java_outer_classname="DebugLevelProto";
+
+/// The debug level in the context of a software or hardware application/system
+// of the detail level in a log of such a system. 
+// Note: debug and trace levels are often related, but are distinct
+// concepts in some systems
+enum DebugLevel {
+    UNSET = 0;
+    UNKNOWN = 1;
+
+    NONE = 2;
+    BRIEF = 3;
+    NORMAL = 4;
+    VERBOSE = 5;
+    VERY_VERBOSE = 6;
+    ALL = 7;
+}
+

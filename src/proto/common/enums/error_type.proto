@@ -1,0 +1,140 @@
+syntax = "proto3";
+
+package bom.error_type;
+
+option java_package = "bom";
+option java_outer_classname="ErrorTypeProto";
+
+/// Task, service, process, model or other program error types.
+// Sometimes multiple error codes may apply. Services should return
+// the most specific error code that applies. For example, prefer
+// OUT_OF_RANGE over FAILED_PRECONDITION if both codes apply.
+// Similarly prefer NOT_FOUND or ALREADY_EXISTS over FAILED_PRECONDITION.
+// This list is inspired by TensorFlow's error_codes.proto (APACHE2 license)
+enum ErrorType {
+  UNSET = 0;
+  UNKNOWN = 1;
+
+  /// Model became numerically unstable and crashed
+  INSTABILITY = 2;
+  SYNTAX = 3;
+  CONFIGURATION = 4; // e.g. invalid configuration
+  /// Improperly-formatted request can't be fulfilled.
+  BAD_REQUEST = 5;
+  /// Data loss or truncated file
+  DATA_LOSS = 6;
+  /// Security validation of data failed, or sufficiently concerning to
+  // be considered a security issue. Includes data not matching a hash or
+  // signed digital fingerprint, invalid sequencing of data that suggests
+  // possible tampering/man-in-the-middle attacks etc
+  DATA_SECURITY = 7;
+  /// Data fails an integrity test that is likely to be a data corruption
+  // issue rather than due to a security threat
+  DATA_INTEGRITY = 8;
+  /// Task involved in parsing invalid data. Note that this differs
+  // from FAILED_PRECONDITION. DATA_INVALID indicates inputs
+  // that are problematic regardless of the state of the system
+  // (e.g., a malformed file name, invalid file type, input arguments etc)
+  DATA_INVALID = 9; /// e.g. invalid input data
+
+  /// e.g. assigned a duplicate ID/hash when they need to be unique
+  ID_EXISTS = 10;
+  /// Deadline expired before operation could complete.  For operations
+  // that change the state of the system, this error may be returned
+  // even if the operation has completed successfully.  For example, a
+  // successful response from a server could have been delayed long
+  // enough for the deadline to expire.
+  DEADLINE_EXCEEDED = 11;
+
+  /// Some requested entity (e.g., file or directory) was not found or a
+  // required resource is missing
+  NOT_FOUND = 12;
+
+  /// Creation of some entity (e.g., file or directory) is found to
+  // already exist
+  ALREADY_EXISTS = 13;
+
+  /// Authorization request failed
+  UNAUTHORIZED = 14;
+  /// Insufficient permissions to execute the specified
+  // operation.  PERMISSION_DENIED must not be used for rejections
+  // caused by exhausting some resource (use RESOURCE_EXHAUSTED
+  // instead for those errors).
+  PERMISSION_DENIED = 15;
+  SECURITY_VIOLATION = 16;
+
+  /// Some resource has been exhausted or a resource limit exceeded.
+  // e.g. a per-account disk quota or a file system running out of space.
+  RESOURCE_EXHAUSTED = 17;
+
+  TIMEOUT = 18; /// A time-out error
+  ADDRESS_LOOKUP_ERROR = 19; /// Unable to resolve an address/connection
+  RATE_LIMITED = 20; /// Connection dropped due to a rate limit
+
+  /// A service is unavailable. This is a most likely a transient
+  // condition and may be corrected by retrying with a backoff.
+  UNAVAILABLE = 21;
+  CONNECTION = 22; /// Connection refused or dropped/aborted for other reasons
+
+  /// Operation tried to iterate past the valid input range.  E.g., seeking or
+  // reading past end of file.
+  //
+  // Unlike DATA_INVALID or DATA_LOSS, this error indicates a problem that may
+  // be fixed if the system state changes. For example, a 32-bit file
+  // system will generate INVALID_ARGUMENT if asked to read at an
+  // offset that is not in the range [0,2^32-1], but it will generate
+  // OUT_OF_RANGE if asked to read from an offset past the current
+  // file size.
+  OUT_OF_RANGE = 23;
+
+  /// Operation was rejected because the system is not in a state
+  // required for the operation's execution.  For example, directory
+  // to be deleted may be non-empty, an rmdir operation is applied to
+  // a non-directory, etc.
+  //
+  // A litmus test that may help a service implementor in deciding
+  // between FAILED_PRECONDITION, ABORTED, and UNAVAILABLE:
+  //  (a) Use UNAVAILABLE if a client can retry just the failing call.
+  //  (b) Use ABORTED if the client should retry at a higher-level
+  //      (e.g., restarting a read-modify-write sequence).
+  //  (c) Use FAILED_PRECONDITION if the client should not retry until
+  //      the system state has been explicitly fixed.  E.g., if an "rmdir"
+  //      fails because the directory is non-empty, FAILED_PRECONDITION
+  //      should be returned since the client should not retry unless
+  //      they have first fixed up the directory by deleting files from it.
+  //  (d) Use FAILED_PRECONDITION if the client performs conditional
+  //      REST Get/Update/Delete on a resource and the resource on the
+  //      server does not match the condition. E.g., conflicting
+  //      read-modify-write on the same resource.
+  FAILED_PRECONDITION = 24;
+
+  /// The operation was aborted, typically due to a concurrency issue
+  // like sequencer check failures, transaction aborts, etc.
+  // See litmus test above for deciding between FAILED_PRECONDITION,
+  // ABORTED, and UNAVAILABLE.
+  ABORTED = 25;
+
+  SEGFAULT = 26;
+  MEMORY = 27; /// Memory allocation error, bus error, invalid/double free
+  MISSING_COMMAND = 28; /// Command, alias or action type not found or known
+  /// Attempted invocation of an unimplemented method/function/command
+  NOT_IMPLEMENTED = 29;
+  /// Generic error due to a missing high-level dependency
+  DEPEDENCY_ERROR = 30;
+  /// A required node was found to be dead or died during.
+  // Includes the situation when a multi-node job aborts due to one dead node.
+  DEAD_NODE = 31;
+  /// Other I/O errors not covered by previous entries (e.g. file unexpectly
+  // already in use)
+  IO = 32;
+  TRAP = 33; /// Unhandled trap/signal/interrupt
+  BROKEN_PIPE = 34;
+  /// Program internal operation applied to an inappropriate type
+  WRONG_TYPE = 35;
+  ARITHMETIC = 36; /// Program overflow, zero division, floating-point error
+  LOOKUP = 37; /// Program internal index error, key error or similar
+  OS = 38; /// Failure caused by a operating system error
+
+  /// Error type assessed but does not fit into any other category defined here
+  OTHER = 127;
+}

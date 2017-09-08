@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package bom;
+
+option java_outer_classname="UseridProto";
+
+/// User/account identification (Security Principal)
+message Userid {
+  oneof uid {
+    /// User id
+    uint64 userid = 1; /// ID of account
+  }
+  /// Principal name / account name / username / access-id
+  // e.g. a simple username or
+  // username/fully.qualified.domain.name@YOUR-REALM.COM
+  // depending on the authorisation system in use
+  string name = 2;
+  /// Security realm, if applicable
+  string realm = 3;
+  /// An alternative unique identifier, e.g. a security identifier
+  oneof iid {
+    string id_str = 4;
+    bytes id_bytes = 5;
+  }
+  /// Type of principal, e.g. NT_USER_NAME, KERBEROS_V5_PRINCIPAL_NAME,
+  // NT_EXPORT_NAME, NT_HOSTBASED_SERVICE
+  string principal_type = 6;
+}

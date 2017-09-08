@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package bom;
+
+option java_outer_classname="PriorityProto";
+
+import "common/enums/impact.proto";
+
+/// Priority
+message Priority {
+  /// Production impact/value/importance of task/component
+  bom.impact.Impact impact = 1;
+  /// How time-critical (this action is, or fixing a reported error state is)
+  bom.impact.Impact urgency = 2;
+  /// Priority, usually for task scheduling purposes.
+  // It may be helpful to derive this from impact and urgency.
+  int64 priority = 3;
+}

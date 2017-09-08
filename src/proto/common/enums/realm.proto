@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package bom.realm;
+
+option java_package = "bom";
+option java_outer_classname="RealmProto";
+
+/// The production realm of a device/machine/cluster hosting the component.
+enum Realm {
+  UNSET = 0;
+  UNKNOWN = 1;
+
+  /// A R&D environment that is separate to the official dev/stage/prod
+  // environments.
+  RESEARCH = 2;
+  DEV = 3;
+  STAGE = 4;
+  PROD = 5;
+  EXTERNAL = 6;
+}

@@ -1,0 +1,263 @@
+syntax = "proto3";
+
+package bom;
+
+option java_outer_classname="DatasetProto";
+
+import "common/tag.proto";
+import "common/address.proto";
+import "common/time.proto";
+import "common/version.proto";
+import "common/contact.proto";
+import "common/security_marking.proto";
+import "common/ensemble_member.proto";
+import "common/component.proto";
+import "common/enums/maturity.proto";
+import "common/enums/task_state.proto";
+import "common/enums/data_coverage_content_type.proto";
+import "common/enums/data_time_type.proto";
+import "common/enums/dataset_action_type.proto";
+import "common/enums/dataset_compression_type.proto";
+import "common/enums/dataset_feature_type.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+
+/// Location and other metadata of data file. It is recommended
+// DataFile represent a single file, but the flexibility to describe
+// a directory along with "include" and "exclude" file matching patterns
+// is provided.
+message DataFile {
+  /// Where data can be found. Multiple URLs must lead to mirrored locations
+  // of the same data file or set of data files
+  repeated URI data_uris = 1;
+  /// Where additional metadata about the data can be found.
+  URI meta_uri = 2;
+  /// Format of data
+  string data_format = 3;
+  /// Message digest/checksums/fingerprints of file
+  Id digest = 4;
+  /// Size of data uris in bytes.
+  int64 data_size = 5;
+  /// Compression techniques applied.
+  // Multiple types can be specified; for example THINNED, PACKED and LOSSLESS
+  // are to be interpreted as data that has been thinned (a losssy operation)
+  // then packed (another lossy operation) and then this resulting
+  // thinned and packed data is further losslessly compressed
+  repeated bom.dataset_compression_type.DatasetCompressionType compressions = 6;
+}
+
+/// Description of some action that has taken place or
+// planned to take place concerning the dataset document
+// e.g. description of a modification, outcome of a validation,
+// approval process etc.
+message DatasetAction {
+  oneof act_type {
+    /// The type of action, e.g. CREATE for dataset creation
+    bom.dataset_action_type.DatasetActionType type_enum = 1;
+    /// Can be used instead of action_type_enum to refer to more
+    // esoteric actions, e.g. revision to the date a dataset/document
+    // is planned to be adopted or a change to the intellectual
+    // property rights around a dataset
+    string type_str = 2;
+  }
+  /// If action has taken place and resulted in a successful or failed
+  // outcome, or if the action is in-progress or is scheduled to happen.
+  // TaskState is used here as it offers a large range of
+  // useful action and action resolution states, although many will
+  // likely not be applicable
+  bom.task_state.TaskState state = 3;
+  /// The time the action reached action_state, or the time
+  // the action is due to commence if it is a scheduled action.
+  // If a range is specified it represents the action begin and end times
+  // of the action
+  repeated TimePointOrRange times = 4;
+  /// An estimate of temporaral uncertainty if known/significant/relevant
+  oneof t_uncertainty {
+    google.protobuf.Duration time_uncertainty = 5;
+  }
+  /// Who is the key contact associated with the action/change
+  Contact contact = 6;
+  /// Why the action/change took place or is due to take place
+  string reason = 7;
+  /// Details about the action outcome, if relevant. e.g. if action type
+  // and state indicate a review that failed, the outcome string can
+  // provide an explanation for this outcome
+  string outcome_details = 8;
+  /// Any additional pertinent comments, e.g. where the action happened
+  string comment = 9;
+}
+
+/// Temporal information pertaining to a subset of data in a dataset.
+message DataTimeInfo {
+  /// True if datetime(s) represented are valid in in a model/simulated
+  // time space/coordinate or some relative notion of time.
+  // False implies real UTC clocktime.
+  bool is_model_time = 1;
+  bom.data_time_type.DataTimeType time_type = 2;
+  repeated TimePointOrRange values = 3;
+  /// An estimate of temporaral uncertainty if known/significant/relevant
+  oneof t_uncertainty {
+    google.protobuf.Duration uncertainty = 4;
+  }
+}
+
+
+/// License under which a dataset is intended to be published, or the
+// license conditions for data obtainable from a service or repository via
+// an API.
+message License {
+  string name = 1; ///  license name
+  URI url = 2; /// A URL to the license used
+}
+
+/// Oerview of the source of the original data, i.e. the system or processes
+// that generated this dataset
+// The source is the method of production of the data. For example, if the
+// data was model-generated, the details of the "source" component would
+// represent details at the relevant level of the boarder numerical model
+// system; if the data is observational, source would characterise the
+// observation platform.
+message DatasetSource {
+  oneof source_component {
+    /// A Component message describing the source
+    Component component = 1;
+    /// Alternatively, the source component can be identified via reference
+    // to the relevant component in the Producer message (if the
+    // source component is listed in the Producer message)
+    int64 producer_source_component_id = 2;
+  }
+
+  /// ID to help track potentially unusual source configurations.
+  // config_id = 0 implies a normal configuration, other states
+  // map to a lookup table of configurable possibilities. This is source
+  // specific and must be documented by the source system.
+  int64 config_id = 3;
+
+  /// Name of the organisation or institute that produced the dataset
+  string institution = 4;
+}
+
+/// Basic information about a Dataset.
+// A dataset comprises of data related in some way,
+// for example from a single instrument or collocated instruments,
+// or from a particular field campaign.
+// The Dataset message is a "base" message; most real datasets will include
+// this message as the "base_dataset" and add domain specific information
+// pertinent to the type of data being represented
+message Dataset {
+  /// A succinct description of the dataset.
+  string title = 1;
+  /// A longer description of what is in the dataset.
+  string description = 2;
+  /// An identifier for the dataset, if applicable
+  Id id = 3;
+  /// The version of the dataset
+  Version version = 4;
+  /// Information about the source of the data
+  DatasetSource source = 5;
+  /// Subject categories covered by the dataset
+  repeated string subject_categories = 6;
+  /// The global dataset feature type (if applicable, and if all of the
+  // data variables contained in this dataset are of a single feature type.
+  // If this is not the case, dataset_feature_type can be set to MIXED and
+  // per-variable feature types specified).
+  bom.dataset_feature_type.DatasetFeatureType dataset_feature_type = 7;
+  /// URLs to where data can be found and data file metadata
+  repeated DataFile data_files = 8;  //TODO: information about extraction
+                                    // via an API or database etc.. ?
+
+  /// Operational status of the system producing the dataset
+  bom.maturity.Maturity data_maturity = 9;
+  SecurityMarking security_marking = 10;
+  /// License under which the dataset is intended to be published
+  License license = 11;
+  /// Relevant contacts for further information or to report dataset issues
+  repeated Contact contacts = 12;
+  /// Approximate time dataset was originally created
+  google.protobuf.Timestamp creation_timestamp = 13;
+  /// Reference datetime of the dataset. For example, the nominal
+  // ("base") datetime for a NWP model run or the validity time of
+  // an observational dataset or the start of a sequence of reanalyses etc
+  DataTimeInfo reference_timestamp = 14;
+  /// Summary-level temporal coverage information for the dataset, .eg.
+  // the range of times the dataset covers, or the discrete times data in
+  // in the dataset is valid for
+  repeated DataTimeInfo data_times = 15;
+}
+
+message NWPDataSetForSingleBaseTime {
+  Dataset base_dataset = 1;
+  /// The datetime at which the source began generation of the dataset.
+  // This would represent the real clocktime a model simulation began in the
+  // case of model data; in this case this timestamp can be used to distinguish
+  // between model re-runs.
+  google.protobuf.Timestamp run_start_clock_timestamp = 2;
+
+  /// Total number of ensemble members run, if known. This includes members
+  // that may not be present in this dataset. 0 implies unknown
+  // if set to 1 implies a deterministic model.
+  int64 number_of_ensemble_members = 3;
+  /// Optional information about each ensemble_member
+  repeated EnsembleMember ensemble_members = 4;
+  // TODO: BoundingBox
+
+  /// For models involving data assimilation, the observational
+  // data cutoff duration relative to the model (nominal) analysis time
+  google.protobuf.Duration observational_cutoff = 5;
+
+  repeated Dimension dimensions = 6;
+  repeated Variable variables = 7;
+}
+
+
+/// Dimension used for variable array dimensional coordinates.
+// The dimensional coordinates of a data variable map from variable
+// index space (specified by a set of index dimensions) to coordinate space.
+message Dimension {
+  string name = 1;
+  uint64 length = 2;
+}
+
+/// A data, coordinate or auxillary coordinate variable, as per CF
+// conventions.
+// A data variable is a multidimensional array of values that is the
+// result of sampling a continuous function at a discrete set of points.
+// In the case of observations the function represents the physical
+// system being observed.
+// A coordinate variable a one-dimensional variable with the same name
+// as its dimension [e.g., time(time) ], and it is defined as a numeric
+// data type with values that are ordered monotonically.
+// An auxillary coordinate is a variable that contains coordinate
+// data, but unlike coordinate variables, there is no relationship between
+// the name of an auxiliary coordinate variable and the name(s) of
+// its dimension(s).
+message Variable {
+  string name = 1; /// From a controlled vocabulary
+  string cf_standard_name = 2; /// From CF conventions, if applicable
+  string units = 3; /// Units of the variable
+  /// List of dimensions that define the multidimensional array shape.
+  // Zero dimensions implies a scalar variable or coordinate (a "singleton")
+  repeated string dimensions = 4;
+  /// List of auxillary coordinates
+  repeated string aux_coordinates = 5;
+  /// Variable feature_type, if applicable. Should be set if global dataset
+  // consists of a MIXED feature type
+  bom.dataset_feature_type.DatasetFeatureType feature_type = 6;
+  /// additional qualifying information about the source
+  // of the variable's data to aid with interpretation
+  bom.data_coverage_content_type.DataCoverageContentType coverage_content_type = 7;
+  /// Other attributes, following CF conventions where relevant
+  repeated Tag attributes = 8;
+  // TODO values
+}
+
+  // if model cold-run
+  // quality flags
+  // number of obs ... ?
+  // geospatial coverage, some description of!
+  // resolution
+  // simulation_mode
+  // fixed_step_size
+  // max_step_size
+  // var window size
+  // type of assimilation/analysis (4DVAR, 4DVAR, 4DENVAR, STATISTICAL)

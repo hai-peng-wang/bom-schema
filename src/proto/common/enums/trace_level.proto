@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package bom.trace_level;
+
+option java_package = "bom";
+option java_outer_classname="TraceLevelProto";
+
+/// The trace level in the context of a software or hardware
+// application/system of the corresponding detail level in a
+// log of such a system. Note: Trace and debug levels are often
+// related but are distinct concepts in some systems.
+enum TraceLevel {
+    UNSET = 0;
+    UNKNOWN = 1;
+
+    NO_TRACE = 2;
+    SOFTWARE_TRACE = 3;
+    HARDWARE_TRACE = 4;
+    FULL_TRACE = 5;
+}

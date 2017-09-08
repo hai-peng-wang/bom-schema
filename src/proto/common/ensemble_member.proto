@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package bom;
+
+option java_outer_classname="EnsembleMemberProto";
+
+message EnsembleMember {
+  /// Ensemble_class can be used to distinguish between ensemble groups
+  // in ensemble of ensemble systems.
+  string ensemble_class = 1;
+  /// Description of ensemble member, if applicable
+  string ensemble_member_description = 2;
+  /// Model member ensemble_number, if applicable. Member numbers can be
+  // repeated across different ensemble_classes if desirable
+  int64 ensemble_member_number = 3;
+}

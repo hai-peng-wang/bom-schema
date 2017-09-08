@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package bom;
+
+option java_outer_classname="DebugSettingsProto";
+
+import "common/enums/debug_level.proto";
+import "common/enums/trace_level.proto";
+
+/// Debug and program trace related settings.
+message DebugSettings {
+  oneof debug_lev {
+    bom.debug_level.DebugLevel debug_level = 1;
+    int64 debug_level_int = 2;
+    string debug_level_str = 3;
+  }
+  bom.trace_level.TraceLevel trace_level = 4;
+}

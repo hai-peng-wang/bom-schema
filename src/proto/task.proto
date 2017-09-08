@@ -1,0 +1,308 @@
+syntax = "proto3";
+
+package bom;
+
+option java_outer_classname="TaskProto";
+
+import "common/event_header.proto";
+import "common/tag.proto";
+import "common/address.proto";
+import "common/contact.proto";
+import "common/component.proto";
+import "common/priority.proto";
+import "common/userid.proto";
+import "common/log_info.proto";
+import "common/diagnostic.proto";
+import "common/debug_settings.proto";
+import "common/enums/task_communication_method.proto";
+import "common/enums/severity.proto";
+import "common/enums/task_state.proto";
+import "common/enums/task_actor_type.proto";
+import "common/enums/computing_resource.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+
+/// Descriptive, human meaningful information about the nature of the task.
+// This information should mostly be known ahead of the scheduling of the task.
+message TaskInfo {
+  string name = 1;
+  /// Unique namespace for this task within a suite or workflow.
+  // This is typically the task familes to which the task belongs
+  string namespace = 2;
+  /// The suite or workflow this task is a part of
+  string suite = 3;
+  /// Can repeated re-runs of the task (even following a crash during task
+  // exeuction) safe and expected to produce the same result?
+  bool is_idempotent = 4;
+  /// The group(s) this task is part of, if relevant. Groups are generally
+  // a  grouping of similar tasks in the context of a workflow
+  repeated string groups = 5;
+  /// Named resources this task interacts with, e.g. particular databases,
+  // services, archive storage systems etc
+  repeated string resources = 6;
+  /// Type of task
+  string type = 7;
+  /// project (in the context of a batch system scheduler, or similar)
+  string project = 8;
+  /// Production status of task
+  ProductionStatus production_status = 9;
+  /// Priority of task. Note this can include information about impact and
+  // urgency
+  Priority priority = 10;
+  URI task_url = 11; /// Overview information
+  URI task_debug = 12; /// Troubleshooting information
+  repeated Tag tags = 13; /// User-defined additional tags
+}
+
+/// Metadata about expected automatic retries for tasks.
+message TaskRetry {
+  /// Current known submit number
+  int64 submit_number = 1;
+  /// Current known try number
+  int64 try_number = 2;
+  /// Number of times this task should be retried automatically, as
+  // set in a top-level workflow scheduler before the task is
+  // considered to have failed/aborted
+  int64 retry_limit = 3;
+  /// Delay before next retry is attempted. If retrying is underway
+  // presently, then this refers to the delay (if any) before
+  // this fresh retry attempt is progressed
+  google.protobuf.Duration retry_delay = 4;
+}
+
+/// Times to track significant changes in task state, from the
+// perspective of the event message producer.
+// This tracking is a convencience feature; if events are produced
+// with sufficient granularity this information can be inferred from
+// a sequence of changes in event state.
+message TaskTimes {
+  /// The time when the first task in this task series was
+  // created (if applicable)
+  google.protobuf.Timestamp series_created_timestamp = 1;
+  /// Datetime this instance of the task was created (as known by the
+  // message producer)
+  google.protobuf.Timestamp instance_created_timestamp = 2;
+  /// Datetime the first task in this task series started (if applicable)
+  google.protobuf.Timestamp series_start_timestamp = 3;
+  /// Datetime this instance of the task started (if applicable)
+  google.protobuf.Timestamp instance_start_timestamp = 4;
+  /// Datetime this instance of the task ended (if applicable)
+  google.protobuf.Timestamp instance_end_timestamp = 5;
+  /// Datetime of first task failure in a series (if known and applicable)
+  google.protobuf.Timestamp first_failure_timestamp = 6;
+}
+
+/// The task status is a combination of the task state and the
+// system reporting/interpreting the task state.
+// Note the time(s) relating to a task state change report
+// can be approximated by the time-stamp in the Kafka header
+// for real-time systems
+message TaskStatus {
+  /// Current or new task state
+  bom.task_state.TaskState state = 1;
+  /// Diagnostics about task including information about errors or
+  // warnings that may be associated with this task state
+  repeated Diagnostic diagnostics = 2;
+  /// A message/note about task state
+  string message = 3;
+  /// Type of entity reporting the new state
+  bom.task_actor_type.TaskActorType reporter_type = 4;
+  /// The system or entity reporting the state, e.g. Cylc or PBS
+  string reporter = 5;
+  /// Severity of new task state. Each diagnostic also has a severity,
+  // and this may be left unset if it is possible to infer the task state
+  // severityfrom the diagnostic(s)
+  bom.severity.Severity severity = 6;
+  TaskTimes time_info = 7;
+  /// Number of consecutive task failures in a task series
+  int64 number_of_consecutive_failures = 8;
+  /// If task is "late", set late to the length of time the
+  // task is late by (valid at the time of event production)
+  google.protobuf.Duration late = 9;
+}
+
+/// Metadata about the entity involved in some interaction
+message TaskInteraction {
+  /// Type of entity carrying out or initiating the action/interaction
+  bom.task_actor_type.TaskActorType actorType = 1;
+  Contact contact = 2; /// Entity contact details for humans/organisations
+  string reason = 3; /// Motivation for the interaction, if relevant
+  /// The system/equipment/tool via which the interaction took place
+  // This will generally be the scheduler, or a component of a scheduler
+  Id system = 4;
+  /// Additional details/context
+  string interaction_detail = 5;
+  /// ID to track this interaction
+  Id interaction_id = 6;
+  /// To be set when this interaction is on behalf or as a consequence of
+  // another entity or interaction
+  TaskInteraction on_behalf_of = 7;
+}
+
+/// Limit placed on the number of simultaneously running tasks for tasks
+// belonging to a particular group/type or using a particular resource
+message TaskGroupLimits {
+  /// Name of the limit
+  string name = 1;
+  /// Description of this limit
+  string description = 2;
+  /// The limit number (maximum number of dispatched/running tasks)
+  int64 number = 3;
+  /// The task group the limit applies to (if applicable)
+  string group = 4;
+  /// The resource the limit applies to (if applicable)
+  // Note: one of group or resource must be specified for the the limit
+  // to be meaingful
+  string resource = 5;
+}
+
+message TaskResource {
+  bom.computing_resource.ComputingResource resource = 1;
+  /// Value in milliseconds for duration,
+  // bytes for memory/disk or a count in other contexts
+  int64 amount = 2;
+  /// If limit the amount represents a resource limit, whether it is
+  // hard (ortherwise it is considered "soft"). To be ignored if this
+  // message does not correspond to a resource limit
+  bool is_hard_limit = 3;
+  /// Entity responsible for measuring this resource, or for ensuring
+  // any limit (if applicable) is respected by some suitable means
+  // (e.g. the governor batch scheduler or native system)
+  bom.task_actor_type.TaskActorType steward = 4;
+}
+
+message TaskSettings {
+  /// The user/account/identity that the task is to run as
+  Userid user = 1;
+  /// Other users/accounts that processes/subcomponents launched by the task
+  // will run as (e.g. task involving sudo commands for another service account)
+  repeated Userid subusers = 2;
+  /// If task is in a simulation mode; it is not running normal workloads,
+  // rather a dummy task to help simulate suite behavior.
+  bool is_simulation = 3;
+  /// If task is in a test mode
+  bool is_test = 4;
+  /// If routine task is the result of an edit run of some type
+  bool is_edit_run = 5;
+  /// A note about the settings
+  string note = 6;
+  /// Time from which the task is eligible to run (if applicable)
+  google.protobuf.Timestamp eligible_time = 7;
+  /// Debug settings that apply to this task
+  DebugSettings debug = 8;
+}
+
+/// A rather imperfect mechanism to identify dynamic task IDs or IDs that
+// may relate to this task.
+// Note that interaction_id and correlation_ids (that might help track this task
+// if it is part of actions resulting from a user request or some other chain
+// of tasks) are included in the EventHeader
+message Taskid {
+  /// The name the task was submitted as if this differs from
+  // the name in taskInfo (e.g. if the submit name is dynamically generated)
+  // Often this is referred to as the "jobname"
+  string submit_name = 1;
+  Id workflow_id = 2;
+  /// Batch ststem jobid
+  Id batch_id = 3;
+  Id session_id = 4; /// An ID used internally by the producer of this event
+}
+
+/// Information about the queue a tasks/job belongs to, as might be
+// managed by a job or batch scheduler
+message TaskQueue {
+  /// Name of the queue
+  string name = 1;
+  /// Rank of task in queue. TODO: ask Altair... or is this a
+  // ranking of queues (in terms of priority?)
+  int64 rank = 2;
+  /// The time the task entered this queue
+  google.protobuf.Timestamp time = 3;
+  // TODO ask Altair: what is PBS job ordering? Is it a queue concept
+  // or something else
+}
+
+/// Summary context information pertaining to this task instance
+message TaskContext {
+  Taskid id = 1;
+  TaskSettings settings = 2;
+  /// Top-level cycle point information
+  string cycle_point = 3;
+  /// Information about task retries
+  TaskRetry retry = 4;
+  /// Logs generated by or on behalf of this task
+  repeated LogInfo logs = 5;
+  /// A link to this task instance's run information/top-level debug
+  // outputs etc (if such a location exists)
+  URI session = 6;
+  /// The queue to which the task belongs
+  TaskQueue queue = 7;
+  string submission_method = 8;
+  bom.task_communication_method.TaskCommunicationMethod comms_method = 9;
+  /// Priority of task, as viewed by this scheduler. Priority may change
+  // dynamically based on the evolution of activies and business requirements
+  // during scheduling
+  Priority priority = 10;
+  /// Limits placed on the running of this task (usually as part of a strategy
+  // to prevent saturating a particular resource)
+  repeated TaskGroupLimits group_limits = 11;
+  /// Resource limits requested of and/or imposed/enforced by this manager
+  repeated TaskResource resource_limits = 12;
+  /// Resources used by the task
+  repeated TaskResource resource_use = 13;
+  /// Task manager(s) asssociated with this task. The first manager
+  // listed should correspond to, or be closely aligned with, the component
+  // that produced this message
+  repeated TaskManagerContext managers = 14;
+  /// List of execution hosts for task
+  repeated Address exec_hosts = 15;
+  /// List of execution vnodes for task
+  repeated Address exec_vnodes = 16;
+}
+
+/// Task manager context contains information about a management
+// context of the task, as known by this message producer.
+// The task manager may be a workflow scheduler, batch scheduler,
+// orchestration system etc
+// Note: all metadata pertains to the task manager itself, in the context
+// of this task. Most task-specific metadata, even if controlled by a
+// manager, is exposed in the parent TaskContext message
+message TaskManagerContext {
+  string name = 1; /// e.g. PBS
+  /// The index in the Producer components list that corresponds to this
+  // task manager component.
+  int64 component_id = 2;
+  Id id = 3; /// Id of manager/scheduler if relevant
+  /// Additional id to track manager specific task context information,
+  // e.g. be used for dag_id (directed acylcic graph id), suite id etc
+  Id saga_id = 4;
+  /// Tasks associated with collecting task outputs, if also managed by
+  // this scheduler and if known
+  repeated Id output_collection_task_ids = 5;
+  /// Tasks associated with monitoring tasks, if also managed by
+  // this scheduler and if known
+  repeated Id monitoring_task_ids = 6;
+}
+
+/// A task event represents a change in state of a task, and/or an interaction
+// with a task by a user or system.
+message TaskEvent {
+  EventHeader header = 1;
+  /// Very brief elaboration on what type of task event this is.
+  // These would be most common:
+  // STATE_CHANGE, INTERACTION, STATE_CHANGE_WITH_AUTOMATIC_INTERACTION,
+  // Some more esoteric possibilities include:
+  // RESOURCE_LIMIT_CHANGE, PRIORITY_CHANGE etc
+  string event_type = 2;
+  TaskInfo task_info = 3;
+  TaskContext task_context = 4;
+  TaskManagerContext task_manager_context = 5;
+  /// The current status of the task.
+  TaskStatus task_status = 6;
+  /// Interaction being perfomed on the task (if any).
+  // Note: the task_status in this particular event is not a result of this
+  // particular interaction. Rather, this task is in this event's task_status
+  // state when the task_interaction begins. Subsequent events may include
+  // task_status changes as a result of this interaction
+  TaskInteraction task_interaction = 7;
+}

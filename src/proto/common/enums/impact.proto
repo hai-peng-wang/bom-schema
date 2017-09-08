@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package bom.impact;
+
+option java_package = "bom";
+option java_outer_classname="ImpactProto";
+
+/// Level of impact based on an assessment of the importance of a
+// suite/system/component/task, especially in the context of the
+// organisation-wide impact of a sustained outage.
+enum Impact {
+  UNSET = 0;
+  UNKNOWN = 1;
+
+  NONE = 2; /// Of effectively no impact
+  VERY_LOW = 3; /// Limited impact
+  LOW = 4;
+  NORMAL = 5;
+  MODERATE = 6;
+  HIGH = 7;
+  VERY_HIGH = 8;
+  /// Extremely important, extensive "shared-fate" risk between multiple
+  // highly important or sensitive systems
+  CRITICAL = 9;
+}

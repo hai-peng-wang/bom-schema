@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package bom;
+
+option java_outer_classname="SecurityMarkingProto";
+
+import "common/enums/security_classification.proto";
+import "common/enums/security_delimiting_marker.proto";
+
+/// SecurityMarking specifies the classification and dissemination restrictions:
+message SecurityMarking {
+  bom.security_classification.SecurityClassification security_classification = 1;
+  bom.security_delimiting_marker.SecurityDelimitingMarker dissemination_limiting_marker = 2;
+  repeated string caveats = 3;
+}

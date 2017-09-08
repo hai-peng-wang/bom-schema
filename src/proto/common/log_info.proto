@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package bom;
+
+option java_outer_classname="LogInfoProto";
+
+import "common/enums/log_type.proto";
+import "common/address.proto";
+
+/// Log information
+message LogInfo {
+  bom.log_type.LogType type = 1; /// The type of log file
+  /// The location(s) of this log file. More than one location implies the
+  // same log information is available in each location
+  repeated URI logfiles = 2;
+}

@@ -1,0 +1,151 @@
+syntax = "proto3";
+
+package bom.task_state;
+
+option java_package = "bom";
+option java_outer_classname = "TaskStateProto";
+
+
+///Task state itself. Many states below may represent
+// states that don't apply to many systems or intermediate states
+// that are not tracked. Please choose an appropriate subset on
+// a workflow/batch system by system basis.
+enum TaskState {
+  UNSET = 0;
+  UNKNOWN = 1;
+
+  RUNAHEAD = 2; /// Will possibly be queued to run
+  /// Task configuration/content is being validated before
+  // or as part of a workflow, dispatch, submit or pre-run process
+  PREVALIDATING = 3;
+  PREVALIDATING_FAIL = 4; /// Prevalidation step failed
+  INVALID = 5; /// Task found to be invalid prior to execution
+  WAITING = 6; /// Waiting on trigger conditions to be satisified
+  HELD = 7; /// Held before submission
+  /// In a task pre-processing step, probably run as part of the
+  // workflow scheduler
+  PREPROCESSING = 8;
+  PREPROCESSING_FAIL = 9;
+  QUEUED = 10; /// Queued/getting ready to run
+  READY = 11; /// Ready to run/submit
+  EXPIRED = 12; /// A deadline has been passed and this task won't be completed
+  SUBMITTED = 13; /// Queued/ready to run by a workflow scheduler
+  SUBMIT_SUCCESS = 14; /// The task has been successfully submitted/dispatched
+  /// The task submit process failed or was killed before the start of task
+  // exeuction
+  SUBMIT_FAIL = 15;
+  /// As per SUBMIT_FAIL but a resubmit (possibly after a configured delay)
+  // will be attempted automatically
+  SUBMIT_RETRYING = 16;
+  PREJOB = 17; /// Running a pre-job/setup step
+  PREJOB_FAIL = 18;
+
+  AUTHENTICATING = 19;
+  AUTHENTICATE_SUCCESS = 20;
+  AUTHENTICATE_FAIL = 21;
+
+  STARTED = 22; /// Task started running/reported commencement of execution
+  PROGRESS = 23; /// Task in progress (used for possible progress updates)
+  SUCCESS = 24; /// Task appears to have concluded normally & successfully
+  STOPPED = 25; /// Task stopped mid execution as part of workflow design
+  /// Task execution in process of pausing
+  PAUSING = 26;
+  /// Task execution paused; task still memory/process resident (not vacated)
+  PAUSED = 27;
+  PAUSE_FAIL = 28; /// Pausing the task failed
+  /// Task in the process of suspending. Usually used as a mechanism
+  // to free up resources for other higher priority jobs in a batch scheduler
+  // context which usually involves some sort of snap-shotting of task state
+  // and temporarily stopping task execution.
+  // Sometimes referred to as task vacating or a task vacation.
+  SUSPENDING = 29;
+  /// Task suspended/vacated and needs to be resumed to progress/complete.
+  SUSPENDED = 30;
+  SUSPEND_FAIL = 31; /// Suspending/vacating the task failed
+  CHECKPOINTING = 32; /// Checkpoint information about a task or the system
+                      // run by a task
+  CHECKPOINT_FAIL = 33; /// Failure during checkpointing
+  CHECKPOINT_SUCCESS = 34;
+  RETRYING = 35; /// Retring, progressed beyond submission
+  RESURRECTING = 36;
+  RESURRECTED = 37;
+  RESURRECT_FAIL = 38;
+  RESTORING = 39; /// Restoring from a check-point or other saved state
+  RESTORE_FAIL = 40;
+  RESTORE_SUCCESS = 41;
+
+  POSTJOB = 42; /// Running a post-job/clean step
+  POSTJOB_FAIL = 43;
+  /// Running a validation step as part of the task following execution
+  POSTVALIDATING = 44;
+  POSTVALIDATING_FAIL = 45;
+  /// Job is exiting after having run (normally in a batch scheduler context)
+  EXITING = 46;
+
+  // A collection of possibly more exotic states
+  INDETERMINATE = 47; /// May or may not be eventually run
+  /// Task proxy exists in a scheduler but is not currently in a
+  // configuration that permits it to be progressed to a queued or run state
+  DORMANT = 48;
+  /// Task definition dropped/omitted before exeuction from scheduler
+  DROPPED = 49;
+  SKIPPED = 50; /// Task to be skipped
+  /// Job control responsibility is being migrated to another system
+  MIGRATING = 51;
+  MIGRATED = 52;
+  MIGRATING_FAIL = 53;
+
+  DEFERRED = 54;
+  /// Task rejected by batch scheduler or a security layer prior to execution
+  REJECTED = 55;
+  /// A transit state can be meaingful for certain scheduler systems.
+  TRANSIT = 56;
+
+  /// Diagnostics suggest task appears to have succeeded
+  // but some warnings/errors/abnormalities were encountered
+  ABNORMAL_SUCCESS = 57;
+  FAILED = 58; /// Task failed (desired outcome of the task was not reached)
+  RETRY_LIMIT_REACHED = 59; /// Multiple task retries have all failed. This is
+  // a failed state.
+  /// Task is reporting a warning during exeuction but has not
+  // finished. This is a potential intermediate state of a task:
+  // If it succeeds ABNORMAL_SUCCESS should be reported.
+  // If it fails one of the many failure modes should be reported.
+  WARNING = 60;
+  /// An error was found during exeuction but task is continuing.
+  ERROR_WITH_CONTINUATION = 61;
+  /// An attempt at killing the task has taken place
+  KILLING = 62;
+  /// An attempt at killing the task has apparently failed
+  KILLING_FAIL = 63;
+  KILLED_BY_COMMAND = 64; /// For example via kill or qdel
+  KILLED_BY_TIME_LIMIT = 65;
+  KILLED_BY_CPU_LIMIT = 66;
+  KILLED_BY_MEMORY_LIMIT = 67;
+  KILLED_BY_PROCESS_LIMIT = 68;
+  KILLED_BY_FILE_SIZE_LIMIT = 69;
+  KILLED_BY_FILE_NUMBER_LIMIT = 70;
+  KILLED_BY_SECURITY_POLICY = 71;
+  KILLED = 72; /// Killed by another or unspecified mechanism
+  /// Program/model run cancelled via some mechanism other than kill
+  // or a retry limit
+  CANCELLED = 73;
+  /// Task is executing but progress is blocked
+  BLOCKED = 74;
+  /// Execution has hung and become unresponsive.
+  HUNG = 75;
+  /// Attempts to determine task state have failed (e.g. network outage).
+  // It is unknown if the task is still running or not, etc
+  UNREACHABLE = 76;
+  /// Attempts to track a task have failed and it is now considered
+  // lost by this system.
+  LOST = 77;
+  /// Process has become a zombie (process is still running but is become
+  // detached in some way from the managing process)
+  ZOMBIE = 78;
+  /// Task forced to be in a completed state.
+  FORCE_COMPLETED = 79;
+  /// Model progress was blocked by a model mechanism, for example numerical
+  // convergence thresholds were not met.
+  MODEL_STOP = 80;
+}

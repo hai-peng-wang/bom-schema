@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package bom;
+
+option java_outer_classname="VersionProto";
+
+import "google/protobuf/timestamp.proto";
+
+/// Flexibile representation of a version.
+// One of semver, string_ver, int_ver or date_ver is allowed to be set
+message Version {
+  oneof version {
+    SemVer semver = 1;
+    string string_ver = 2;
+    int64 int_ver = 3;
+    google.protobuf.Timestamp date_ver = 4;
+  }
+}
+
+/// A semantic or compatible version representation with the format:
+// major.minor.patch.pre_release_id1.pre_release_id2+buid_id1.build_ids
+//
+// where major, minor and patch are integers >= 0 and
+// pre_release_ids and/or build_ids are optional and there can any number.
+//
+// If all major, minor and patch levels are specified this complies with the
+// Semantic Version scheme (although with a upper bound imposed on the range
+// of integers).
+//
+// If patch level is omitted it is compliant with the Common Version (ComVer)
+// versioning scheme, which is also often also used for versioning datasets
+message SemVer {
+  uint64 major = 1;
+  uint64 minor = 2;
+  oneof patch_level {
+    uint64 patch = 3; /// patch is Nullable
+  }
+  /// pre_release_ids: alphanumeric with "-" chars allowed but integers with a
+  // 0 prefix disallowed (but "0" by itself allowed) e.g. alpha, alpha-1, 30
+  repeated string pre_release_ids = 4; // [(validator.field) = {regex: "^(0|[1-9][0-9]*|[0-9]*[A-Za-z-]+[0-9A-Za-z-]*)$"}];
+  /// build_ids have the format as pre_release_ids
+  repeated string build_ids = 5; // [(validator.field) = {regex: "^(0|[1-9][0-9]*|[0-9]*[A-Za-z-]+[0-9A-Za-z-]*)$"}];
+}

@@ -1,0 +1,3 @@
+In protocol buffers:
+* enum, int32, int64, uint32, uint64, sint32, sint64 and bool values are encoded using varints. The top-bit of each byte is used to signify if there are more bytes to come. The lower 7 bits of each byte are used to encode the actual number. Hence values 0 - 127 are encoded in a single byte.
+* unique numbered tags in the range 1 - 15 occupy 1 byte (for the tag encoding & should ideally be used for frequently occurring message elements). Values in the range 16 - 2047 take two bytes for the tag encoding.

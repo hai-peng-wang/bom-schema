@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package bom.component_level;
+
+option java_package = "bom";
+option java_outer_classname="ComponentLevelProto";
+
+/// ComponentLevel broadly describes terms useful to help delineate a software
+// component or devices heiriachy amongst other related components of a wider
+// system.
+// The heiriachial order of labels is dependent on the system and context.
+// Note: excludes "environmental" concepts, e.g. versions
+//       of libraries, runtime systems, virtual machine, OS for an application
+enum ComponentLevel {
+  UNSET = 0;
+  UNKNOWN = 1;
+
+  /// System-level / OS level
+  SYSTEM = 2;
+  /// Platform is an entity that allow multiple products to be built within the
+  // same technical framework. e.g. an enterprise service bus,
+  // a workflow manager, a web platform, an overarching gaming "service/app"
+  // like Valve's steam would consistute a platform
+  PLATFORM = 3;
+  /// A suite of related software components. e.g. a suite of tasks that
+  // consitute the setup, running and post-processing of a NWP model
+  SUITE = 4;
+  /// A physical or virtual device
+  DEVICE = 5;
+  /// Application here means a computer program
+  APPLICATION = 6;
+  /// A component of an application or device
+  COMPONENT = 7;
+  SUBCOMPONENT = 8;
+  /// A light-weight component responsible for serialising and forwarding
+  // information e.g. a log file reader daemon, a Kafka connector, a data relay
+  CONNECTOR = 9;
+  SERVICE = 10;
+}

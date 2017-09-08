@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package bom.task_communication_method;
+
+option java_package = "bom";
+option java_outer_classname = "TaskCommunicationMethodProto";
+
+/// The basic method of communication used by a task to indicate
+// a change in task status.
+enum TaskCommunicationMethod {
+  UNSET = 0;
+  UNKNOWN = 1;
+
+  /// The task or the environment the task is running in
+  // signals back task status updates as events
+  EVENT = 2;
+  /// RPC here represents a persistent two-way connection between
+  // the task or a process spawned by the task and a task manager
+  RPC = 3;
+  /// A task manager related component or diagnostic process polls
+  // the task's execution or outputs of the task (e.g. log files)
+  POLL = 4;
+}

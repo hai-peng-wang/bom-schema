@@ -1,0 +1,5919 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>Protocol Documentation</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Ubuntu:400,700,400italic"/>
+    <style>
+      body {
+        width: 60em;
+        margin: 1em auto;
+        color: #222;
+        font-family: "Ubuntu", sans-serif;
+        padding-bottom: 4em;
+      }
+
+      h1 {
+        font-weight: normal;
+        border-bottom: 1px solid #aaa;
+        padding-bottom: 0.5ex;
+      }
+
+      h2 {
+        border-bottom: 1px solid #aaa;
+        padding-bottom: 0.5ex;
+        margin: 1.5em 0;
+      }
+
+      h3 {
+        font-weight: normal;
+        border-bottom: 1px solid #aaa;
+        padding-bottom: 0.5ex;
+      }
+
+      a {
+        text-decoration: none;
+        color: #567e25;
+      }
+
+      table {
+        width: 100%;
+        font-size: 80%;
+        border-collapse: collapse;
+      }
+
+      thead {
+        font-weight: 700;
+        background-color: #dcdcdc;
+      }
+
+      tbody tr:nth-child(even) {
+        background-color: #fbfbfb;
+      }
+
+      td {
+        border: 1px solid #ccc;
+        padding: 0.5ex 2ex;
+      }
+
+      td p {
+        text-indent: 1em;
+        margin: 0;
+      }
+
+      td p:nth-child(1) {
+        text-indent: 0; /* No indent on first p in td */
+      }
+
+      /* Table of fields */
+      .field-table td:nth-child(1) { /* Field */
+        width: 10em;
+      }
+      .field-table td:nth-child(2) { /* Type */
+        width: 10em;
+      }
+      .field-table td:nth-child(3) { /* Label */
+        width: 6em;
+      }
+      .field-table td:nth-child(4) { /* Description */
+        width: auto;
+      }
+
+      /* Table of extensions */
+      .extension-table td:nth-child(1) { /* Extension */
+        width: 10em;
+      }
+      .extension-table td:nth-child(2) { /* Type */
+        width: 10em;
+      }
+      .extension-table td:nth-child(3) { /* Base */
+        width: 10em;
+      }
+      .extension-table td:nth-child(4) { /* Number */
+        width: 5em;
+      }
+      .extension-table td:nth-child(5) { /* Description */
+        width: auto;
+      }
+
+      /* Table of enum values. */
+      .enum-table td:nth-child(1) { /* Name */
+        width: 10em;
+      }
+      .enum-table td:nth-child(2) { /* Number */
+        width: 10em;
+      }
+      .enum-table td:nth-child(3) { /* Description */
+        width: auto;
+      }
+
+      /* Table of scalar value types. */
+      .scalar-value-types-table tr {
+        height: 3em;
+      }
+
+      /* Table of contents. */
+      #toc-container ul {
+        list-style-type: none;
+        padding-left: 1em;
+        line-height: 180%;
+        margin: 0;
+      }
+      #toc > li > a {
+        font-weight: bold;
+      }
+
+      /* File heading div */
+      .file-heading {
+        width: 100%;
+        display: table;
+        border-bottom: 1px solid #aaa;
+        margin: 4em 0 1.5em 0;
+      }
+      .file-heading h2 {
+        border: none;
+        display: table-cell;
+      }
+      .file-heading a {
+        text-align: right;
+        display: table-cell;
+      }
+
+      /* The 'M', 'E' and 'X' badges in the ToC */
+      .badge {
+        width: 1.6em;
+        height: 1.6em;
+        display: inline-block;
+
+        line-height: 1.6em;
+        text-align: center;
+        font-weight: bold;
+        font-size: 60%;
+
+        color: #89ba48;
+        background-color: #dff0c8;
+
+        margin: 0.5ex 1em 0.5ex -1em;
+        border: 1px solid #fbfbfb;
+        border-radius: 1ex;
+      }
+    </style>
+
+    <!-- User custom CSS -->
+    <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+  </head>
+
+  <body>
+
+    <h1 id="title">Protocol Documentation</h1>
+
+    <h2>Table of Contents</h2>
+
+    <div id="toc-container">
+      <ul id="toc">
+        <li>
+          <a href="#dataset.proto">dataset.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.DataFile">
+                <span class="badge">M</span>
+                DataFile
+              </a>
+            </li>
+            <li>
+              <a href="#bom.DataTimeInfo">
+                <span class="badge">M</span>
+                DataTimeInfo
+              </a>
+            </li>
+            <li>
+              <a href="#bom.Dataset">
+                <span class="badge">M</span>
+                Dataset
+              </a>
+            </li>
+            <li>
+              <a href="#bom.DatasetAction">
+                <span class="badge">M</span>
+                DatasetAction
+              </a>
+            </li>
+            <li>
+              <a href="#bom.DatasetSource">
+                <span class="badge">M</span>
+                DatasetSource
+              </a>
+            </li>
+            <li>
+              <a href="#bom.Dimension">
+                <span class="badge">M</span>
+                Dimension
+              </a>
+            </li>
+            <li>
+              <a href="#bom.License">
+                <span class="badge">M</span>
+                License
+              </a>
+            </li>
+            <li>
+              <a href="#bom.NWPDataSetForSingleBaseTime">
+                <span class="badge">M</span>
+                NWPDataSetForSingleBaseTime
+              </a>
+            </li>
+            <li>
+              <a href="#bom.Variable">
+                <span class="badge">M</span>
+                Variable
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#task.proto">task.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.TaskContext">
+                <span class="badge">M</span>
+                TaskContext
+              </a>
+            </li>
+            <li>
+              <a href="#bom.TaskEvent">
+                <span class="badge">M</span>
+                TaskEvent
+              </a>
+            </li>
+            <li>
+              <a href="#bom.TaskGroupLimits">
+                <span class="badge">M</span>
+                TaskGroupLimits
+              </a>
+            </li>
+            <li>
+              <a href="#bom.TaskInfo">
+                <span class="badge">M</span>
+                TaskInfo
+              </a>
+            </li>
+            <li>
+              <a href="#bom.TaskInteraction">
+                <span class="badge">M</span>
+                TaskInteraction
+              </a>
+            </li>
+            <li>
+              <a href="#bom.TaskManagerContext">
+                <span class="badge">M</span>
+                TaskManagerContext
+              </a>
+            </li>
+            <li>
+              <a href="#bom.TaskQueue">
+                <span class="badge">M</span>
+                TaskQueue
+              </a>
+            </li>
+            <li>
+              <a href="#bom.TaskResource">
+                <span class="badge">M</span>
+                TaskResource
+              </a>
+            </li>
+            <li>
+              <a href="#bom.TaskRetry">
+                <span class="badge">M</span>
+                TaskRetry
+              </a>
+            </li>
+            <li>
+              <a href="#bom.TaskSettings">
+                <span class="badge">M</span>
+                TaskSettings
+              </a>
+            </li>
+            <li>
+              <a href="#bom.TaskStatus">
+                <span class="badge">M</span>
+                TaskStatus
+              </a>
+            </li>
+            <li>
+              <a href="#bom.TaskTimes">
+                <span class="badge">M</span>
+                TaskTimes
+              </a>
+            </li>
+            <li>
+              <a href="#bom.Taskid">
+                <span class="badge">M</span>
+                Taskid
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#address.proto">address.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.Address">
+                <span class="badge">M</span>
+                Address
+              </a>
+            </li>
+            <li>
+              <a href="#bom.URI">
+                <span class="badge">M</span>
+                URI
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#component.proto">component.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.ClusterInfo">
+                <span class="badge">M</span>
+                ClusterInfo
+              </a>
+            </li>
+            <li>
+              <a href="#bom.Component">
+                <span class="badge">M</span>
+                Component
+              </a>
+            </li>
+            <li>
+              <a href="#bom.Component.Info">
+                <span class="badge">M</span>
+                Component.Info
+              </a>
+            </li>
+            <li>
+              <a href="#bom.Component.Relation">
+                <span class="badge">M</span>
+                Component.Relation
+              </a>
+            </li>
+            <li>
+              <a href="#bom.Device">
+                <span class="badge">M</span>
+                Device
+              </a>
+            </li>
+            <li>
+              <a href="#bom.ProductionStatus">
+                <span class="badge">M</span>
+                ProductionStatus
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#contact.proto">contact.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.Contact">
+                <span class="badge">M</span>
+                Contact
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#debug_settings.proto">debug_settings.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.DebugSettings">
+                <span class="badge">M</span>
+                DebugSettings
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#diagnostic.proto">diagnostic.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.Diagnostic">
+                <span class="badge">M</span>
+                Diagnostic
+              </a>
+            </li>
+            <li>
+              <a href="#bom.ModelDiagnostic">
+                <span class="badge">M</span>
+                ModelDiagnostic
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#ensemble_member.proto">ensemble_member.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.EnsembleMember">
+                <span class="badge">M</span>
+                EnsembleMember
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#event_header.proto">event_header.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.EventHeader">
+                <span class="badge">M</span>
+                EventHeader
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#log_info.proto">log_info.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.LogInfo">
+                <span class="badge">M</span>
+                LogInfo
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#priority.proto">priority.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.Priority">
+                <span class="badge">M</span>
+                Priority
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#producer.proto">producer.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.Producer">
+                <span class="badge">M</span>
+                Producer
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#security_marking.proto">security_marking.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.SecurityMarking">
+                <span class="badge">M</span>
+                SecurityMarking
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#tag.proto">tag.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.Id">
+                <span class="badge">M</span>
+                Id
+              </a>
+            </li>
+            <li>
+              <a href="#bom.Tag">
+                <span class="badge">M</span>
+                Tag
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#time.proto">time.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.TimePointOrRange">
+                <span class="badge">M</span>
+                TimePointOrRange
+              </a>
+            </li>
+            <li>
+              <a href="#bom.TimeRange">
+                <span class="badge">M</span>
+                TimeRange
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#userid.proto">userid.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.Userid">
+                <span class="badge">M</span>
+                Userid
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#version.proto">version.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.SemVer">
+                <span class="badge">M</span>
+                SemVer
+              </a>
+            </li>
+            <li>
+              <a href="#bom.Version">
+                <span class="badge">M</span>
+                Version
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#component_level.proto">component_level.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.component_level.ComponentLevel">
+                <span class="badge">E</span>
+                ComponentLevel
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#component_relation.proto">component_relation.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.component_relation.ComponentRelation">
+                <span class="badge">E</span>
+                ComponentRelation
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#computing_resource.proto">computing_resource.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.computing_resource.ComputingResource">
+                <span class="badge">E</span>
+                ComputingResource
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#data_coverage_content_type.proto">data_coverage_content_type.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.data_coverage_content_type.DataCoverageContentType">
+                <span class="badge">E</span>
+                DataCoverageContentType
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#dataset_action_type.proto">dataset_action_type.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.dataset_action_type.DatasetActionType">
+                <span class="badge">E</span>
+                DatasetActionType
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#dataset_compression_type.proto">dataset_compression_type.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.dataset_compression_type.DatasetCompressionType">
+                <span class="badge">E</span>
+                DatasetCompressionType
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#dataset_feature_type.proto">dataset_feature_type.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.dataset_feature_type.DatasetFeatureType">
+                <span class="badge">E</span>
+                DatasetFeatureType
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#data_time_type.proto">data_time_type.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.data_time_type.DataTimeType">
+                <span class="badge">E</span>
+                DataTimeType
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#debug_level.proto">debug_level.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.debug_level.DebugLevel">
+                <span class="badge">E</span>
+                DebugLevel
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#error_type.proto">error_type.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.error_type.ErrorType">
+                <span class="badge">E</span>
+                ErrorType
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#impact.proto">impact.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.impact.Impact">
+                <span class="badge">E</span>
+                Impact
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#log_type.proto">log_type.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.log_type.LogType">
+                <span class="badge">E</span>
+                LogType
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#maturity.proto">maturity.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.maturity.Maturity">
+                <span class="badge">E</span>
+                Maturity
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#prod_status.proto">prod_status.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.prod_status.ProdStatus">
+                <span class="badge">E</span>
+                ProdStatus
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#realm.proto">realm.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.realm.Realm">
+                <span class="badge">E</span>
+                Realm
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#security_classification.proto">security_classification.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.security_classification.SecurityClassification">
+                <span class="badge">E</span>
+                SecurityClassification
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#security_delimiting_marker.proto">security_delimiting_marker.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.security_delimiting_marker.SecurityDelimitingMarker">
+                <span class="badge">E</span>
+                SecurityDelimitingMarker
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#severity.proto">severity.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.severity.Severity">
+                <span class="badge">E</span>
+                Severity
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#task_actor_type.proto">task_actor_type.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.task_actor_type.TaskActorType">
+                <span class="badge">E</span>
+                TaskActorType
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#task_communication_method.proto">task_communication_method.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.task_communication_method.TaskCommunicationMethod">
+                <span class="badge">E</span>
+                TaskCommunicationMethod
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#task_interaction_type.proto">task_interaction_type.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.task_interaction_type.TaskInteractionType">
+                <span class="badge">E</span>
+                TaskInteractionType
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#task_state.proto">task_state.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.task_state.TaskState">
+                <span class="badge">E</span>
+                TaskState
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#trace_level.proto">trace_level.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.trace_level.TraceLevel">
+                <span class="badge">E</span>
+                TraceLevel
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li><a href="#scalar-value-types">Scalar Value Types</a></li>
+      </ul>
+    </div>
+
+    <div class="file-heading">
+      <h2 id="dataset.proto">dataset.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.DataFile">DataFile</h3>
+    <p>Location and other metadata of data file. It is recommended
+DataFile represent a single file, but the flexibility to describe
+a directory along with &quot;include&quot; and &quot;exclude&quot; file matching patterns
+is provided.</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>data_uris</td>
+          <td><a href="#bom.URI">URI</a></td>
+          <td>repeated</td>
+          <td><p>Where data can be found. Multiple URLs must lead to mirrored locations
+of the same data file or set of data files</p></td>
+        </tr>
+        <tr>
+          <td>meta_uri</td>
+          <td><a href="#bom.URI">URI</a></td>
+          <td>optional</td>
+          <td><p>Where additional metadata about the data can be found.</p></td>
+        </tr>
+        <tr>
+          <td>data_format</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Format of data</p></td>
+        </tr>
+        <tr>
+          <td>digest</td>
+          <td><a href="#bom.Id">Id</a></td>
+          <td>optional</td>
+          <td><p>Message digest/checksums/fingerprints of file</p></td>
+        </tr>
+        <tr>
+          <td>data_size</td>
+          <td><a href="#int64">int64</a></td>
+          <td>optional</td>
+          <td><p>Size of data uris in bytes.</p></td>
+        </tr>
+        <tr>
+          <td>compressions</td>
+          <td><a href="#bom.dataset_compression_type.DatasetCompressionType">DatasetCompressionType</a></td>
+          <td>repeated</td>
+          <td><p>Compression techniques applied.
+Multiple types can be specified; for example THINNED, PACKED and LOSSLESS
+are to be interpreted as data that has been thinned (a losssy operation)
+then packed (another lossy operation) and then this resulting
+thinned and packed data is further losslessly compressed</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.DataTimeInfo">DataTimeInfo</h3>
+    <p>Temporal information pertaining to a subset of data in a dataset.</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>is_model_time</td>
+          <td><a href="#bool">bool</a></td>
+          <td>optional</td>
+          <td><p>True if datetime(s) represented are valid in in a model/simulated
+time space/coordinate or some relative notion of time.
+False implies real UTC clocktime.</p></td>
+        </tr>
+        <tr>
+          <td>time_type</td>
+          <td><a href="#bom.data_time_type.DataTimeType">DataTimeType</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>values</td>
+          <td><a href="#bom.TimePointOrRange">TimePointOrRange</a></td>
+          <td>repeated</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>uncertainty</td>
+          <td><a href="#google.protobuf.Duration">Duration</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.Dataset">Dataset</h3>
+    <p>Basic information about a Dataset.
+A dataset comprises of data related in some way,
+for example from a single instrument or collocated instruments,
+or from a particular field campaign.
+The Dataset message is a &quot;base&quot; message; most real datasets will include
+this message as the &quot;base_dataset&quot; and add domain specific information
+pertinent to the type of data being represented</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>title</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>A succinct description of the dataset.</p></td>
+        </tr>
+        <tr>
+          <td>description</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>A longer description of what is in the dataset.</p></td>
+        </tr>
+        <tr>
+          <td>id</td>
+          <td><a href="#bom.Id">Id</a></td>
+          <td>optional</td>
+          <td><p>An identifier for the dataset, if applicable</p></td>
+        </tr>
+        <tr>
+          <td>version</td>
+          <td><a href="#bom.Version">Version</a></td>
+          <td>optional</td>
+          <td><p>The version of the dataset</p></td>
+        </tr>
+        <tr>
+          <td>source</td>
+          <td><a href="#bom.DatasetSource">DatasetSource</a></td>
+          <td>optional</td>
+          <td><p>Information about the source of the data</p></td>
+        </tr>
+        <tr>
+          <td>subject_categories</td>
+          <td><a href="#string">string</a></td>
+          <td>repeated</td>
+          <td><p>Subject categories covered by the dataset</p></td>
+        </tr>
+        <tr>
+          <td>dataset_feature_type</td>
+          <td><a href="#bom.dataset_feature_type.DatasetFeatureType">DatasetFeatureType</a></td>
+          <td>optional</td>
+          <td><p>The global dataset feature type (if applicable, and if all of the
+data variables contained in this dataset are of a single feature type.
+If this is not the case, dataset_feature_type can be set to MIXED and
+per-variable feature types specified).</p></td>
+        </tr>
+        <tr>
+          <td>data_files</td>
+          <td><a href="#bom.DataFile">DataFile</a></td>
+          <td>repeated</td>
+          <td><p>URLs to where data can be found and data file metadata</p></td>
+        </tr>
+        <tr>
+          <td>data_maturity</td>
+          <td><a href="#bom.maturity.Maturity">Maturity</a></td>
+          <td>optional</td>
+          <td><p>Operational status of the system producing the dataset</p></td>
+        </tr>
+        <tr>
+          <td>security_marking</td>
+          <td><a href="#bom.SecurityMarking">SecurityMarking</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>license</td>
+          <td><a href="#bom.License">License</a></td>
+          <td>optional</td>
+          <td><p>License under which the dataset is intended to be published</p></td>
+        </tr>
+        <tr>
+          <td>contacts</td>
+          <td><a href="#bom.Contact">Contact</a></td>
+          <td>repeated</td>
+          <td><p>Relevant contacts for further information or to report dataset issues</p></td>
+        </tr>
+        <tr>
+          <td>creation_timestamp</td>
+          <td><a href="#google.protobuf.Timestamp">Timestamp</a></td>
+          <td>optional</td>
+          <td><p>Approximate time dataset was originally created</p></td>
+        </tr>
+        <tr>
+          <td>reference_timestamp</td>
+          <td><a href="#bom.DataTimeInfo">DataTimeInfo</a></td>
+          <td>optional</td>
+          <td><p>Reference datetime of the dataset. For example, the nominal
+(&quot;base&quot;) datetime for a NWP model run or the validity time of
+an observational dataset or the start of a sequence of reanalyses etc</p></td>
+        </tr>
+        <tr>
+          <td>data_times</td>
+          <td><a href="#bom.DataTimeInfo">DataTimeInfo</a></td>
+          <td>repeated</td>
+          <td><p>Summary-level temporal coverage information for the dataset, .eg.
+the range of times the dataset covers, or the discrete times data in
+in the dataset is valid for</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.DatasetAction">DatasetAction</h3>
+    <p>Description of some action that has taken place or
+planned to take place concerning the dataset document
+e.g. description of a modification, outcome of a validation,
+approval process etc.</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>type_enum</td>
+          <td><a href="#bom.dataset_action_type.DatasetActionType">DatasetActionType</a></td>
+          <td>optional</td>
+          <td><p>The type of action, e.g. CREATE for dataset creation</p></td>
+        </tr>
+        <tr>
+          <td>type_str</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Can be used instead of action_type_enum to refer to more
+esoteric actions, e.g. revision to the date a dataset/document
+is planned to be adopted or a change to the intellectual
+property rights around a dataset</p></td>
+        </tr>
+        <tr>
+          <td>state</td>
+          <td><a href="#bom.task_state.TaskState">TaskState</a></td>
+          <td>optional</td>
+          <td><p>If action has taken place and resulted in a successful or failed
+outcome, or if the action is in-progress or is scheduled to happen.
+TaskState is used here as it offers a large range of
+useful action and action resolution states, although many will
+likely not be applicable</p></td>
+        </tr>
+        <tr>
+          <td>times</td>
+          <td><a href="#bom.TimePointOrRange">TimePointOrRange</a></td>
+          <td>repeated</td>
+          <td><p>The time the action reached action_state, or the time
+the action is due to commence if it is a scheduled action.
+If a range is specified it represents the action begin and end times
+of the action</p></td>
+        </tr>
+        <tr>
+          <td>time_uncertainty</td>
+          <td><a href="#google.protobuf.Duration">Duration</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>contact</td>
+          <td><a href="#bom.Contact">Contact</a></td>
+          <td>optional</td>
+          <td><p>Who is the key contact associated with the action/change</p></td>
+        </tr>
+        <tr>
+          <td>reason</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Why the action/change took place or is due to take place</p></td>
+        </tr>
+        <tr>
+          <td>outcome_details</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Details about the action outcome, if relevant. e.g. if action type
+and state indicate a review that failed, the outcome string can
+provide an explanation for this outcome</p></td>
+        </tr>
+        <tr>
+          <td>comment</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Any additional pertinent comments, e.g. where the action happened</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.DatasetSource">DatasetSource</h3>
+    <p>Oerview of the source of the original data, i.e. the system or processes
+that generated this dataset
+The source is the method of production of the data. For example, if the
+data was model-generated, the details of the &quot;source&quot; component would
+represent details at the relevant level of the boarder numerical model
+system; if the data is observational, source would characterise the
+observation platform.</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>component</td>
+          <td><a href="#bom.Component">Component</a></td>
+          <td>optional</td>
+          <td><p>A Component message describing the source</p></td>
+        </tr>
+        <tr>
+          <td>producer_source_component_id</td>
+          <td><a href="#int64">int64</a></td>
+          <td>optional</td>
+          <td><p>Alternatively, the source component can be identified via reference
+to the relevant component in the Producer message (if the
+source component is listed in the Producer message)</p></td>
+        </tr>
+        <tr>
+          <td>config_id</td>
+          <td><a href="#int64">int64</a></td>
+          <td>optional</td>
+          <td><p>ID to help track potentially unusual source configurations.
+config_id = 0 implies a normal configuration, other states
+map to a lookup table of configurable possibilities. This is source
+specific and must be documented by the source system.</p></td>
+        </tr>
+        <tr>
+          <td>institution</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Name of the organisation or institute that produced the dataset</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.Dimension">Dimension</h3>
+    <p>Dimension used for variable array dimensional coordinates.
+The dimensional coordinates of a data variable map from variable
+index space (specified by a set of index dimensions) to coordinate space.</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>name</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>length</td>
+          <td><a href="#uint64">uint64</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.License">License</h3>
+    <p>License under which a dataset is intended to be published, or the
+license conditions for data obtainable from a service or repository via
+an API.</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>name</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>license name</p></td>
+        </tr>
+        <tr>
+          <td>url</td>
+          <td><a href="#bom.URI">URI</a></td>
+          <td>optional</td>
+          <td><p>A URL to the license used</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.NWPDataSetForSingleBaseTime">NWPDataSetForSingleBaseTime</h3>
+    <p></p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>base_dataset</td>
+          <td><a href="#bom.Dataset">Dataset</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>run_start_clock_timestamp</td>
+          <td><a href="#google.protobuf.Timestamp">Timestamp</a></td>
+          <td>optional</td>
+          <td><p>The datetime at which the source began generation of the dataset.
+This would represent the real clocktime a model simulation began in the
+case of model data; in this case this timestamp can be used to distinguish
+between model re-runs.</p></td>
+        </tr>
+        <tr>
+          <td>number_of_ensemble_members</td>
+          <td><a href="#int64">int64</a></td>
+          <td>optional</td>
+          <td><p>Total number of ensemble members run, if known. This includes members
+that may not be present in this dataset. 0 implies unknown
+if set to 1 implies a deterministic model.</p></td>
+        </tr>
+        <tr>
+          <td>ensemble_members</td>
+          <td><a href="#bom.EnsembleMember">EnsembleMember</a></td>
+          <td>repeated</td>
+          <td><p>Optional information about each ensemble_member</p></td>
+        </tr>
+        <tr>
+          <td>observational_cutoff</td>
+          <td><a href="#google.protobuf.Duration">Duration</a></td>
+          <td>optional</td>
+          <td><p>For models involving data assimilation, the observational
+data cutoff duration relative to the model (nominal) analysis time</p></td>
+        </tr>
+        <tr>
+          <td>dimensions</td>
+          <td><a href="#bom.Dimension">Dimension</a></td>
+          <td>repeated</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>variables</td>
+          <td><a href="#bom.Variable">Variable</a></td>
+          <td>repeated</td>
+          <td><p></p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.Variable">Variable</h3>
+    <p>A data, coordinate or auxillary coordinate variable, as per CF
+conventions.
+A data variable is a multidimensional array of values that is the
+result of sampling a continuous function at a discrete set of points.
+In the case of observations the function represents the physical
+system being observed.
+A coordinate variable a one-dimensional variable with the same name
+as its dimension [e.g., time(time) ], and it is defined as a numeric
+data type with values that are ordered monotonically.
+An auxillary coordinate is a variable that contains coordinate
+data, but unlike coordinate variables, there is no relationship between
+the name of an auxiliary coordinate variable and the name(s) of
+its dimension(s).</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>name</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>From a controlled vocabulary</p></td>
+        </tr>
+        <tr>
+          <td>cf_standard_name</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>From CF conventions, if applicable</p></td>
+        </tr>
+        <tr>
+          <td>units</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Units of the variable</p></td>
+        </tr>
+        <tr>
+          <td>dimensions</td>
+          <td><a href="#string">string</a></td>
+          <td>repeated</td>
+          <td><p>List of dimensions that define the multidimensional array shape.
+Zero dimensions implies a scalar variable or coordinate (a &quot;singleton&quot;)</p></td>
+        </tr>
+        <tr>
+          <td>aux_coordinates</td>
+          <td><a href="#string">string</a></td>
+          <td>repeated</td>
+          <td><p>List of auxillary coordinates</p></td>
+        </tr>
+        <tr>
+          <td>feature_type</td>
+          <td><a href="#bom.dataset_feature_type.DatasetFeatureType">DatasetFeatureType</a></td>
+          <td>optional</td>
+          <td><p>Variable feature_type, if applicable. Should be set if global dataset
+consists of a MIXED feature type</p></td>
+        </tr>
+        <tr>
+          <td>coverage_content_type</td>
+          <td><a href="#bom.data_coverage_content_type.DataCoverageContentType">DataCoverageContentType</a></td>
+          <td>optional</td>
+          <td><p>additional qualifying information about the source
+of the variable's data to aid with interpretation</p></td>
+        </tr>
+        <tr>
+          <td>attributes</td>
+          <td><a href="#bom.Tag">Tag</a></td>
+          <td>repeated</td>
+          <td><p>Other attributes, following CF conventions where relevant</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="task.proto">task.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.TaskContext">TaskContext</h3>
+    <p>Summary context information pertaining to this task instance</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>id</td>
+          <td><a href="#bom.Taskid">Taskid</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>settings</td>
+          <td><a href="#bom.TaskSettings">TaskSettings</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>cycle_point</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Top-level cycle point information</p></td>
+        </tr>
+        <tr>
+          <td>retry</td>
+          <td><a href="#bom.TaskRetry">TaskRetry</a></td>
+          <td>optional</td>
+          <td><p>Information about task retries</p></td>
+        </tr>
+        <tr>
+          <td>logs</td>
+          <td><a href="#bom.LogInfo">LogInfo</a></td>
+          <td>repeated</td>
+          <td><p>Logs generated by or on behalf of this task</p></td>
+        </tr>
+        <tr>
+          <td>session</td>
+          <td><a href="#bom.URI">URI</a></td>
+          <td>optional</td>
+          <td><p>A link to this task instance's run information/top-level debug
+outputs etc (if such a location exists)</p></td>
+        </tr>
+        <tr>
+          <td>queue</td>
+          <td><a href="#bom.TaskQueue">TaskQueue</a></td>
+          <td>optional</td>
+          <td><p>The queue to which the task belongs</p></td>
+        </tr>
+        <tr>
+          <td>submission_method</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>comms_method</td>
+          <td><a href="#bom.task_communication_method.TaskCommunicationMethod">TaskCommunicationMethod</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>priority</td>
+          <td><a href="#bom.Priority">Priority</a></td>
+          <td>optional</td>
+          <td><p>Priority of task, as viewed by this scheduler. Priority may change
+dynamically based on the evolution of activies and business requirements
+during scheduling</p></td>
+        </tr>
+        <tr>
+          <td>group_limits</td>
+          <td><a href="#bom.TaskGroupLimits">TaskGroupLimits</a></td>
+          <td>repeated</td>
+          <td><p>Limits placed on the running of this task (usually as part of a strategy
+to prevent saturating a particular resource)</p></td>
+        </tr>
+        <tr>
+          <td>resource_limits</td>
+          <td><a href="#bom.TaskResource">TaskResource</a></td>
+          <td>repeated</td>
+          <td><p>Resource limits requested of and/or imposed/enforced by this manager</p></td>
+        </tr>
+        <tr>
+          <td>resource_use</td>
+          <td><a href="#bom.TaskResource">TaskResource</a></td>
+          <td>repeated</td>
+          <td><p>Resources used by the task</p></td>
+        </tr>
+        <tr>
+          <td>managers</td>
+          <td><a href="#bom.TaskManagerContext">TaskManagerContext</a></td>
+          <td>repeated</td>
+          <td><p>Task manager(s) asssociated with this task. The first manager
+listed should correspond to, or be closely aligned with, the component
+that produced this message</p></td>
+        </tr>
+        <tr>
+          <td>exec_hosts</td>
+          <td><a href="#bom.Address">Address</a></td>
+          <td>repeated</td>
+          <td><p>List of execution hosts for task</p></td>
+        </tr>
+        <tr>
+          <td>exec_vnodes</td>
+          <td><a href="#bom.Address">Address</a></td>
+          <td>repeated</td>
+          <td><p>List of execution vnodes for task</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.TaskEvent">TaskEvent</h3>
+    <p>A task event represents a change in state of a task, and/or an interaction
+with a task by a user or system.</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>header</td>
+          <td><a href="#bom.EventHeader">EventHeader</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>event_type</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Very brief elaboration on what type of task event this is.
+These would be most common:
+STATE_CHANGE, INTERACTION, STATE_CHANGE_WITH_AUTOMATIC_INTERACTION,
+Some more esoteric possibilities include:
+RESOURCE_LIMIT_CHANGE, PRIORITY_CHANGE etc</p></td>
+        </tr>
+        <tr>
+          <td>task_info</td>
+          <td><a href="#bom.TaskInfo">TaskInfo</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>task_context</td>
+          <td><a href="#bom.TaskContext">TaskContext</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>task_manager_context</td>
+          <td><a href="#bom.TaskManagerContext">TaskManagerContext</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>task_status</td>
+          <td><a href="#bom.TaskStatus">TaskStatus</a></td>
+          <td>optional</td>
+          <td><p>The current status of the task.</p></td>
+        </tr>
+        <tr>
+          <td>task_interaction</td>
+          <td><a href="#bom.TaskInteraction">TaskInteraction</a></td>
+          <td>optional</td>
+          <td><p>Interaction being perfomed on the task (if any).
+Note: the task_status in this particular event is not a result of this
+particular interaction. Rather, this task is in this event's task_status
+state when the task_interaction begins. Subsequent events may include
+task_status changes as a result of this interaction</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.TaskGroupLimits">TaskGroupLimits</h3>
+    <p>Limit placed on the number of simultaneously running tasks for tasks
+belonging to a particular group/type or using a particular resource</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>name</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Name of the limit</p></td>
+        </tr>
+        <tr>
+          <td>description</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Description of this limit</p></td>
+        </tr>
+        <tr>
+          <td>number</td>
+          <td><a href="#int64">int64</a></td>
+          <td>optional</td>
+          <td><p>The limit number (maximum number of dispatched/running tasks)</p></td>
+        </tr>
+        <tr>
+          <td>group</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>The task group the limit applies to (if applicable)</p></td>
+        </tr>
+        <tr>
+          <td>resource</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>The resource the limit applies to (if applicable)
+Note: one of group or resource must be specified for the the limit
+to be meaingful</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.TaskInfo">TaskInfo</h3>
+    <p>Descriptive, human meaningful information about the nature of the task.
+This information should mostly be known ahead of the scheduling of the task.</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>name</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>namespace</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Unique namespace for this task within a suite or workflow.
+This is typically the task familes to which the task belongs</p></td>
+        </tr>
+        <tr>
+          <td>suite</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>The suite or workflow this task is a part of</p></td>
+        </tr>
+        <tr>
+          <td>is_idempotent</td>
+          <td><a href="#bool">bool</a></td>
+          <td>optional</td>
+          <td><p>Can repeated re-runs of the task (even following a crash during task
+exeuction) safe and expected to produce the same result?</p></td>
+        </tr>
+        <tr>
+          <td>groups</td>
+          <td><a href="#string">string</a></td>
+          <td>repeated</td>
+          <td><p>The group(s) this task is part of, if relevant. Groups are generally
+a  grouping of similar tasks in the context of a workflow</p></td>
+        </tr>
+        <tr>
+          <td>resources</td>
+          <td><a href="#string">string</a></td>
+          <td>repeated</td>
+          <td><p>Named resources this task interacts with, e.g. particular databases,
+services, archive storage systems etc</p></td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Type of task</p></td>
+        </tr>
+        <tr>
+          <td>project</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>project (in the context of a batch system scheduler, or similar)</p></td>
+        </tr>
+        <tr>
+          <td>production_status</td>
+          <td><a href="#bom.ProductionStatus">ProductionStatus</a></td>
+          <td>optional</td>
+          <td><p>Production status of task</p></td>
+        </tr>
+        <tr>
+          <td>priority</td>
+          <td><a href="#bom.Priority">Priority</a></td>
+          <td>optional</td>
+          <td><p>Priority of task. Note this can include information about impact and
+urgency</p></td>
+        </tr>
+        <tr>
+          <td>task_url</td>
+          <td><a href="#bom.URI">URI</a></td>
+          <td>optional</td>
+          <td><p>Overview information</p></td>
+        </tr>
+        <tr>
+          <td>task_debug</td>
+          <td><a href="#bom.URI">URI</a></td>
+          <td>optional</td>
+          <td><p>Troubleshooting information</p></td>
+        </tr>
+        <tr>
+          <td>tags</td>
+          <td><a href="#bom.Tag">Tag</a></td>
+          <td>repeated</td>
+          <td><p>User-defined additional tags</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.TaskInteraction">TaskInteraction</h3>
+    <p>Metadata about the entity involved in some interaction</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>actorType</td>
+          <td><a href="#bom.task_actor_type.TaskActorType">TaskActorType</a></td>
+          <td>optional</td>
+          <td><p>Type of entity carrying out or initiating the action/interaction</p></td>
+        </tr>
+        <tr>
+          <td>contact</td>
+          <td><a href="#bom.Contact">Contact</a></td>
+          <td>optional</td>
+          <td><p>Entity contact details for humans/organisations</p></td>
+        </tr>
+        <tr>
+          <td>reason</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Motivation for the interaction, if relevant</p></td>
+        </tr>
+        <tr>
+          <td>system</td>
+          <td><a href="#bom.Id">Id</a></td>
+          <td>optional</td>
+          <td><p>The system/equipment/tool via which the interaction took place
+This will generally be the scheduler, or a component of a scheduler</p></td>
+        </tr>
+        <tr>
+          <td>interaction_detail</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Additional details/context</p></td>
+        </tr>
+        <tr>
+          <td>interaction_id</td>
+          <td><a href="#bom.Id">Id</a></td>
+          <td>optional</td>
+          <td><p>ID to track this interaction</p></td>
+        </tr>
+        <tr>
+          <td>on_behalf_of</td>
+          <td><a href="#bom.TaskInteraction">TaskInteraction</a></td>
+          <td>optional</td>
+          <td><p>To be set when this interaction is on behalf or as a consequence of
+another entity or interaction</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.TaskManagerContext">TaskManagerContext</h3>
+    <p>Task manager context contains information about a management
+context of the task, as known by this message producer.
+The task manager may be a workflow scheduler, batch scheduler,
+orchestration system etc
+Note: all metadata pertains to the task manager itself, in the context
+of this task. Most task-specific metadata, even if controlled by a
+manager, is exposed in the parent TaskContext message</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>name</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>e.g. PBS</p></td>
+        </tr>
+        <tr>
+          <td>component_id</td>
+          <td><a href="#int64">int64</a></td>
+          <td>optional</td>
+          <td><p>The index in the Producer components list that corresponds to this
+task manager component.</p></td>
+        </tr>
+        <tr>
+          <td>id</td>
+          <td><a href="#bom.Id">Id</a></td>
+          <td>optional</td>
+          <td><p>Id of manager/scheduler if relevant</p></td>
+        </tr>
+        <tr>
+          <td>saga_id</td>
+          <td><a href="#bom.Id">Id</a></td>
+          <td>optional</td>
+          <td><p>Additional id to track manager specific task context information,
+e.g. be used for dag_id (directed acylcic graph id), suite id etc</p></td>
+        </tr>
+        <tr>
+          <td>output_collection_task_ids</td>
+          <td><a href="#bom.Id">Id</a></td>
+          <td>repeated</td>
+          <td><p>Tasks associated with collecting task outputs, if also managed by
+this scheduler and if known</p></td>
+        </tr>
+        <tr>
+          <td>monitoring_task_ids</td>
+          <td><a href="#bom.Id">Id</a></td>
+          <td>repeated</td>
+          <td><p>Tasks associated with monitoring tasks, if also managed by
+this scheduler and if known</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.TaskQueue">TaskQueue</h3>
+    <p>Information about the queue a tasks/job belongs to, as might be
+managed by a job or batch scheduler</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>name</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Name of the queue</p></td>
+        </tr>
+        <tr>
+          <td>rank</td>
+          <td><a href="#int64">int64</a></td>
+          <td>optional</td>
+          <td><p>Rank of task in queue. TODO: ask Altair... or is this a
+ranking of queues (in terms of priority?)</p></td>
+        </tr>
+        <tr>
+          <td>time</td>
+          <td><a href="#google.protobuf.Timestamp">Timestamp</a></td>
+          <td>optional</td>
+          <td><p>The time the task entered this queue</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.TaskResource">TaskResource</h3>
+    <p></p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>resource</td>
+          <td><a href="#bom.computing_resource.ComputingResource">ComputingResource</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>amount</td>
+          <td><a href="#int64">int64</a></td>
+          <td>optional</td>
+          <td><p>Value in milliseconds for duration,
+bytes for memory/disk or a count in other contexts</p></td>
+        </tr>
+        <tr>
+          <td>is_hard_limit</td>
+          <td><a href="#bool">bool</a></td>
+          <td>optional</td>
+          <td><p>If limit the amount represents a resource limit, whether it is
+hard (ortherwise it is considered &quot;soft&quot;). To be ignored if this
+message does not correspond to a resource limit</p></td>
+        </tr>
+        <tr>
+          <td>steward</td>
+          <td><a href="#bom.task_actor_type.TaskActorType">TaskActorType</a></td>
+          <td>optional</td>
+          <td><p>Entity responsible for measuring this resource, or for ensuring
+any limit (if applicable) is respected by some suitable means
+(e.g. the governor batch scheduler or native system)</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.TaskRetry">TaskRetry</h3>
+    <p>Metadata about expected automatic retries for tasks.</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>submit_number</td>
+          <td><a href="#int64">int64</a></td>
+          <td>optional</td>
+          <td><p>Current known submit number</p></td>
+        </tr>
+        <tr>
+          <td>try_number</td>
+          <td><a href="#int64">int64</a></td>
+          <td>optional</td>
+          <td><p>Current known try number</p></td>
+        </tr>
+        <tr>
+          <td>retry_limit</td>
+          <td><a href="#int64">int64</a></td>
+          <td>optional</td>
+          <td><p>Number of times this task should be retried automatically, as
+set in a top-level workflow scheduler before the task is
+considered to have failed/aborted</p></td>
+        </tr>
+        <tr>
+          <td>retry_delay</td>
+          <td><a href="#google.protobuf.Duration">Duration</a></td>
+          <td>optional</td>
+          <td><p>Delay before next retry is attempted. If retrying is underway
+presently, then this refers to the delay (if any) before
+this fresh retry attempt is progressed</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.TaskSettings">TaskSettings</h3>
+    <p></p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>user</td>
+          <td><a href="#bom.Userid">Userid</a></td>
+          <td>optional</td>
+          <td><p>The user/account/identity that the task is to run as</p></td>
+        </tr>
+        <tr>
+          <td>subusers</td>
+          <td><a href="#bom.Userid">Userid</a></td>
+          <td>repeated</td>
+          <td><p>Other users/accounts that processes/subcomponents launched by the task
+will run as (e.g. task involving sudo commands for another service account)</p></td>
+        </tr>
+        <tr>
+          <td>is_simulation</td>
+          <td><a href="#bool">bool</a></td>
+          <td>optional</td>
+          <td><p>If task is in a simulation mode; it is not running normal workloads,
+rather a dummy task to help simulate suite behavior.</p></td>
+        </tr>
+        <tr>
+          <td>is_test</td>
+          <td><a href="#bool">bool</a></td>
+          <td>optional</td>
+          <td><p>If task is in a test mode</p></td>
+        </tr>
+        <tr>
+          <td>is_edit_run</td>
+          <td><a href="#bool">bool</a></td>
+          <td>optional</td>
+          <td><p>If routine task is the result of an edit run of some type</p></td>
+        </tr>
+        <tr>
+          <td>note</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>A note about the settings</p></td>
+        </tr>
+        <tr>
+          <td>eligible_time</td>
+          <td><a href="#google.protobuf.Timestamp">Timestamp</a></td>
+          <td>optional</td>
+          <td><p>Time from which the task is eligible to run (if applicable)</p></td>
+        </tr>
+        <tr>
+          <td>debug</td>
+          <td><a href="#bom.DebugSettings">DebugSettings</a></td>
+          <td>optional</td>
+          <td><p>Debug settings that apply to this task</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.TaskStatus">TaskStatus</h3>
+    <p>The task status is a combination of the task state and the
+system reporting/interpreting the task state.
+Note the time(s) relating to a task state change report
+can be approximated by the time-stamp in the Kafka header
+for real-time systems</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>state</td>
+          <td><a href="#bom.task_state.TaskState">TaskState</a></td>
+          <td>optional</td>
+          <td><p>Current or new task state</p></td>
+        </tr>
+        <tr>
+          <td>diagnostics</td>
+          <td><a href="#bom.Diagnostic">Diagnostic</a></td>
+          <td>repeated</td>
+          <td><p>Diagnostics about task including information about errors or
+warnings that may be associated with this task state</p></td>
+        </tr>
+        <tr>
+          <td>message</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>A message/note about task state</p></td>
+        </tr>
+        <tr>
+          <td>reporter_type</td>
+          <td><a href="#bom.task_actor_type.TaskActorType">TaskActorType</a></td>
+          <td>optional</td>
+          <td><p>Type of entity reporting the new state</p></td>
+        </tr>
+        <tr>
+          <td>reporter</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>The system or entity reporting the state, e.g. Cylc or PBS</p></td>
+        </tr>
+        <tr>
+          <td>severity</td>
+          <td><a href="#bom.severity.Severity">Severity</a></td>
+          <td>optional</td>
+          <td><p>Severity of new task state. Each diagnostic also has a severity,
+and this may be left unset if it is possible to infer the task state
+severityfrom the diagnostic(s)</p></td>
+        </tr>
+        <tr>
+          <td>time_info</td>
+          <td><a href="#bom.TaskTimes">TaskTimes</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>number_of_consecutive_failures</td>
+          <td><a href="#int64">int64</a></td>
+          <td>optional</td>
+          <td><p>Number of consecutive task failures in a task series</p></td>
+        </tr>
+        <tr>
+          <td>late</td>
+          <td><a href="#google.protobuf.Duration">Duration</a></td>
+          <td>optional</td>
+          <td><p>If task is &quot;late&quot;, set late to the length of time the
+task is late by (valid at the time of event production)</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.TaskTimes">TaskTimes</h3>
+    <p>Times to track significant changes in task state, from the
+perspective of the event message producer.
+This tracking is a convencience feature; if events are produced
+with sufficient granularity this information can be inferred from
+a sequence of changes in event state.</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>series_created_timestamp</td>
+          <td><a href="#google.protobuf.Timestamp">Timestamp</a></td>
+          <td>optional</td>
+          <td><p>The time when the first task in this task series was
+created (if applicable)</p></td>
+        </tr>
+        <tr>
+          <td>instance_created_timestamp</td>
+          <td><a href="#google.protobuf.Timestamp">Timestamp</a></td>
+          <td>optional</td>
+          <td><p>Datetime this instance of the task was created (as known by the
+message producer)</p></td>
+        </tr>
+        <tr>
+          <td>series_start_timestamp</td>
+          <td><a href="#google.protobuf.Timestamp">Timestamp</a></td>
+          <td>optional</td>
+          <td><p>Datetime the first task in this task series started (if applicable)</p></td>
+        </tr>
+        <tr>
+          <td>instance_start_timestamp</td>
+          <td><a href="#google.protobuf.Timestamp">Timestamp</a></td>
+          <td>optional</td>
+          <td><p>Datetime this instance of the task started (if applicable)</p></td>
+        </tr>
+        <tr>
+          <td>instance_end_timestamp</td>
+          <td><a href="#google.protobuf.Timestamp">Timestamp</a></td>
+          <td>optional</td>
+          <td><p>Datetime this instance of the task ended (if applicable)</p></td>
+        </tr>
+        <tr>
+          <td>first_failure_timestamp</td>
+          <td><a href="#google.protobuf.Timestamp">Timestamp</a></td>
+          <td>optional</td>
+          <td><p>Datetime of first task failure in a series (if known and applicable)</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.Taskid">Taskid</h3>
+    <p>A rather imperfect mechanism to identify dynamic task IDs or IDs that
+may relate to this task.
+Note that interaction_id and correlation_ids (that might help track this task
+if it is part of actions resulting from a user request or some other chain
+of tasks) are included in the EventHeader</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>submit_name</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>The name the task was submitted as if this differs from
+the name in taskInfo (e.g. if the submit name is dynamically generated)
+Often this is referred to as the &quot;jobname&quot;</p></td>
+        </tr>
+        <tr>
+          <td>workflow_id</td>
+          <td><a href="#bom.Id">Id</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>batch_id</td>
+          <td><a href="#bom.Id">Id</a></td>
+          <td>optional</td>
+          <td><p>Batch ststem jobid</p></td>
+        </tr>
+        <tr>
+          <td>session_id</td>
+          <td><a href="#bom.Id">Id</a></td>
+          <td>optional</td>
+          <td><p>An ID used internally by the producer of this event</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="address.proto">address.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.Address">Address</h3>
+    <p>A network address.
+May contain a hostname (or a similar registered address),
+IP address, or both. Note: it is permissible for hostname
+to represent a batch scheduler cluster address,
+eg SGE_CLUSTER_NAME</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>hostname</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>ip</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>port</td>
+          <td><a href="#int32">int32</a></td>
+          <td>optional</td>
+          <td><p>port is Nullable</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.URI">URI</h3>
+    <p>Represents a URI/URL.</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>scheme</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>username</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>password</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>address</td>
+          <td><a href="#bom.Address">Address</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>path</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>queries</td>
+          <td><a href="#bom.Tag">Tag</a></td>
+          <td>repeated</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>fragment</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="component.proto">component.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.ClusterInfo">ClusterInfo</h3>
+    <p></p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>name</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>The cluster/cloud name</p></td>
+        </tr>
+        <tr>
+          <td>id</td>
+          <td><a href="#bom.Id">Id</a></td>
+          <td>optional</td>
+          <td><p>ID of the cluster, if applicable</p></td>
+        </tr>
+        <tr>
+          <td>engine_name</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>The engine or controller managing the cluster/cloud environment</p></td>
+        </tr>
+        <tr>
+          <td>engine_version</td>
+          <td><a href="#bom.Version">Version</a></td>
+          <td>optional</td>
+          <td><p>The version of the managing engine/controller</p></td>
+        </tr>
+        <tr>
+          <td>region</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Each region is a separate geographic area, in the context of a
+distributed cloud platform</p></td>
+        </tr>
+        <tr>
+          <td>availability_zone</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Availibility zones are isolated locations within a region</p></td>
+        </tr>
+        <tr>
+          <td>host_type</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>The host type aligns with specified hardware of the host computer for
+this instance</p></td>
+        </tr>
+        <tr>
+          <td>placement_group_name</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Placement group that launched the instance</p></td>
+        </tr>
+        <tr>
+          <td>namespace</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>The namespace this instance belongs to, if applicable</p></td>
+        </tr>
+        <tr>
+          <td>env_name</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Reference to a named environment/configuration</p></td>
+        </tr>
+        <tr>
+          <td>vps_security_group_ids</td>
+          <td><a href="#bom.Id">Id</a></td>
+          <td>repeated</td>
+          <td><p>A list that contains the security group IDs for virtual private cloud
+security groups</p></td>
+        </tr>
+        <tr>
+          <td>security_groups</td>
+          <td><a href="#string">string</a></td>
+          <td>repeated</td>
+          <td><p>A list that contains security group names registered for this instance</p></td>
+        </tr>
+        <tr>
+          <td>subnet_id</td>
+          <td><a href="#bom.Id">Id</a></td>
+          <td>optional</td>
+          <td><p>Cluster subnet id. This may for example correspond to a virtual private
+cloud subnet group id</p></td>
+        </tr>
+        <tr>
+          <td>additional_info</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>tags</td>
+          <td><a href="#bom.Tag">Tag</a></td>
+          <td>repeated</td>
+          <td><p></p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.Component">Component</h3>
+    <p>Summary of application or device component.</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>info</td>
+          <td><a href="#bom.Component.Info">Component.Info</a></td>
+          <td>optional</td>
+          <td><p>Component identifying information</p></td>
+        </tr>
+        <tr>
+          <td>relation_id</td>
+          <td><a href="#int64">int64</a></td>
+          <td>optional</td>
+          <td><p>ID of component as used in component relationship description
+The set of relation_ids used across components in a Producer message need
+only identify unique components for that particular Producer message. There
+is no need for such ids to be globally meaningful or consistent across
+messages from different producers.</p></td>
+        </tr>
+        <tr>
+          <td>relationships</td>
+          <td><a href="#bom.Component.Relation">Component.Relation</a></td>
+          <td>repeated</td>
+          <td><p>Relationship of this component to other component(s) at a
+workflow/dataflow level, permitting a relational directed graph to be
+constructed.
+NB: for any given pair of components there need only be one relationship.
+Multiple relationships for the same pair shall be treated in an additive
+way where possible. The addition of two or more contradictory
+relationships may be undefined/ambiguous.</p></td>
+        </tr>
+        <tr>
+          <td>user</td>
+          <td><a href="#bom.Userid">Userid</a></td>
+          <td>optional</td>
+          <td><p>Username or service account under which the relevant_component is running</p></td>
+        </tr>
+        <tr>
+          <td>instance_id</td>
+          <td><a href="#bom.Id">Id</a></td>
+          <td>optional</td>
+          <td><p>In certain contexts different instances of the same component may be
+assigned a specific id, e.g. a UUID</p></td>
+        </tr>
+        <tr>
+          <td>host</td>
+          <td><a href="#bom.Device">Device</a></td>
+          <td>optional</td>
+          <td><p>Information about the host device that the relevant_component is
+running on</p></td>
+        </tr>
+        <tr>
+          <td>logs</td>
+          <td><a href="#bom.LogInfo">LogInfo</a></td>
+          <td>repeated</td>
+          <td><p>Relevant logs generated by this component</p></td>
+        </tr>
+        <tr>
+          <td>tags</td>
+          <td><a href="#bom.Tag">Tag</a></td>
+          <td>repeated</td>
+          <td><p>Addtional user-defined information about this component</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.Component.Info">Component.Info</h3>
+    <p>Component.Info: Information about the component that will mostly or
+entirely be known at deploy time</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>level</td>
+          <td><a href="#bom.component_level.ComponentLevel">ComponentLevel</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>name</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Name of component</p></td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>The type of the component, e.g. HTTP server, iOS app, Cylc suite etc</p></td>
+        </tr>
+        <tr>
+          <td>version</td>
+          <td><a href="#bom.Version">Version</a></td>
+          <td>optional</td>
+          <td><p>Version of component</p></td>
+        </tr>
+        <tr>
+          <td>description</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>More detailed description of component</p></td>
+        </tr>
+        <tr>
+          <td>uri</td>
+          <td><a href="#bom.URI">URI</a></td>
+          <td>optional</td>
+          <td><p>URI for more information about the component</p></td>
+        </tr>
+        <tr>
+          <td>production_status</td>
+          <td><a href="#bom.ProductionStatus">ProductionStatus</a></td>
+          <td>optional</td>
+          <td><p>The level of support for the component</p></td>
+        </tr>
+        <tr>
+          <td>family</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Family of systems that this component is part of, e.g. ACCESS
+Note: maps to stream for MDS model data</p></td>
+        </tr>
+        <tr>
+          <td>family_version</td>
+          <td><a href="#bom.Version">Version</a></td>
+          <td>optional</td>
+          <td><p>Family-level version information, if relevant.
+Note: maps to stream version for MDS</p></td>
+        </tr>
+        <tr>
+          <td>project_name</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Internal project name best aligned with the relevant component
+(if relevant)</p></td>
+        </tr>
+        <tr>
+          <td>contacts</td>
+          <td><a href="#bom.Contact">Contact</a></td>
+          <td>repeated</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>universal_id</td>
+          <td><a href="#bom.Id">Id</a></td>
+          <td>optional</td>
+          <td><p>This component may have a global/universally unique identifier</p></td>
+        </tr>
+        <tr>
+          <td>namespace</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Component namespace, if applicable</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.Component.Relation">Component.Relation</h3>
+    <p>Describes the relationship between this component and other components.
+Consider Components representing labelled vertices/nodes of a graph; then
+the Component Relations represent labelled edges that connect these
+vertices.</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>id</td>
+          <td><a href="#int64">int64</a></td>
+          <td>optional</td>
+          <td><p>ID of other component. ie the &quot;other identified component&quot;</p></td>
+        </tr>
+        <tr>
+          <td>relationship</td>
+          <td><a href="#bom.component_relation.ComponentRelation">ComponentRelation</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>relation_description</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Description of the relationship/connection. eg the protocol used for
+a data transfer, the name of the network over which the connection
+occurs or information about the timing/rate of information flow etc</p></td>
+        </tr>
+        <tr>
+          <td>data_description</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Description of any data involved/shared/passed via the
+relationship/connection (if applicable)</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.Device">Device</h3>
+    <p>Summary-level information about a device, machine or server</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>realm</td>
+          <td><a href="#bom.realm.Realm">Realm</a></td>
+          <td>optional</td>
+          <td><p>The &quot;realm&quot; classification of the device (e.g. DEV, STAGE, PROD)</p></td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>physical_desc</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>String representation of the physical device</p></td>
+        </tr>
+        <tr>
+          <td>address</td>
+          <td><a href="#bom.Address">Address</a></td>
+          <td>optional</td>
+          <td><p>Hostname (or a similar registered address) of the device
+If service is distributed, the address of the interface or master
+server</p></td>
+        </tr>
+        <tr>
+          <td>device_id</td>
+          <td><a href="#bom.Id">Id</a></td>
+          <td>optional</td>
+          <td><p>ID of the device, if applicable</p></td>
+        </tr>
+        <tr>
+          <td>image_id</td>
+          <td><a href="#bom.Id">Id</a></td>
+          <td>optional</td>
+          <td><p>ID of the node or machine image (as built for a container or
+assigned by a container or cluster manager) or similar</p></td>
+        </tr>
+        <tr>
+          <td>container_path</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Path of the device within a container, if applicable</p></td>
+        </tr>
+        <tr>
+          <td>architecture</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Architecture of device, e.g. x86_64</p></td>
+        </tr>
+        <tr>
+          <td>os</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Operating system of the machine running the component, or name of
+firmware if applicable</p></td>
+        </tr>
+        <tr>
+          <td>os_version</td>
+          <td><a href="#bom.Version">Version</a></td>
+          <td>optional</td>
+          <td><p>OS version/kernel information (or firmware version if applicable)</p></td>
+        </tr>
+        <tr>
+          <td>cluster_info</td>
+          <td><a href="#bom.ClusterInfo">ClusterInfo</a></td>
+          <td>optional</td>
+          <td><p>More detailed information for applications running in a cluster
+or cloud context</p></td>
+        </tr>
+        <tr>
+          <td>tags</td>
+          <td><a href="#bom.Tag">Tag</a></td>
+          <td>repeated</td>
+          <td><p>Additional annotations or tags to describe the device</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.ProductionStatus">ProductionStatus</h3>
+    <p>The operational/production status of a system. This mainly relates to
+the degree of support for the system along with the environment in which
+it is running</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>status</td>
+          <td><a href="#bom.prod_status.ProdStatus">ProdStatus</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>info</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Additional information about the production status, e.g. caveats that
+might apply.</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="contact.proto">contact.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.Contact">Contact</h3>
+    <p>Contact information for a person, team or organisation.</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>name</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Name of individual, team or organisation</p></td>
+        </tr>
+        <tr>
+          <td>role</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Role/capability/context of the contact. Includes:
+researcher, developer, author, custodian, distributor,
+originator, owner, point_of_contact, principal_investigator,
+processor (when post-processing/modification occurs),
+publisher, resource_provider, sponsor, user, co_author,
+collaborator, contributor, editor, reviewer, funder,
+mediator, rights_holder, stakeholder</p></td>
+        </tr>
+        <tr>
+          <td>organisation</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>The organisation to which the contact belongs</p></td>
+        </tr>
+        <tr>
+          <td>url</td>
+          <td><a href="#bom.URI">URI</a></td>
+          <td>optional</td>
+          <td><p>URL pointing to contact information</p></td>
+        </tr>
+        <tr>
+          <td>email</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>The email address of the contact person/group/organisation</p></td>
+        </tr>
+        <tr>
+          <td>phone_nums</td>
+          <td><a href="#int64">int64</a></td>
+          <td>repeated</td>
+          <td><p>The phone numbers that can be used to call the contact</p></td>
+        </tr>
+        <tr>
+          <td>others</td>
+          <td><a href="#bom.Tag">Tag</a></td>
+          <td>repeated</td>
+          <td><p>Other contact mechanisms, e.g. {&quot;Skype&quot;, &quot;SkpeUserId&quot;}</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="debug_settings.proto">debug_settings.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.DebugSettings">DebugSettings</h3>
+    <p>Debug and program trace related settings.</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>debug_level</td>
+          <td><a href="#bom.debug_level.DebugLevel">DebugLevel</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>debug_level_int</td>
+          <td><a href="#int64">int64</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>debug_level_str</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>trace_level</td>
+          <td><a href="#bom.trace_level.TraceLevel">TraceLevel</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="diagnostic.proto">diagnostic.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.Diagnostic">Diagnostic</h3>
+    <p>Diagnostic information related to the functioning of a component or task.</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>type</td>
+          <td><a href="#bom.error_type.ErrorType">ErrorType</a></td>
+          <td>optional</td>
+          <td><p>The type of error or warning</p></td>
+        </tr>
+        <tr>
+          <td>severity</td>
+          <td><a href="#bom.severity.Severity">Severity</a></td>
+          <td>optional</td>
+          <td><p>Severity of warning or error; distinguishes between
+informational diagnostics, warnings that may warrant
+investigation, non-fatal errors and fatal errors</p></td>
+        </tr>
+        <tr>
+          <td>return_status</td>
+          <td><a href="#int64">int64</a></td>
+          <td>optional</td>
+          <td><p>Return status/exit-code of process/task/sub-component</p></td>
+        </tr>
+        <tr>
+          <td>signal</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Signal that was caught or trapped (irrespective of being handled
+or not)</p></td>
+        </tr>
+        <tr>
+          <td>timestamp</td>
+          <td><a href="#google.protobuf.Timestamp">Timestamp</a></td>
+          <td>optional</td>
+          <td><p>The timestamp the diagnostic was recorded, if expected to
+be different to the event timestsamp or to help order a sequence
+of diagnostic messages</p></td>
+        </tr>
+        <tr>
+          <td>phase</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>The phase of the component during which the warning or error occured.
+For example, &quot;initialization&quot;, &quot;execution&quot;, &quot;data_write&quot;, &quot;cleanup&quot; etc.</p></td>
+        </tr>
+        <tr>
+          <td>message</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>cause</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>trace</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>A stack trace or similar</p></td>
+        </tr>
+        <tr>
+          <td>troubleshooting</td>
+          <td><a href="#bom.URI">URI</a></td>
+          <td>optional</td>
+          <td><p>If a known error pattern, link to troubleshooting info</p></td>
+        </tr>
+        <tr>
+          <td>model_diagnostic</td>
+          <td><a href="#bom.ModelDiagnostic">ModelDiagnostic</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.ModelDiagnostic">ModelDiagnostic</h3>
+    <p>Additional diagnostic information pertaining to a numerical model
+(or similar system)</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>ensemble_member</td>
+          <td><a href="#bom.EnsembleMember">EnsembleMember</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>model_validity_time</td>
+          <td><a href="#google.protobuf.Timestamp">Timestamp</a></td>
+          <td>optional</td>
+          <td><p>For models, the simulation step/time that was reached.</p></td>
+        </tr>
+        <tr>
+          <td>iteration</td>
+          <td><a href="#int64">int64</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="ensemble_member.proto">ensemble_member.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.EnsembleMember">EnsembleMember</h3>
+    <p></p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>ensemble_class</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Ensemble_class can be used to distinguish between ensemble groups
+in ensemble of ensemble systems.</p></td>
+        </tr>
+        <tr>
+          <td>ensemble_member_description</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Description of ensemble member, if applicable</p></td>
+        </tr>
+        <tr>
+          <td>ensemble_member_number</td>
+          <td><a href="#int64">int64</a></td>
+          <td>optional</td>
+          <td><p>Model member ensemble_number, if applicable. Member numbers can be
+repeated across different ensemble_classes if desirable</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="event_header.proto">event_header.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.EventHeader">EventHeader</h3>
+    <p>Standard header to be included in all event messages.
+Note unique message identifiers are tracked outside of the message content.
+It is recommended the unique identifier:
+KafkaTopic.kafka_message_timestamp.partition.offset
+is used to allow agents to interact with events efficiently via Kafka.
+The kafka_message_timestamp is a safeguard against the offset for
+a particular partition being reset.
+A suitable digital signature or other digest of the message could
+alternatively be used.</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>producer</td>
+          <td><a href="#bom.Producer">Producer</a></td>
+          <td>optional</td>
+          <td><p>The producer of this message</p></td>
+        </tr>
+        <tr>
+          <td>timestamp</td>
+          <td><a href="#google.protobuf.Timestamp">Timestamp</a></td>
+          <td>optional</td>
+          <td><p>Event timestamp for events where the message timestamp
+may not match the time of the event (e.g.
+for offline systems upon network sync)</p></td>
+        </tr>
+        <tr>
+          <td>sequence_number</td>
+          <td><a href="#uint64">uint64</a></td>
+          <td>optional</td>
+          <td><p>For those producers that can support this: a number that starts at 1
+and increments by 1 with each new event message of this type over the
+lifetime of this event message producer's instance. Upon producer restarts,
+this seuqence number is permitted to be reset to 1.
+This metadata is useful in a number of contexts, e.g. a missing number
+in a sequence is possible evidence of a lost event. An unexpected sequence
+number is possible evidence of spoofed message injection by a 3rd party.</p></td>
+        </tr>
+        <tr>
+          <td>correlation_id</td>
+          <td><a href="#bom.Id">Id</a></td>
+          <td>optional</td>
+          <td><p>Correlation id (sometimes known as a transit id) is an id that refers to
+a particular event chain</p></td>
+        </tr>
+        <tr>
+          <td>interaction_id</td>
+          <td><a href="#bom.Id">Id</a></td>
+          <td>optional</td>
+          <td><p>Interaction id for a event generated as a result of action(s)s initiated
+from a (usually user) interaction (e.g. with a business system). This is
+ideally tracked for all components handling the interaction</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="log_info.proto">log_info.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.LogInfo">LogInfo</h3>
+    <p>Log information</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>type</td>
+          <td><a href="#bom.log_type.LogType">LogType</a></td>
+          <td>optional</td>
+          <td><p>The type of log file</p></td>
+        </tr>
+        <tr>
+          <td>logfiles</td>
+          <td><a href="#bom.URI">URI</a></td>
+          <td>repeated</td>
+          <td><p>The location(s) of this log file. More than one location implies the
+same log information is available in each location</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="priority.proto">priority.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.Priority">Priority</h3>
+    <p>Priority</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>impact</td>
+          <td><a href="#bom.impact.Impact">Impact</a></td>
+          <td>optional</td>
+          <td><p>Production impact/value/importance of task/component</p></td>
+        </tr>
+        <tr>
+          <td>urgency</td>
+          <td><a href="#bom.impact.Impact">Impact</a></td>
+          <td>optional</td>
+          <td><p>How time-critical (this action is, or fixing a reported error state is)</p></td>
+        </tr>
+        <tr>
+          <td>priority</td>
+          <td><a href="#int64">int64</a></td>
+          <td>optional</td>
+          <td><p>Priority, usually for task scheduling purposes.
+It may be helpful to derive this from impact and urgency.</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="producer.proto">producer.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.Producer">Producer</h3>
+    <p>Event/message producer component and device details. Component is usually a
+software component and device is usually the hardware the component is
+running on, or the virtualised equivalent.</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>components</td>
+          <td><a href="#bom.Component">Component</a></td>
+          <td>repeated</td>
+          <td><p>Key components that contributed to the generation of this event.</p></td>
+        </tr>
+        <tr>
+          <td>producer_component_id</td>
+          <td><a href="#int64">int64</a></td>
+          <td>optional</td>
+          <td><p>ID of component that corresponds to the system that most applies to this
+event. This normally corresponds to the system that created the event, but
+if monitoring components are involved it may refer to the system that is
+being monitored about which the event relates</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="security_marking.proto">security_marking.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.SecurityMarking">SecurityMarking</h3>
+    <p>SecurityMarking specifies the classification and dissemination restrictions:</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>security_classification</td>
+          <td><a href="#bom.security_classification.SecurityClassification">SecurityClassification</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>dissemination_limiting_marker</td>
+          <td><a href="#bom.security_delimiting_marker.SecurityDelimitingMarker">SecurityDelimitingMarker</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>caveats</td>
+          <td><a href="#string">string</a></td>
+          <td>repeated</td>
+          <td><p></p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="tag.proto">tag.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.Id">Id</h3>
+    <p>A generic ID, it may be an array of bytes, a string or an integer.
+This message may also be used to represent a
+message digest (checksum/fingerprint/hash)</p><p>One of id_str, id_bytes, id_int or id_uint is to be set</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>id_str</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>id_bytes</td>
+          <td><a href="#bytes">bytes</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>id_int</td>
+          <td><a href="#int64">int64</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>id_uint</td>
+          <td><a href="#uint64">uint64</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.Tag">Tag</h3>
+    <p>A generic (key, value) string pair used in various places for
+parameters/tags/labels.</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>key</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>value</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="time.proto">time.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.TimePointOrRange">TimePointOrRange</h3>
+    <p></p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>point</td>
+          <td><a href="#google.protobuf.Timestamp">Timestamp</a></td>
+          <td>optional</td>
+          <td><p>A point (moment) in time</p></td>
+        </tr>
+        <tr>
+          <td>time_range</td>
+          <td><a href="#bom.TimeRange">TimeRange</a></td>
+          <td>optional</td>
+          <td><p>A time range</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.TimeRange">TimeRange</h3>
+    <p>A generic time range</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>start</td>
+          <td><a href="#google.protobuf.Timestamp">Timestamp</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>end</td>
+          <td><a href="#google.protobuf.Timestamp">Timestamp</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>interval</td>
+          <td><a href="#google.protobuf.Duration">Duration</a></td>
+          <td>optional</td>
+          <td><p>Intervals within range. Used to construct a list of times from
+&quot;start&quot; at regular intervals onward, but not greater than &quot;end&quot;.</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="userid.proto">userid.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.Userid">Userid</h3>
+    <p>User/account identification (Security Principal)</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>userid</td>
+          <td><a href="#uint64">uint64</a></td>
+          <td>optional</td>
+          <td><p>User id
+ID of account</p></td>
+        </tr>
+        <tr>
+          <td>name</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Principal name / account name / username / access-id
+e.g. a simple username or
+username/fully.qualified.domain.name@YOUR-REALM.COM
+depending on the authorisation system in use</p></td>
+        </tr>
+        <tr>
+          <td>realm</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Security realm, if applicable</p></td>
+        </tr>
+        <tr>
+          <td>id_str</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>id_bytes</td>
+          <td><a href="#bytes">bytes</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>principal_type</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Type of principal, e.g. NT_USER_NAME, KERBEROS_V5_PRINCIPAL_NAME,
+NT_EXPORT_NAME, NT_HOSTBASED_SERVICE</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="version.proto">version.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.SemVer">SemVer</h3>
+    <p>A semantic or compatible version representation with the format:
+major.minor.patch.pre_release_id1.pre_release_id2+buid_id1.build_ids</p><p>where major, minor and patch are integers &gt;= 0 and
+pre_release_ids and/or build_ids are optional and there can any number.</p><p>If all major, minor and patch levels are specified this complies with the
+Semantic Version scheme (although with a upper bound imposed on the range
+of integers).</p><p>If patch level is omitted it is compliant with the Common Version (ComVer)
+versioning scheme, which is also often also used for versioning datasets</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>major</td>
+          <td><a href="#uint64">uint64</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>minor</td>
+          <td><a href="#uint64">uint64</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>patch</td>
+          <td><a href="#uint64">uint64</a></td>
+          <td>optional</td>
+          <td><p>patch is Nullable</p></td>
+        </tr>
+        <tr>
+          <td>pre_release_ids</td>
+          <td><a href="#string">string</a></td>
+          <td>repeated</td>
+          <td><p>pre_release_ids: alphanumeric with &quot;-&quot; chars allowed but integers with a
+0 prefix disallowed (but &quot;0&quot; by itself allowed) e.g. alpha, alpha-1, 30</p></td>
+        </tr>
+        <tr>
+          <td>build_ids</td>
+          <td><a href="#string">string</a></td>
+          <td>repeated</td>
+          <td><p>build_ids have the format as pre_release_ids</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.Version">Version</h3>
+    <p>Flexibile representation of a version.
+One of semver, string_ver, int_ver or date_ver is allowed to be set</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>semver</td>
+          <td><a href="#bom.SemVer">SemVer</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>string_ver</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>int_ver</td>
+          <td><a href="#int64">int64</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>date_ver</td>
+          <td><a href="#google.protobuf.Timestamp">Timestamp</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="component_level.proto">component_level.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.component_level.ComponentLevel">ComponentLevel</h3>
+    <p>ComponentLevel broadly describes terms useful to help delineate a software
+component or devices heiriachy amongst other related components of a wider
+system.
+The heiriachial order of labels is dependent on the system and context.
+Note: excludes &quot;environmental&quot; concepts, e.g. versions
+      of libraries, runtime systems, virtual machine, OS for an application</p>
+    <table class="enum-table">
+      <thead>
+        <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UNSET</td>
+          <td>0</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>UNKNOWN</td>
+          <td>1</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>SYSTEM</td>
+          <td>2</td>
+          <td><p>System-level / OS level</p></td>
+        </tr>
+        <tr>
+          <td>PLATFORM</td>
+          <td>3</td>
+          <td><p>Platform is an entity that allow multiple products to be built within the
+same technical framework. e.g. an enterprise service bus,
+a workflow manager, a web platform, an overarching gaming &quot;service/app&quot;
+like Valve's steam would consistute a platform</p></td>
+        </tr>
+        <tr>
+          <td>SUITE</td>
+          <td>4</td>
+          <td><p>A suite of related software components. e.g. a suite of tasks that
+consitute the setup, running and post-processing of a NWP model</p></td>
+        </tr>
+        <tr>
+          <td>DEVICE</td>
+          <td>5</td>
+          <td><p>A physical or virtual device</p></td>
+        </tr>
+        <tr>
+          <td>APPLICATION</td>
+          <td>6</td>
+          <td><p>Application here means a computer program</p></td>
+        </tr>
+        <tr>
+          <td>COMPONENT</td>
+          <td>7</td>
+          <td><p>A component of an application or device</p></td>
+        </tr>
+        <tr>
+          <td>SUBCOMPONENT</td>
+          <td>8</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>CONNECTOR</td>
+          <td>9</td>
+          <td><p>A light-weight component responsible for serialising and forwarding
+information e.g. a log file reader daemon, a Kafka connector, a data relay</p></td>
+        </tr>
+        <tr>
+          <td>SERVICE</td>
+          <td>10</td>
+          <td><p></p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="component_relation.proto">component_relation.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.component_relation.ComponentRelation">ComponentRelation</h3>
+    <p>ComponentRelation describes the type of high-level data-flow, process or
+heiriachial relationship (whichever is most relevant) that this component
+has to the other identified component. The relationship is usually
+directional, e.g.:
+1. an outbound data-push or downstream (sequentially) processing
+   connection or relationship from this component to the other component.
+2. an inbound (data pull or upstream) relationship or connection from the
+ other component to this component.
+Note: inbound/output semantics vary between different flow chart/
+      process or architectural diagram methodologies. The following
+      definitions are intended to best represent simplified high-level
+      data-flow/work-flow practices. In reality most actual relationships
+      involve varying degrees of two-way interactions (e.g. a data
+      push over TCP involves inbound traffic associated with the
+      handshake and acknowledgements)</p><p>SUPERCOMPONENT through to EVENT_SRC describe &quot;outbound&quot; directed arcs/edges.
+i.e. an outbound connection or relation from this component to the
+other identified component</p><p>SUBCOMPONENT through to EVENT_SINK describe &quot;inbound&quot; directed arcs/edges.</p>
+    <table class="enum-table">
+      <thead>
+        <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UNSET</td>
+          <td>0</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>UNKNOWN</td>
+          <td>1</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>SUPERCOMPONENT</td>
+          <td>2</td>
+          <td><p>This component is a supercomponent of the other component. ie the
+other component is a subcomponent. Generally a supercomponent manages/
+delegates work or pushes instructions/data to the subcomponent, hence
+this is principally an outbound relationship from the perspective of
+sequential process workflow</p></td>
+        </tr>
+        <tr>
+          <td>UPSTREAM_REQUIREMENT</td>
+          <td>3</td>
+          <td><p>This component involves an upstream requirement that must be met before
+the other component can carry out its function. e.g. this
+component may be a task that must commplete before the other task
+can begin</p></td>
+        </tr>
+        <tr>
+          <td>INSTRUCTOR</td>
+          <td>4</td>
+          <td><p>The two components are part of distinct ecosystems, yet this
+component is managing/directing (or delegating) activity in the
+other component.</p></td>
+        </tr>
+        <tr>
+          <td>SYS_MONITORED</td>
+          <td>5</td>
+          <td><p>System characterstics of this components operation are being monitored
+by the other component (in a &quot;pull&quot;/&quot;query&quot;/&quot;poll&quot;/&quot;listen&quot;-like
+fashion). This component may indeed not be directly &quot;aware&quot; of this
+monitoring. In some cases this component may be providing an API or
+event-based mechanism which supports such monitoring.
+&quot;System&quot;-level monitoring entails watching system processes,
+metrics or diagnostic/logged data generated by this component to
+help ascertain the health or state of this component</p></td>
+        </tr>
+        <tr>
+          <td>SYS_ANALYSED</td>
+          <td>6</td>
+          <td><p>As per SYS_MONITORED but the other system is also performing a more
+significant analysis of this components systems. Such analysis may
+or may not be happening in real-time</p></td>
+        </tr>
+        <tr>
+          <td>DATA_MONITORED</td>
+          <td>7</td>
+          <td><p>This components output data is being watched/monitored by the other
+component (in a &quot;pull&quot;/&quot;query&quot;/&quot;poll&quot;/&quot;listen&quot;-like fashion).
+&quot;Data&quot;-level monitoring entails tracking output generated
+by this component (e.g. gridded model output, product generation,
+observations collected from sensors etc). Typically such tracking may
+take place to monitor the progress of this components run-time
+or operation, to create dataset events on behalf of this
+application or to direct yet another component to perform some
+operation with the data (e.g. copying, validating, ingesting,
+notifying etc)</p></td>
+        </tr>
+        <tr>
+          <td>DATA_SRC_FOR_VALIDATION</td>
+          <td>8</td>
+          <td><p>This components output data is read by the other component
+for a technical validation step. This component therefore
+represents a data source that is used by the other component</p></td>
+        </tr>
+        <tr>
+          <td>DATA_SRC_FOR_VERIFICATION</td>
+          <td>9</td>
+          <td><p>As per DATA_SRC_FOR_VALIDATION but where the other component forms
+part of a scientific verification step/process</p></td>
+        </tr>
+        <tr>
+          <td>DATA_SRC_FOR_INGEST</td>
+          <td>10</td>
+          <td><p>This components output data is ingested by the other component
+for further processing</p></td>
+        </tr>
+        <tr>
+          <td>DATA_SRC_FOR_ARCHIVAL</td>
+          <td>11</td>
+          <td><p>This components output data is archived by the other component
+(to a local or remote data store)</p></td>
+        </tr>
+        <tr>
+          <td>DATA_SRC_FOR_TRANSFER</td>
+          <td>12</td>
+          <td><p>This components output data is copied/transferred by the other
+component to a local or remote destination (ie the other component
+relays this data onward or provides connectivity services for this
+data)</p></td>
+        </tr>
+        <tr>
+          <td>DATA_RELAY_OUTBOUND</td>
+          <td>13</td>
+          <td><p>this component is a data relayer/connector that receives data from
+another system and relays it to the identified component</p></td>
+        </tr>
+        <tr>
+          <td>SRC_FOR_CLONING</td>
+          <td>14</td>
+          <td><p>This components state is cloned/mirrored/replicated to the other
+component</p></td>
+        </tr>
+        <tr>
+          <td>EVENT_SRC</td>
+          <td>15</td>
+          <td><p>This component issues event(s) for consumption by the other component</p></td>
+        </tr>
+        <tr>
+          <td>SUBCOMPONENT</td>
+          <td>64</td>
+          <td><p>This component is a subcomponent of the other component</p></td>
+        </tr>
+        <tr>
+          <td>DEPENDENT_ON</td>
+          <td>65</td>
+          <td><p>This compoenents depends on the other component to perform some
+action(s) or reach/set some state(s) before this component can progress
+its function</p></td>
+        </tr>
+        <tr>
+          <td>INSTRUCTED</td>
+          <td>66</td>
+          <td><p>This component is being unstructed to peform work by a component
+belonging to a different system tier/suite/device ecosystem</p></td>
+        </tr>
+        <tr>
+          <td>SYS_MONITOR</td>
+          <td>67</td>
+          <td><p>This component pulls system-level data/metrics from the other component
+i.e. this component is a consumer of system-related change of state
+information generated by the other component</p></td>
+        </tr>
+        <tr>
+          <td>SYS_ANALYSER</td>
+          <td>68</td>
+          <td><p>As per SYS_MONITOR but this system is also performing a more intensive
+analysis of the data collected</p></td>
+        </tr>
+        <tr>
+          <td>DATA_MONITOR</td>
+          <td>69</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>DATA_RECEIVER_FOR_VALIDATION</td>
+          <td>70</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>DATA_RECEIVER_FOR_VERIFICATION</td>
+          <td>71</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>DATA_RECEIVER_FOR_INGEST</td>
+          <td>72</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>DATA_RECEIVER_FOR_ARCHIVAL</td>
+          <td>73</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>DATA_RECEIVER_FOR_TRANSFER</td>
+          <td>74</td>
+          <td><p>This component receives data from the other identified component with
+the intention of transferring this data to another location/component
+Note: DATA_RECEIVER_FOR_TRANSFER is equivalent to a
+&quot;DATA_RELAY_INBOUND&quot; (a relayer that receives data from the other
+identified component)</p></td>
+        </tr>
+        <tr>
+          <td>RECIPIENT_OF_CLONING</td>
+          <td>75</td>
+          <td><p>This component is cloned from the other identified component</p></td>
+        </tr>
+        <tr>
+          <td>EVENT_SINK</td>
+          <td>76</td>
+          <td><p>This component receives events produced by the other identified
+component</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="computing_resource.proto">computing_resource.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.computing_resource.ComputingResource">ComputingResource</h3>
+    <p>Computing related resources, as relating to
+capabilities or limits of a computing environment or
+limits imposed on jobs or processes by policy or
+management systems.
+/ TODO: ensure correct mapping to PBS resources is present and fully
+covered with minimal ambiguity</p>
+    <table class="enum-table">
+      <thead>
+        <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UNSET</td>
+          <td>0</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>UNKNOWN</td>
+          <td>1</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>WALLTIME</td>
+          <td>2</td>
+          <td><p>Execution walltime available</p></td>
+        </tr>
+        <tr>
+          <td>CPUTIME</td>
+          <td>3</td>
+          <td><p>Execution cputime available</p></td>
+        </tr>
+        <tr>
+          <td>MEMORY</td>
+          <td>4</td>
+          <td><p>Total RAM/memory available</p></td>
+        </tr>
+        <tr>
+          <td>VIRT_MEMORY</td>
+          <td>5</td>
+          <td><p>Total virtual memory available</p></td>
+        </tr>
+        <tr>
+          <td>NODE_MEMORY</td>
+          <td>6</td>
+          <td><p>RAM/memory available on a node</p></td>
+        </tr>
+        <tr>
+          <td>NODE_VIRT_MEMORY</td>
+          <td>7</td>
+          <td><p>Total node virtual memory available</p></td>
+        </tr>
+        <tr>
+          <td>PROC_WALLTIME</td>
+          <td>8</td>
+          <td><p>Execution walltime available per process</p></td>
+        </tr>
+        <tr>
+          <td>PROC_CPUTIME</td>
+          <td>9</td>
+          <td><p>Execution cputime available per process</p></td>
+        </tr>
+        <tr>
+          <td>PROC_MEMORY</td>
+          <td>10</td>
+          <td><p>Execution RAM/memory available per process</p></td>
+        </tr>
+        <tr>
+          <td>STACK</td>
+          <td>11</td>
+          <td><p>Stack size avaialable</p></td>
+        </tr>
+        <tr>
+          <td>DISK</td>
+          <td>12</td>
+          <td><p>Persistent disk storage available for job</p></td>
+        </tr>
+        <tr>
+          <td>CACHE</td>
+          <td>13</td>
+          <td><p>Non-persistent cache storage available for job</p></td>
+        </tr>
+        <tr>
+          <td>SWAP</td>
+          <td>14</td>
+          <td><p>SWAP space storage available for job</p></td>
+        </tr>
+        <tr>
+          <td>NEW_FILE_SIZE</td>
+          <td>15</td>
+          <td><p>Maximum supported/allowed individual file creeation size</p></td>
+        </tr>
+        <tr>
+          <td>NEW_FILES</td>
+          <td>16</td>
+          <td><p>Maximum supported/allowed individual file creation number</p></td>
+        </tr>
+        <tr>
+          <td>OPEN_FILES</td>
+          <td>17</td>
+          <td><p>Maximum supported/allowed open file count</p></td>
+        </tr>
+        <tr>
+          <td>PROCESSES</td>
+          <td>18</td>
+          <td><p>Maximum number of processes</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="data_coverage_content_type.proto">data_coverage_content_type.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.data_coverage_content_type.DataCoverageContentType">DataCoverageContentType</h3>
+    <p>The coverage content type is an ISO codeList describing the general
+content type of data</p>
+    <table class="enum-table">
+      <thead>
+        <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UNSET</td>
+          <td>0</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>UNKNOWN</td>
+          <td>1</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>IMAGE</td>
+          <td>2</td>
+          <td><p>Meaningful numerical representation of a physical parameter that is
+not the actual value of the physical parameter</p></td>
+        </tr>
+        <tr>
+          <td>THEMATIC_CLASSIFICATION</td>
+          <td>3</td>
+          <td><p>Value with no quantitative meaning, used to represent a
+physical quantity</p></td>
+        </tr>
+        <tr>
+          <td>PHYSICAL_MEASUREMENT</td>
+          <td>4</td>
+          <td><p>Value in physical units of the quantity being measured</p></td>
+        </tr>
+        <tr>
+          <td>AUXILLARY_INFORMATION</td>
+          <td>5</td>
+          <td><p>Data, usually a physical measurement, used to support the calculation
+of another variable
+(e.g. grid of aerosol optical thickness used in the calculation of a
+sea surface temperature product)</p></td>
+        </tr>
+        <tr>
+          <td>COORDINATE</td>
+          <td>6</td>
+          <td><p>Data used to provide coordinate axis values</p></td>
+        </tr>
+        <tr>
+          <td>MODEL_RESULT</td>
+          <td>7</td>
+          <td><p>Resources with values that are calculated using a model rather than
+being observed or calculated from observations.</p></td>
+        </tr>
+        <tr>
+          <td>QUALITY_INFORMATION</td>
+          <td>8</td>
+          <td><p>Data used to characterize the quality of another variable</p></td>
+        </tr>
+        <tr>
+          <td>REFERENCE_INFORMATION</td>
+          <td>9</td>
+          <td><p>Reference information used to support the calculation of another variable
+(e.g. grids of latitude/longitude used to geolocate the physical
+measurements)</p></td>
+        </tr>
+        <tr>
+          <td>AUXILLIARY_DATA</td>
+          <td>10</td>
+          <td><p>Values of extraneous data</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="dataset_action_type.proto">dataset_action_type.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.dataset_action_type.DatasetActionType">DatasetActionType</h3>
+    <p>Actions/operations that can be performed on, with or in relation to a
+dataset/document/resource.
+Most entries from: ISO19115 code lists, see
+https://geo-ide.noaa.gov/wiki/index.php?title=ISO_19115_and_19115-2_CodeList_Dictionaries#CI_DateTypeCode</p>
+    <table class="enum-table">
+      <thead>
+        <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UNSET</td>
+          <td>0</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>UNKNOWN</td>
+          <td>1</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>CREATE</td>
+          <td>2</td>
+          <td><p>Resource created</p></td>
+        </tr>
+        <tr>
+          <td>PUBLISH</td>
+          <td>3</td>
+          <td><p>Resource issued/made available</p></td>
+        </tr>
+        <tr>
+          <td>REVISE</td>
+          <td>4</td>
+          <td><p>Resource updated or amended</p></td>
+        </tr>
+        <tr>
+          <td>REVIEW</td>
+          <td>5</td>
+          <td><p>Resource reviewed, e.g. manually checked</p></td>
+        </tr>
+        <tr>
+          <td>VALIDATE</td>
+          <td>6</td>
+          <td><p>Resource validated, generally an automated check</p></td>
+        </tr>
+        <tr>
+          <td>VERIFY</td>
+          <td>7</td>
+          <td><p>Resource verified</p></td>
+        </tr>
+        <tr>
+          <td>APPROVE</td>
+          <td>8</td>
+          <td><p>Resource approved at some gateway or by some authority</p></td>
+        </tr>
+        <tr>
+          <td>RELEASE</td>
+          <td>9</td>
+          <td><p>Resource released for external or public access</p></td>
+        </tr>
+        <tr>
+          <td>ACCESS</td>
+          <td>10</td>
+          <td><p>Resource accessed, as relevant in the context of this event message</p></td>
+        </tr>
+        <tr>
+          <td>ADOPT</td>
+          <td>11</td>
+          <td><p>Resource was adopted</p></td>
+        </tr>
+        <tr>
+          <td>DEPRECATE</td>
+          <td>12</td>
+          <td><p>Resource was deprecated</p></td>
+        </tr>
+        <tr>
+          <td>DISTRIBUTE</td>
+          <td>13</td>
+          <td><p>Resource was distributed</p></td>
+        </tr>
+        <tr>
+          <td>EXPIRE</td>
+          <td>14</td>
+          <td><p>Resource expired</p></td>
+        </tr>
+        <tr>
+          <td>IN_FORCE</td>
+          <td>15</td>
+          <td><p>Resource come into force</p></td>
+        </tr>
+        <tr>
+          <td>SUPERSEDED</td>
+          <td>16</td>
+          <td><p>Resource was superseded or replaced by another resource</p></td>
+        </tr>
+        <tr>
+          <td>REVOKE</td>
+          <td>17</td>
+          <td><p>Resource was revoked</p></td>
+        </tr>
+        <tr>
+          <td>REJECT</td>
+          <td>18</td>
+          <td><p>Resource was rejected</p></td>
+        </tr>
+        <tr>
+          <td>UNAVAILABLE</td>
+          <td>19</td>
+          <td><p>Resource became not available or obtainable</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="dataset_compression_type.proto">dataset_compression_type.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.dataset_compression_type.DatasetCompressionType">DatasetCompressionType</h3>
+    <p>General type of compression applied to a dataset.
+Note interpolation and &quot;reduce&quot;/&quot;aggregation&quot; techniques are not considered
+a form of compression for the purposes of DatasetCompressionType, even
+though these techniques can result in reduced dataset sizes (or datasets
+that may compress better). Instead these types of transformations are
+considered to change the type of the data in the dataset.</p>
+    <table class="enum-table">
+      <thead>
+        <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UNSET</td>
+          <td>0</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>UNKNOWN</td>
+          <td>1</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>NONE</td>
+          <td>2</td>
+          <td><p>Dataset is uncompressed (&quot;native&quot; format)</p></td>
+        </tr>
+        <tr>
+          <td>LOSSLESS</td>
+          <td>3</td>
+          <td><p>Dataset is losslessly compressed (&quot;native&quot; data can be exactly restored)</p></td>
+        </tr>
+        <tr>
+          <td>NEAR_LOSSLESS</td>
+          <td>4</td>
+          <td><p>Dataset is compressed via techniques that are known to result in
+no significant degradation to the information content</p></td>
+        </tr>
+        <tr>
+          <td>LOSSY_MINIMAL</td>
+          <td>5</td>
+          <td><p>Some lossy compression algorithm has been used, the error
+the characterics of which are thought to impact in a minimal way on the
+data</p></td>
+        </tr>
+        <tr>
+          <td>LOSSY_MODERATE</td>
+          <td>6</td>
+          <td><p>More aggressive lossy compression settings, achieving a fair
+trade-off between quality and size</p></td>
+        </tr>
+        <tr>
+          <td>LOSSY_AGGRESSIVE</td>
+          <td>7</td>
+          <td><p>Very aggressive lossy compression settings, used to conserve
+bandwidth</p></td>
+        </tr>
+        <tr>
+          <td>PACKED</td>
+          <td>10</td>
+          <td><p>Data has been packing/rounding</p></td>
+        </tr>
+        <tr>
+          <td>THINNED</td>
+          <td>11</td>
+          <td><p>Data has been resampled to a coarser grid in one or more dimensions
+(e.g. reduced horizontal grid, subset of vertical levels,
+fewer time-steps)</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="dataset_feature_type.proto">dataset_feature_type.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.dataset_feature_type.DatasetFeatureType">DatasetFeatureType</h3>
+    <p>Dataset feature types describe arrangements of collections of
+data (a set of measurements, analyses, forecasts etc), distinguished by
+the geometry and topology of the collection.
+Largely parallels CF Conventions Scientific Feature Types:
+http://cfconventions.org/cf-conventions/cf-conventions.html#featureType
+The most specific feature type should be chosen in the event of ambiguity.</p>
+    <table class="enum-table">
+      <thead>
+        <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UNSET</td>
+          <td>0</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>UNKNOWN</td>
+          <td>1</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>IMAGE</td>
+          <td>2</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>RADIAL</td>
+          <td>3</td>
+          <td><p>A set of data points in a two dimensional grid described by a
+connected set of radials using polar coordinates
+(connected, 2D elevation, azimuth, distance; ordered time)
+/ Example: data from a fixed-position scanning radar or lidar</p></td>
+        </tr>
+        <tr>
+          <td>SWATH</td>
+          <td>4</td>
+          <td><p>A set of data points in a two dimensional grid, where each
+coordinate is connected and a function of 2 dimensions
+(connected, 2D x, y, z, t)
+Examples: a polar orbiting satellite, airborne or ship instrument.</p></td>
+        </tr>
+        <tr>
+          <td>STRUCTURED_GRID</td>
+          <td>5</td>
+          <td><p>Other cartesian, rectilinear or curvilinear grids
+(separable x, y, z, t)</p></td>
+        </tr>
+        <tr>
+          <td>UNSTRUCTURED_GRID</td>
+          <td>6</td>
+          <td><p>Other unstructured (tesselated) grids</p></td>
+        </tr>
+        <tr>
+          <td>HYBRID_GRID</td>
+          <td>7</td>
+          <td><p>Mix of structured and unstructured portions</p></td>
+        </tr>
+        <tr>
+          <td>MOVING_STRUCTURED_GRID</td>
+          <td>8</td>
+          <td><p>A structured grid that moves with time (or each t, separable x, y, z)</p></td>
+        </tr>
+        <tr>
+          <td>MOVING_UNSTRUCTURED_GRID</td>
+          <td>9</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>MOVING_HYBRID_GRID</td>
+          <td>10</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>POINT</td>
+          <td>50</td>
+          <td><p>A collection of one or more parameters, each parameter measured/valid at
+a single point in time and space. Includes point-cloud datasets.
+Examples: earthquake data, lightning data
+Note: Each data point has no implied coordinate relationship to other
+points.
+e.g. data(i) : x(i) y(i) t(i)</p></td>
+        </tr>
+        <tr>
+          <td>TIMESERIES</td>
+          <td>51</td>
+          <td><p>A time-series of data points at specified location(s)
+e.g. data(i,o) : x(i) y(i) t(i,o)
+Examples: Weather station data, idealized representation of moored buoys
+Note: sometimes referred to as as &quot;STATION&quot; data in meteorology</p></td>
+        </tr>
+        <tr>
+          <td>PROFILE</td>
+          <td>52</td>
+          <td><p>A set of data points along a vertical line for one or more locations
+(i.e. a vertical soundings) at fixed times.
+e.g. data(i,o) : x(i) y(i) z(i,o) t(i)
+Examples: Certain satellite profiles, vertical model soundings</p></td>
+        </tr>
+        <tr>
+          <td>TIMESERIES_PROFILE</td>
+          <td>53</td>
+          <td><p>A time-series of profile features at specified location(s).
+e.g. data(i,o) : x(i) y(i) t(i,o)
+Examples: Station profilers, idealized representations of
+balloon soundings
+Note: sometimes referred to as a &quot;STATION_PROFILE&quot;</p></td>
+        </tr>
+        <tr>
+          <td>TRAJECTORY</td>
+          <td>54</td>
+          <td><p>A set of data points along a 1D curve in time and space
+e.g. data(i,o) : x(i,o) y(i,o) t(i,o)
+Examples: Aircraft data, ship data, drifting buoys</p></td>
+        </tr>
+        <tr>
+          <td>TRAJECTORY_PROFILE</td>
+          <td>55</td>
+          <td><p>A series of profile features located at points ordred along a
+trajectory
+data(i,p,o) : x(i,p) y(i,p) z(i,p,o) t(i,p)
+Example: Ship soundings
+Note: sometimes referred to as a &quot;SECTION&quot;</p></td>
+        </tr>
+        <tr>
+          <td>MIXED</td>
+          <td>126</td>
+          <td><p>The dataset is known to contain a mix of the above feature types.
+In this case, the mix is to be determined by inspection of each
+variable's feature type</p></td>
+        </tr>
+        <tr>
+          <td>OTHER</td>
+          <td>127</td>
+          <td><p>Use of OTHER is discouraged. Additional entries to this enum
+are preferred.</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="data_time_type.proto">data_time_type.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.data_time_type.DataTimeType">DataTimeType</h3>
+    <p>Signficance of a specified datetime involved in describing
+the content of a dataset.
+Generally used in the context of a reference time or validity
+period for a series of observations, model outputs or other
+calculations</p>
+    <table class="enum-table">
+      <thead>
+        <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UNSET</td>
+          <td>0</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>UNKNOWN</td>
+          <td>1</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>ANALYSIS</td>
+          <td>2</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>NOMINAL_ANALYSIS</td>
+          <td>3</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>OBSERVATION</td>
+          <td>4</td>
+          <td><p>The datetime(s) represent times that a (near) real-time (varying)
+quantity was observed.</p></td>
+        </tr>
+        <tr>
+          <td>FORECAST</td>
+          <td>5</td>
+          <td><p>The datetime(s) represent model forecast times at
+which the data is valid</p></td>
+        </tr>
+        <tr>
+          <td>START_OF_FORECAST</td>
+          <td>6</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>VERIFYING_TIME_OF_FORECAST</td>
+          <td>7</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>MODEL_START</td>
+          <td>20</td>
+          <td><p>The datetime marking the start of some model/task/process that
+lead to the generation of the dataset</p></td>
+        </tr>
+        <tr>
+          <td>START_OF_SEQUENCE</td>
+          <td>21</td>
+          <td><p>The start of a sequence of model runs or observations etc</p></td>
+        </tr>
+        <tr>
+          <td>VALIDITY</td>
+          <td>22</td>
+          <td><p>The datetime(s) represent validity times that are not
+OBSERVATIONs or FORECASTs</p></td>
+        </tr>
+        <tr>
+          <td>LAST_REVISION</td>
+          <td>60</td>
+          <td><p>When dataset was last revised</p></td>
+        </tr>
+        <tr>
+          <td>LAST_UPDATE</td>
+          <td>61</td>
+          <td><p>When dataset was last updated</p></td>
+        </tr>
+        <tr>
+          <td>NEXT_UPDATE</td>
+          <td>62</td>
+          <td><p>When dataset will next be updated</p></td>
+        </tr>
+        <tr>
+          <td>VALIDITY_BEGINS</td>
+          <td>63</td>
+          <td><p>When the data/resource is considered to become valid.
+NOTE: There could be quite a delay between creation and validity begins</p></td>
+        </tr>
+        <tr>
+          <td>VALIDITY_EXPIRES</td>
+          <td>64</td>
+          <td><p>When the data/resource is no longer considered to be valid</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="debug_level.proto">debug_level.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.debug_level.DebugLevel">DebugLevel</h3>
+    <p>The debug level in the context of a software or hardware application/system
+of the detail level in a log of such a system. 
+Note: debug and trace levels are often related, but are distinct
+concepts in some systems</p>
+    <table class="enum-table">
+      <thead>
+        <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UNSET</td>
+          <td>0</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>UNKNOWN</td>
+          <td>1</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>NONE</td>
+          <td>2</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>BRIEF</td>
+          <td>3</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>NORMAL</td>
+          <td>4</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>VERBOSE</td>
+          <td>5</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>VERY_VERBOSE</td>
+          <td>6</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>ALL</td>
+          <td>7</td>
+          <td><p></p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="error_type.proto">error_type.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.error_type.ErrorType">ErrorType</h3>
+    <p>Task, service, process, model or other program error types.
+Sometimes multiple error codes may apply. Services should return
+the most specific error code that applies. For example, prefer
+OUT_OF_RANGE over FAILED_PRECONDITION if both codes apply.
+Similarly prefer NOT_FOUND or ALREADY_EXISTS over FAILED_PRECONDITION.
+This list is inspired by TensorFlow's error_codes.proto (APACHE2 license)</p>
+    <table class="enum-table">
+      <thead>
+        <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UNSET</td>
+          <td>0</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>UNKNOWN</td>
+          <td>1</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>INSTABILITY</td>
+          <td>2</td>
+          <td><p>Model became numerically unstable and crashed</p></td>
+        </tr>
+        <tr>
+          <td>SYNTAX</td>
+          <td>3</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>CONFIGURATION</td>
+          <td>4</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>BAD_REQUEST</td>
+          <td>5</td>
+          <td><p>Improperly-formatted request can't be fulfilled.</p></td>
+        </tr>
+        <tr>
+          <td>DATA_LOSS</td>
+          <td>6</td>
+          <td><p>Data loss or truncated file</p></td>
+        </tr>
+        <tr>
+          <td>DATA_SECURITY</td>
+          <td>7</td>
+          <td><p>Security validation of data failed, or sufficiently concerning to
+be considered a security issue. Includes data not matching a hash or
+signed digital fingerprint, invalid sequencing of data that suggests
+possible tampering/man-in-the-middle attacks etc</p></td>
+        </tr>
+        <tr>
+          <td>DATA_INTEGRITY</td>
+          <td>8</td>
+          <td><p>Data fails an integrity test that is likely to be a data corruption
+issue rather than due to a security threat</p></td>
+        </tr>
+        <tr>
+          <td>DATA_INVALID</td>
+          <td>9</td>
+          <td><p>Task involved in parsing invalid data. Note that this differs
+from FAILED_PRECONDITION. DATA_INVALID indicates inputs
+that are problematic regardless of the state of the system
+(e.g., a malformed file name, invalid file type, input arguments etc)
+e.g. invalid input data</p></td>
+        </tr>
+        <tr>
+          <td>ID_EXISTS</td>
+          <td>10</td>
+          <td><p>e.g. assigned a duplicate ID/hash when they need to be unique</p></td>
+        </tr>
+        <tr>
+          <td>DEADLINE_EXCEEDED</td>
+          <td>11</td>
+          <td><p>Deadline expired before operation could complete.  For operations
+that change the state of the system, this error may be returned
+even if the operation has completed successfully.  For example, a
+successful response from a server could have been delayed long
+enough for the deadline to expire.</p></td>
+        </tr>
+        <tr>
+          <td>NOT_FOUND</td>
+          <td>12</td>
+          <td><p>Some requested entity (e.g., file or directory) was not found or a
+required resource is missing</p></td>
+        </tr>
+        <tr>
+          <td>ALREADY_EXISTS</td>
+          <td>13</td>
+          <td><p>Creation of some entity (e.g., file or directory) is found to
+already exist</p></td>
+        </tr>
+        <tr>
+          <td>UNAUTHORIZED</td>
+          <td>14</td>
+          <td><p>Authorization request failed</p></td>
+        </tr>
+        <tr>
+          <td>PERMISSION_DENIED</td>
+          <td>15</td>
+          <td><p>Insufficient permissions to execute the specified
+operation.  PERMISSION_DENIED must not be used for rejections
+caused by exhausting some resource (use RESOURCE_EXHAUSTED
+instead for those errors).</p></td>
+        </tr>
+        <tr>
+          <td>SECURITY_VIOLATION</td>
+          <td>16</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>RESOURCE_EXHAUSTED</td>
+          <td>17</td>
+          <td><p>Some resource has been exhausted or a resource limit exceeded.
+e.g. a per-account disk quota or a file system running out of space.</p></td>
+        </tr>
+        <tr>
+          <td>TIMEOUT</td>
+          <td>18</td>
+          <td><p>A time-out error</p></td>
+        </tr>
+        <tr>
+          <td>ADDRESS_LOOKUP_ERROR</td>
+          <td>19</td>
+          <td><p>Unable to resolve an address/connection</p></td>
+        </tr>
+        <tr>
+          <td>RATE_LIMITED</td>
+          <td>20</td>
+          <td><p>Connection dropped due to a rate limit</p></td>
+        </tr>
+        <tr>
+          <td>UNAVAILABLE</td>
+          <td>21</td>
+          <td><p>A service is unavailable. This is a most likely a transient
+condition and may be corrected by retrying with a backoff.</p></td>
+        </tr>
+        <tr>
+          <td>CONNECTION</td>
+          <td>22</td>
+          <td><p>Connection refused or dropped/aborted for other reasons</p></td>
+        </tr>
+        <tr>
+          <td>OUT_OF_RANGE</td>
+          <td>23</td>
+          <td><p>Operation tried to iterate past the valid input range.  E.g., seeking or
+reading past end of file.</p><p>Unlike DATA_INVALID or DATA_LOSS, this error indicates a problem that may
+be fixed if the system state changes. For example, a 32-bit file
+system will generate INVALID_ARGUMENT if asked to read at an
+offset that is not in the range [0,2^32-1], but it will generate
+OUT_OF_RANGE if asked to read from an offset past the current
+file size.</p></td>
+        </tr>
+        <tr>
+          <td>FAILED_PRECONDITION</td>
+          <td>24</td>
+          <td><p>Operation was rejected because the system is not in a state
+required for the operation's execution.  For example, directory
+to be deleted may be non-empty, an rmdir operation is applied to
+a non-directory, etc.</p><p>A litmus test that may help a service implementor in deciding
+between FAILED_PRECONDITION, ABORTED, and UNAVAILABLE:
+ (a) Use UNAVAILABLE if a client can retry just the failing call.
+ (b) Use ABORTED if the client should retry at a higher-level
+     (e.g., restarting a read-modify-write sequence).
+ (c) Use FAILED_PRECONDITION if the client should not retry until
+     the system state has been explicitly fixed.  E.g., if an &quot;rmdir&quot;
+     fails because the directory is non-empty, FAILED_PRECONDITION
+     should be returned since the client should not retry unless
+     they have first fixed up the directory by deleting files from it.
+ (d) Use FAILED_PRECONDITION if the client performs conditional
+     REST Get/Update/Delete on a resource and the resource on the
+     server does not match the condition. E.g., conflicting
+     read-modify-write on the same resource.</p></td>
+        </tr>
+        <tr>
+          <td>ABORTED</td>
+          <td>25</td>
+          <td><p>The operation was aborted, typically due to a concurrency issue
+like sequencer check failures, transaction aborts, etc.
+See litmus test above for deciding between FAILED_PRECONDITION,
+ABORTED, and UNAVAILABLE.</p></td>
+        </tr>
+        <tr>
+          <td>SEGFAULT</td>
+          <td>26</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>MEMORY</td>
+          <td>27</td>
+          <td><p>Memory allocation error, bus error, invalid/double free</p></td>
+        </tr>
+        <tr>
+          <td>MISSING_COMMAND</td>
+          <td>28</td>
+          <td><p>Command, alias or action type not found or known</p></td>
+        </tr>
+        <tr>
+          <td>NOT_IMPLEMENTED</td>
+          <td>29</td>
+          <td><p>Attempted invocation of an unimplemented method/function/command</p></td>
+        </tr>
+        <tr>
+          <td>DEPEDENCY_ERROR</td>
+          <td>30</td>
+          <td><p>Generic error due to a missing high-level dependency</p></td>
+        </tr>
+        <tr>
+          <td>DEAD_NODE</td>
+          <td>31</td>
+          <td><p>A required node was found to be dead or died during.
+Includes the situation when a multi-node job aborts due to one dead node.</p></td>
+        </tr>
+        <tr>
+          <td>IO</td>
+          <td>32</td>
+          <td><p>Other I/O errors not covered by previous entries (e.g. file unexpectly
+already in use)</p></td>
+        </tr>
+        <tr>
+          <td>TRAP</td>
+          <td>33</td>
+          <td><p>Unhandled trap/signal/interrupt</p></td>
+        </tr>
+        <tr>
+          <td>BROKEN_PIPE</td>
+          <td>34</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>WRONG_TYPE</td>
+          <td>35</td>
+          <td><p>Program internal operation applied to an inappropriate type</p></td>
+        </tr>
+        <tr>
+          <td>ARITHMETIC</td>
+          <td>36</td>
+          <td><p>Program overflow, zero division, floating-point error</p></td>
+        </tr>
+        <tr>
+          <td>LOOKUP</td>
+          <td>37</td>
+          <td><p>Program internal index error, key error or similar</p></td>
+        </tr>
+        <tr>
+          <td>OS</td>
+          <td>38</td>
+          <td><p>Failure caused by a operating system error</p></td>
+        </tr>
+        <tr>
+          <td>OTHER</td>
+          <td>127</td>
+          <td><p>Error type assessed but does not fit into any other category defined here</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="impact.proto">impact.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.impact.Impact">Impact</h3>
+    <p>Level of impact based on an assessment of the importance of a
+suite/system/component/task, especially in the context of the
+organisation-wide impact of a sustained outage.</p>
+    <table class="enum-table">
+      <thead>
+        <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UNSET</td>
+          <td>0</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>UNKNOWN</td>
+          <td>1</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>NONE</td>
+          <td>2</td>
+          <td><p>Of effectively no impact</p></td>
+        </tr>
+        <tr>
+          <td>VERY_LOW</td>
+          <td>3</td>
+          <td><p>Limited impact</p></td>
+        </tr>
+        <tr>
+          <td>LOW</td>
+          <td>4</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>NORMAL</td>
+          <td>5</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>MODERATE</td>
+          <td>6</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>HIGH</td>
+          <td>7</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>VERY_HIGH</td>
+          <td>8</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>CRITICAL</td>
+          <td>9</td>
+          <td><p>Extremely important, extensive &quot;shared-fate&quot; risk between multiple
+highly important or sensitive systems</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="log_type.proto">log_type.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.log_type.LogType">LogType</h3>
+    <p>LogType allows categorisation of logs into general types based
+on the type of information logged and/or the intent of the log</p>
+    <table class="enum-table">
+      <thead>
+        <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UNSET</td>
+          <td>0</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>UNKNOWN</td>
+          <td>1</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>OUT</td>
+          <td>2</td>
+          <td><p>General stdout or info-level information</p></td>
+        </tr>
+        <tr>
+          <td>ERROR</td>
+          <td>3</td>
+          <td><p>For errors or for stdout</p></td>
+        </tr>
+        <tr>
+          <td>WARNING</td>
+          <td>4</td>
+          <td><p>Log for warnings, if applicable</p></td>
+        </tr>
+        <tr>
+          <td>TRACE</td>
+          <td>5</td>
+          <td><p>Log for additional trace-level output</p></td>
+        </tr>
+        <tr>
+          <td>SUBMIT</td>
+          <td>6</td>
+          <td><p>Task submission log</p></td>
+        </tr>
+        <tr>
+          <td>PID</td>
+          <td>7</td>
+          <td><p>Log for tracking tracking process ids or similar</p></td>
+        </tr>
+        <tr>
+          <td>TRANSACTION</td>
+          <td>8</td>
+          <td><p>Tranactional or commit logs</p></td>
+        </tr>
+        <tr>
+          <td>SCHEDULER</td>
+          <td>9</td>
+          <td><p>Log of job manager/scheduler/workflow or similar</p></td>
+        </tr>
+        <tr>
+          <td>ACCESS</td>
+          <td>10</td>
+          <td><p>Resource access type logs</p></td>
+        </tr>
+        <tr>
+          <td>MESSAGE</td>
+          <td>11</td>
+          <td><p>Logs that record conversations or similar</p></td>
+        </tr>
+        <tr>
+          <td>AUTHENTICATION</td>
+          <td>12</td>
+          <td><p>Authentication related logs</p></td>
+        </tr>
+        <tr>
+          <td>SECURITY</td>
+          <td>13</td>
+          <td><p>Security warning log</p></td>
+        </tr>
+        <tr>
+          <td>EVENT</td>
+          <td>14</td>
+          <td><p>General event log</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="maturity.proto">maturity.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.maturity.Maturity">Maturity</h3>
+    <p>Maturity is based on the &quot;Data Stewardship Maturity Matrix (DSMM)&quot;
+Refer to: http://doi.org/10.2481/dsj.14-049
+Note: INTERMEDIATE is the recommended minimal level for Operational
+      products stewarded by NCEI/CICS-NC/NOAA National Data Centers</p>
+    <table class="enum-table">
+      <thead>
+        <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UNSET</td>
+          <td>0</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>UNKNOWN</td>
+          <td>1</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>AD_HOC</td>
+          <td>2</td>
+          <td><p>Not managed</p></td>
+        </tr>
+        <tr>
+          <td>MINIMAL</td>
+          <td>3</td>
+          <td><p>Limited managment</p></td>
+        </tr>
+        <tr>
+          <td>INTERMEDIATE</td>
+          <td>4</td>
+          <td><p>Managed, defined, partially implemented</p></td>
+        </tr>
+        <tr>
+          <td>ADVANCED</td>
+          <td>5</td>
+          <td><p>Managed, well-defined, fully implemented, partially verified</p></td>
+        </tr>
+        <tr>
+          <td>OPTIMAL</td>
+          <td>6</td>
+          <td><p>OPTIMAL: managed, well-defined, fully implemented, measured, controlled  &amp;
+verified/audited</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="prod_status.proto">prod_status.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.prod_status.ProdStatus">ProdStatus</h3>
+    <p>The operational/production status of a system. This mainly relates to
+the degree of support for the system along with the environment in which
+it is running</p>
+    <table class="enum-table">
+      <thead>
+        <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UNSET</td>
+          <td>0</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>UNKNOWN</td>
+          <td>1</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>CAT1</td>
+          <td>2</td>
+          <td><p>Production, CAT1 support</p></td>
+        </tr>
+        <tr>
+          <td>CAT2</td>
+          <td>3</td>
+          <td><p>Production, CAT2 support</p></td>
+        </tr>
+        <tr>
+          <td>CAT3</td>
+          <td>4</td>
+          <td><p>Production, CAT3 support</p></td>
+        </tr>
+        <tr>
+          <td>PRODUCTION_CONDITIONAL</td>
+          <td>5</td>
+          <td><p>Production, but support arrangements are</p></td>
+        </tr>
+        <tr>
+          <td>PRODUCTION_TEST</td>
+          <td>6</td>
+          <td><p>Production test product</p></td>
+        </tr>
+        <tr>
+          <td>PRODUCTION_OTHER</td>
+          <td>7</td>
+          <td><p>Production but support arrangements are not specified</p></td>
+        </tr>
+        <tr>
+          <td>PREOPERATIONAL</td>
+          <td>8</td>
+          <td><p>Stable, running in stage or being trialled in prod</p></td>
+        </tr>
+        <tr>
+          <td>STAGING</td>
+          <td>9</td>
+          <td><p>Trial runs in a staging environment</p></td>
+        </tr>
+        <tr>
+          <td>DEVELOPMENT</td>
+          <td>10</td>
+          <td><p>Test runs in development environment</p></td>
+        </tr>
+        <tr>
+          <td>RESEARCH</td>
+          <td>11</td>
+          <td><p>Experimental system</p></td>
+        </tr>
+        <tr>
+          <td>EXTERNAL</td>
+          <td>12</td>
+          <td><p>Service provided by external vendor with unknown guarantees</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="realm.proto">realm.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.realm.Realm">Realm</h3>
+    <p>The production realm of a device/machine/cluster hosting the component.</p>
+    <table class="enum-table">
+      <thead>
+        <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UNSET</td>
+          <td>0</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>UNKNOWN</td>
+          <td>1</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>RESEARCH</td>
+          <td>2</td>
+          <td><p>A R&amp;D environment that is separate to the official dev/stage/prod
+environments.</p></td>
+        </tr>
+        <tr>
+          <td>DEV</td>
+          <td>3</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>STAGE</td>
+          <td>4</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>PROD</td>
+          <td>5</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>EXTERNAL</td>
+          <td>6</td>
+          <td><p></p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="security_classification.proto">security_classification.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.security_classification.SecurityClassification">SecurityClassification</h3>
+    <p></p>
+    <table class="enum-table">
+      <thead>
+        <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UNSET</td>
+          <td>0</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>UNKNOWN</td>
+          <td>1</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>UNCLASSIFIED</td>
+          <td>2</td>
+          <td><p>Security Classifications</p></td>
+        </tr>
+        <tr>
+          <td>PROTECTED</td>
+          <td>3</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>CONFIDENTIAL</td>
+          <td>4</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>SECRET</td>
+          <td>5</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>TOP_SECRET</td>
+          <td>6</td>
+          <td><p></p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="security_delimiting_marker.proto">security_delimiting_marker.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.security_delimiting_marker.SecurityDelimitingMarker">SecurityDelimitingMarker</h3>
+    <p>Dissemination Limiting Marker</p>
+    <table class="enum-table">
+      <thead>
+        <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UNSET</td>
+          <td>0</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>UNKNOWN</td>
+          <td>1</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>UNCLASSIFIED</td>
+          <td>2</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>FOR_OFFICIAL_USE_ONLY</td>
+          <td>3</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>SENSITIVE</td>
+          <td>4</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>SENSITIVE_PERSONAL</td>
+          <td>5</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>SENSITIVE_LEGAL</td>
+          <td>6</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>SENSITIVE_CABINET</td>
+          <td>7</td>
+          <td><p></p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="severity.proto">severity.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.severity.Severity">Severity</h3>
+    <p>Inspired from: https://en.wikipedia.org/wiki/Syslog
+The meaning of severity levels other than Emergency and Debug are relative
+to the application. For example, if the purpose of the system is to
+process transactions to update customer account balance information, an
+error in the final step should be assigned Alert level. However, an error
+occurring in an attempt to display the ZIP code of the customer may be
+assigned Error or even Warning level.
+The server process which handles the message (syslogd) usually includes
+all lower (more severe) levels. That is, if messages are separated by
+individual severity, a Warning level entry will also be included in Notice,
+Info and Debug processing.</p>
+    <table class="enum-table">
+      <thead>
+        <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UNSET</td>
+          <td>0</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>UNKNOWN</td>
+          <td>1</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>DEBUG</td>
+          <td>2</td>
+          <td><p>Information is useful for debug purposes</p></td>
+        </tr>
+        <tr>
+          <td>TRACE</td>
+          <td>3</td>
+          <td><p>Debug information at a finer-grained level that DEBUG</p></td>
+        </tr>
+        <tr>
+          <td>INFO</td>
+          <td>4</td>
+          <td><p>Routine information, such as ongoing status or performance.</p></td>
+        </tr>
+        <tr>
+          <td>NORMAL</td>
+          <td>5</td>
+          <td><p>Normal but possibly more useful information that INFO.</p></td>
+        </tr>
+        <tr>
+          <td>NOTICE</td>
+          <td>6</td>
+          <td><p>Normal but significant conditions, such as start-up, shut-down, or a
+configuration change. May require investigation or special handling
+in some cases.</p></td>
+        </tr>
+        <tr>
+          <td>WARNING</td>
+          <td>7</td>
+          <td><p>Warning events might cause problems.</p></td>
+        </tr>
+        <tr>
+          <td>ERROR</td>
+          <td>8</td>
+          <td><p>Error conditions, likely to cause problems, but not nessecarily fatal</p></td>
+        </tr>
+        <tr>
+          <td>CRITICAL</td>
+          <td>9</td>
+          <td><p>A critical condition, likely to cause more severe problems or outages.
+e.g. task failure without retry, hard device errors etc</p></td>
+        </tr>
+        <tr>
+          <td>ALERT</td>
+          <td>10</td>
+          <td><p>A condition to be corrected immediately, such as a corrupted database,
+operational suite daemon failure</p></td>
+        </tr>
+        <tr>
+          <td>EMERGENCY</td>
+          <td>11</td>
+          <td><p>One or more systems are unusable. Panic condition.</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="task_actor_type.proto">task_actor_type.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.task_actor_type.TaskActorType">TaskActorType</h3>
+    <p>Type of entity involved in an interaction with a task.
+For example, this type can be used to represent the entity
+responsible for iniatiting the running of a task, the
+entity/system reporting a change in task state or the type
+of entity responsible for imposing/enforcing resource limits.</p>
+    <table class="enum-table">
+      <thead>
+        <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UNSET</td>
+          <td>0</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>UNKNOWN</td>
+          <td>1</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>USER</td>
+          <td>2</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>ADMIN</td>
+          <td>3</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>THIS_TASK</td>
+          <td>4</td>
+          <td><p>The task itself</p></td>
+        </tr>
+        <tr>
+          <td>OTHER_TASK</td>
+          <td>5</td>
+          <td><p>Another task, managed in a similar way to this task</p></td>
+        </tr>
+        <tr>
+          <td>HOST_SYSTEM</td>
+          <td>6</td>
+          <td><p>Host system could be a physical machine, VM, container etc</p></td>
+        </tr>
+        <tr>
+          <td>BATCH_SCHEDULER</td>
+          <td>7</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>WORKFLOW_SCHEDULER</td>
+          <td>8</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>ORCHESTRATION_SYSTEM</td>
+          <td>9</td>
+          <td><p></p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="task_communication_method.proto">task_communication_method.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.task_communication_method.TaskCommunicationMethod">TaskCommunicationMethod</h3>
+    <p>The basic method of communication used by a task to indicate
+a change in task status.</p>
+    <table class="enum-table">
+      <thead>
+        <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UNSET</td>
+          <td>0</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>UNKNOWN</td>
+          <td>1</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>EVENT</td>
+          <td>2</td>
+          <td><p>The task or the environment the task is running in
+signals back task status updates as events</p></td>
+        </tr>
+        <tr>
+          <td>RPC</td>
+          <td>3</td>
+          <td><p>RPC here represents a persistent two-way connection between
+the task or a process spawned by the task and a task manager</p></td>
+        </tr>
+        <tr>
+          <td>POLL</td>
+          <td>4</td>
+          <td><p>A task manager related component or diagnostic process polls
+the task's execution or outputs of the task (e.g. log files)</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="task_interaction_type.proto">task_interaction_type.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.task_interaction_type.TaskInteractionType">TaskInteractionType</h3>
+    <p>Interaction with a task performed by a user or system.</p>
+    <table class="enum-table">
+      <thead>
+        <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UNSET</td>
+          <td>0</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>UNKNOWN</td>
+          <td>1</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>READY</td>
+          <td>2</td>
+          <td><p>Put task in a ready state</p></td>
+        </tr>
+        <tr>
+          <td>QUEUE</td>
+          <td>3</td>
+          <td><p>Queue task</p></td>
+        </tr>
+        <tr>
+          <td>SUBMIT</td>
+          <td>4</td>
+          <td><p>Submit task for running</p></td>
+        </tr>
+        <tr>
+          <td>RUN</td>
+          <td>5</td>
+          <td><p>Directly run the task</p></td>
+        </tr>
+        <tr>
+          <td>RETRY</td>
+          <td>6</td>
+          <td><p>Retry a failed task</p></td>
+        </tr>
+        <tr>
+          <td>CONFIG_EDIT_RUN</td>
+          <td>7</td>
+          <td><p>Submit routine task with modified configuration</p></td>
+        </tr>
+        <tr>
+          <td>EDIT_RUN</td>
+          <td>8</td>
+          <td><p>Submit routine task with modified task content/logic</p></td>
+        </tr>
+        <tr>
+          <td>PREVALIDATE</td>
+          <td>9</td>
+          <td><p>Run a task check/validation step (e.g. syntax check)</p></td>
+        </tr>
+        <tr>
+          <td>PREPROCESS</td>
+          <td>10</td>
+          <td><p>Run a task preprocessing step (e.g. SMS preprocesor)</p></td>
+        </tr>
+        <tr>
+          <td>POSTVALIDATE</td>
+          <td>11</td>
+          <td><p>Run a final validation step on the task</p></td>
+        </tr>
+        <tr>
+          <td>HOLD</td>
+          <td>12</td>
+          <td><p>Hold job before execution/job submission</p></td>
+        </tr>
+        <tr>
+          <td>RELEASE</td>
+          <td>13</td>
+          <td><p>Release a hold</p></td>
+        </tr>
+        <tr>
+          <td>SUSPEND</td>
+          <td>14</td>
+          <td><p>Suspend task during execution</p></td>
+        </tr>
+        <tr>
+          <td>RESUME</td>
+          <td>15</td>
+          <td><p>Suspend task during execution</p></td>
+        </tr>
+        <tr>
+          <td>CONTINUE</td>
+          <td>16</td>
+          <td><p>Continue a task that is running but blocked</p></td>
+        </tr>
+        <tr>
+          <td>STOP</td>
+          <td>17</td>
+          <td><p>Stop or shutdown a running task in nice way</p></td>
+        </tr>
+        <tr>
+          <td>KILL</td>
+          <td>18</td>
+          <td><p>Kill a running task</p></td>
+        </tr>
+        <tr>
+          <td>ADD</td>
+          <td>19</td>
+          <td><p>This task was newly added/defined (e.g. to a workflow)</p></td>
+        </tr>
+        <tr>
+          <td>DELETE</td>
+          <td>20</td>
+          <td><p>This task was deleted/dropped (e.g. from a workflow)</p></td>
+        </tr>
+        <tr>
+          <td>MODIFY_CONFIG</td>
+          <td>21</td>
+          <td><p>Update a task config in a persistent fashion</p></td>
+        </tr>
+        <tr>
+          <td>MODIFY</td>
+          <td>22</td>
+          <td><p>Update a task content/logic in a persistent fashion</p></td>
+        </tr>
+        <tr>
+          <td>SET_COMPLETE</td>
+          <td>23</td>
+          <td><p>The task is forced to be successfully completed</p></td>
+        </tr>
+        <tr>
+          <td>SET_ABORTED</td>
+          <td>24</td>
+          <td><p>The task is forced to be in an error state</p></td>
+        </tr>
+        <tr>
+          <td>SKIP</td>
+          <td>25</td>
+          <td><p>Skip running the task</p></td>
+        </tr>
+        <tr>
+          <td>EXPIRE</td>
+          <td>26</td>
+          <td><p>Force the task to be put into an expired state. Usually an expired
+state implies a hard deadline was reached before the task executed
+or finished</p></td>
+        </tr>
+        <tr>
+          <td>DEFER</td>
+          <td>27</td>
+          <td><p>Delay running of the task</p></td>
+        </tr>
+        <tr>
+          <td>REMOVE_DEPENDENCY</td>
+          <td>28</td>
+          <td><p>Remove a task triggering condition</p></td>
+        </tr>
+        <tr>
+          <td>ADD_DEPENDENCY</td>
+          <td>29</td>
+          <td><p>Add a task triggering condition</p></td>
+        </tr>
+        <tr>
+          <td>DELAY</td>
+          <td>30</td>
+          <td><p>Delay the scheduled execution of a task by some time duration.</p></td>
+        </tr>
+        <tr>
+          <td>BRING_FORWARD</td>
+          <td>31</td>
+          <td><p>Bring forward the scheduled execution of a task by some time duration.</p></td>
+        </tr>
+        <tr>
+          <td>RESURRECT</td>
+          <td>32</td>
+          <td><p>Attempt to resurrect a task</p></td>
+        </tr>
+        <tr>
+          <td>MIGRATE</td>
+          <td>33</td>
+          <td><p>Migrate this task to another environment/scheduler</p></td>
+        </tr>
+        <tr>
+          <td>REFRESH</td>
+          <td>34</td>
+          <td><p>Attempt to force a task to reload/refresh it's state/configuration</p></td>
+        </tr>
+        <tr>
+          <td>DEBUG</td>
+          <td>35</td>
+          <td><p>Perform a debugging operation on the task, or activate a
+debug or trace mode</p></td>
+        </tr>
+        <tr>
+          <td>CHECKPOINT</td>
+          <td>36</td>
+          <td><p>Ask a model or system run by a task to create checkpoint</p></td>
+        </tr>
+        <tr>
+          <td>RESTORE</td>
+          <td>37</td>
+          <td><p>Restore a task/system/model from a saved state</p></td>
+        </tr>
+        <tr>
+          <td>REPRIORITISE</td>
+          <td>38</td>
+          <td><p>Change task urgency/priority</p></td>
+        </tr>
+        <tr>
+          <td>UPDATE_LIMIT</td>
+          <td>39</td>
+          <td><p>Change task resource limit(s) or other constraints</p></td>
+        </tr>
+        <tr>
+          <td>IGNORE</td>
+          <td>127</td>
+          <td><p>Ignore and do nothing</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="task_state.proto">task_state.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.task_state.TaskState">TaskState</h3>
+    <p>Task state itself. Many states below may represent
+states that don't apply to many systems or intermediate states
+that are not tracked. Please choose an appropriate subset on
+a workflow/batch system by system basis.</p>
+    <table class="enum-table">
+      <thead>
+        <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UNSET</td>
+          <td>0</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>UNKNOWN</td>
+          <td>1</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>RUNAHEAD</td>
+          <td>2</td>
+          <td><p>Will possibly be queued to run</p></td>
+        </tr>
+        <tr>
+          <td>PREVALIDATING</td>
+          <td>3</td>
+          <td><p>Task configuration/content is being validated before
+or as part of a workflow, dispatch, submit or pre-run process</p></td>
+        </tr>
+        <tr>
+          <td>PREVALIDATING_FAIL</td>
+          <td>4</td>
+          <td><p>Prevalidation step failed</p></td>
+        </tr>
+        <tr>
+          <td>INVALID</td>
+          <td>5</td>
+          <td><p>Task found to be invalid prior to execution</p></td>
+        </tr>
+        <tr>
+          <td>WAITING</td>
+          <td>6</td>
+          <td><p>Waiting on trigger conditions to be satisified</p></td>
+        </tr>
+        <tr>
+          <td>HELD</td>
+          <td>7</td>
+          <td><p>Held before submission</p></td>
+        </tr>
+        <tr>
+          <td>PREPROCESSING</td>
+          <td>8</td>
+          <td><p>In a task pre-processing step, probably run as part of the
+workflow scheduler</p></td>
+        </tr>
+        <tr>
+          <td>PREPROCESSING_FAIL</td>
+          <td>9</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>QUEUED</td>
+          <td>10</td>
+          <td><p>Queued/getting ready to run</p></td>
+        </tr>
+        <tr>
+          <td>READY</td>
+          <td>11</td>
+          <td><p>Ready to run/submit</p></td>
+        </tr>
+        <tr>
+          <td>EXPIRED</td>
+          <td>12</td>
+          <td><p>A deadline has been passed and this task won't be completed</p></td>
+        </tr>
+        <tr>
+          <td>SUBMITTED</td>
+          <td>13</td>
+          <td><p>Queued/ready to run by a workflow scheduler</p></td>
+        </tr>
+        <tr>
+          <td>SUBMIT_SUCCESS</td>
+          <td>14</td>
+          <td><p>The task has been successfully submitted/dispatched</p></td>
+        </tr>
+        <tr>
+          <td>SUBMIT_FAIL</td>
+          <td>15</td>
+          <td><p>The task submit process failed or was killed before the start of task
+exeuction</p></td>
+        </tr>
+        <tr>
+          <td>SUBMIT_RETRYING</td>
+          <td>16</td>
+          <td><p>As per SUBMIT_FAIL but a resubmit (possibly after a configured delay)
+will be attempted automatically</p></td>
+        </tr>
+        <tr>
+          <td>PREJOB</td>
+          <td>17</td>
+          <td><p>Running a pre-job/setup step</p></td>
+        </tr>
+        <tr>
+          <td>PREJOB_FAIL</td>
+          <td>18</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>AUTHENTICATING</td>
+          <td>19</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>AUTHENTICATE_SUCCESS</td>
+          <td>20</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>AUTHENTICATE_FAIL</td>
+          <td>21</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>STARTED</td>
+          <td>22</td>
+          <td><p>Task started running/reported commencement of execution</p></td>
+        </tr>
+        <tr>
+          <td>PROGRESS</td>
+          <td>23</td>
+          <td><p>Task in progress (used for possible progress updates)</p></td>
+        </tr>
+        <tr>
+          <td>SUCCESS</td>
+          <td>24</td>
+          <td><p>Task appears to have concluded normally &amp; successfully</p></td>
+        </tr>
+        <tr>
+          <td>STOPPED</td>
+          <td>25</td>
+          <td><p>Task stopped mid execution as part of workflow design</p></td>
+        </tr>
+        <tr>
+          <td>PAUSING</td>
+          <td>26</td>
+          <td><p>Task execution in process of pausing</p></td>
+        </tr>
+        <tr>
+          <td>PAUSED</td>
+          <td>27</td>
+          <td><p>Task execution paused; task still memory/process resident (not vacated)</p></td>
+        </tr>
+        <tr>
+          <td>PAUSE_FAIL</td>
+          <td>28</td>
+          <td><p>Pausing the task failed</p></td>
+        </tr>
+        <tr>
+          <td>SUSPENDING</td>
+          <td>29</td>
+          <td><p>Task in the process of suspending. Usually used as a mechanism
+to free up resources for other higher priority jobs in a batch scheduler
+context which usually involves some sort of snap-shotting of task state
+and temporarily stopping task execution.
+Sometimes referred to as task vacating or a task vacation.</p></td>
+        </tr>
+        <tr>
+          <td>SUSPENDED</td>
+          <td>30</td>
+          <td><p>Task suspended/vacated and needs to be resumed to progress/complete.</p></td>
+        </tr>
+        <tr>
+          <td>SUSPEND_FAIL</td>
+          <td>31</td>
+          <td><p>Suspending/vacating the task failed</p></td>
+        </tr>
+        <tr>
+          <td>CHECKPOINTING</td>
+          <td>32</td>
+          <td><p>Checkpoint information about a task or the system</p></td>
+        </tr>
+        <tr>
+          <td>CHECKPOINT_FAIL</td>
+          <td>33</td>
+          <td><p>Failure during checkpointing</p></td>
+        </tr>
+        <tr>
+          <td>CHECKPOINT_SUCCESS</td>
+          <td>34</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>RETRYING</td>
+          <td>35</td>
+          <td><p>Retring, progressed beyond submission</p></td>
+        </tr>
+        <tr>
+          <td>RESURRECTING</td>
+          <td>36</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>RESURRECTED</td>
+          <td>37</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>RESURRECT_FAIL</td>
+          <td>38</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>RESTORING</td>
+          <td>39</td>
+          <td><p>Restoring from a check-point or other saved state</p></td>
+        </tr>
+        <tr>
+          <td>RESTORE_FAIL</td>
+          <td>40</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>RESTORE_SUCCESS</td>
+          <td>41</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>POSTJOB</td>
+          <td>42</td>
+          <td><p>Running a post-job/clean step</p></td>
+        </tr>
+        <tr>
+          <td>POSTJOB_FAIL</td>
+          <td>43</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>POSTVALIDATING</td>
+          <td>44</td>
+          <td><p>Running a validation step as part of the task following execution</p></td>
+        </tr>
+        <tr>
+          <td>POSTVALIDATING_FAIL</td>
+          <td>45</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>EXITING</td>
+          <td>46</td>
+          <td><p>Job is exiting after having run (normally in a batch scheduler context)</p></td>
+        </tr>
+        <tr>
+          <td>INDETERMINATE</td>
+          <td>47</td>
+          <td><p>May or may not be eventually run</p></td>
+        </tr>
+        <tr>
+          <td>DORMANT</td>
+          <td>48</td>
+          <td><p>Task proxy exists in a scheduler but is not currently in a
+configuration that permits it to be progressed to a queued or run state</p></td>
+        </tr>
+        <tr>
+          <td>DROPPED</td>
+          <td>49</td>
+          <td><p>Task definition dropped/omitted before exeuction from scheduler</p></td>
+        </tr>
+        <tr>
+          <td>SKIPPED</td>
+          <td>50</td>
+          <td><p>Task to be skipped</p></td>
+        </tr>
+        <tr>
+          <td>MIGRATING</td>
+          <td>51</td>
+          <td><p>Job control responsibility is being migrated to another system</p></td>
+        </tr>
+        <tr>
+          <td>MIGRATED</td>
+          <td>52</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>MIGRATING_FAIL</td>
+          <td>53</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>DEFERRED</td>
+          <td>54</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>REJECTED</td>
+          <td>55</td>
+          <td><p>Task rejected by batch scheduler or a security layer prior to execution</p></td>
+        </tr>
+        <tr>
+          <td>TRANSIT</td>
+          <td>56</td>
+          <td><p>A transit state can be meaingful for certain scheduler systems.</p></td>
+        </tr>
+        <tr>
+          <td>ABNORMAL_SUCCESS</td>
+          <td>57</td>
+          <td><p>Diagnostics suggest task appears to have succeeded
+but some warnings/errors/abnormalities were encountered</p></td>
+        </tr>
+        <tr>
+          <td>FAILED</td>
+          <td>58</td>
+          <td><p>Task failed (desired outcome of the task was not reached)</p></td>
+        </tr>
+        <tr>
+          <td>RETRY_LIMIT_REACHED</td>
+          <td>59</td>
+          <td><p>Multiple task retries have all failed. This is</p></td>
+        </tr>
+        <tr>
+          <td>WARNING</td>
+          <td>60</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>ERROR_WITH_CONTINUATION</td>
+          <td>61</td>
+          <td><p>An error was found during exeuction but task is continuing.</p></td>
+        </tr>
+        <tr>
+          <td>KILLING</td>
+          <td>62</td>
+          <td><p>An attempt at killing the task has taken place</p></td>
+        </tr>
+        <tr>
+          <td>KILLING_FAIL</td>
+          <td>63</td>
+          <td><p>An attempt at killing the task has apparently failed</p></td>
+        </tr>
+        <tr>
+          <td>KILLED_BY_COMMAND</td>
+          <td>64</td>
+          <td><p>For example via kill or qdel</p></td>
+        </tr>
+        <tr>
+          <td>KILLED_BY_TIME_LIMIT</td>
+          <td>65</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>KILLED_BY_CPU_LIMIT</td>
+          <td>66</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>KILLED_BY_MEMORY_LIMIT</td>
+          <td>67</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>KILLED_BY_PROCESS_LIMIT</td>
+          <td>68</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>KILLED_BY_FILE_SIZE_LIMIT</td>
+          <td>69</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>KILLED_BY_FILE_NUMBER_LIMIT</td>
+          <td>70</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>KILLED_BY_SECURITY_POLICY</td>
+          <td>71</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>KILLED</td>
+          <td>72</td>
+          <td><p>Killed by another or unspecified mechanism</p></td>
+        </tr>
+        <tr>
+          <td>CANCELLED</td>
+          <td>73</td>
+          <td><p>Program/model run cancelled via some mechanism other than kill
+or a retry limit</p></td>
+        </tr>
+        <tr>
+          <td>BLOCKED</td>
+          <td>74</td>
+          <td><p>Task is executing but progress is blocked</p></td>
+        </tr>
+        <tr>
+          <td>HUNG</td>
+          <td>75</td>
+          <td><p>Execution has hung and become unresponsive.</p></td>
+        </tr>
+        <tr>
+          <td>UNREACHABLE</td>
+          <td>76</td>
+          <td><p>Attempts to determine task state have failed (e.g. network outage).
+It is unknown if the task is still running or not, etc</p></td>
+        </tr>
+        <tr>
+          <td>LOST</td>
+          <td>77</td>
+          <td><p>Attempts to track a task have failed and it is now considered
+lost by this system.</p></td>
+        </tr>
+        <tr>
+          <td>ZOMBIE</td>
+          <td>78</td>
+          <td><p>Process has become a zombie (process is still running but is become
+detached in some way from the managing process)</p></td>
+        </tr>
+        <tr>
+          <td>FORCE_COMPLETED</td>
+          <td>79</td>
+          <td><p>Task forced to be in a completed state.</p></td>
+        </tr>
+        <tr>
+          <td>MODEL_STOP</td>
+          <td>80</td>
+          <td><p>Model progress was blocked by a model mechanism, for example numerical
+convergence thresholds were not met.</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="trace_level.proto">trace_level.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.trace_level.TraceLevel">TraceLevel</h3>
+    <p>The trace level in the context of a software or hardware
+application/system of the corresponding detail level in a
+log of such a system. Note: Trace and debug levels are often
+related but are distinct concepts in some systems.</p>
+    <table class="enum-table">
+      <thead>
+        <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UNSET</td>
+          <td>0</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>UNKNOWN</td>
+          <td>1</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>NO_TRACE</td>
+          <td>2</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>SOFTWARE_TRACE</td>
+          <td>3</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>HARDWARE_TRACE</td>
+          <td>4</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>FULL_TRACE</td>
+          <td>5</td>
+          <td><p></p></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 id="scalar-value-types">Scalar Value Types</h2>
+    <table class="scalar-value-types-table">
+      <thead>
+        <tr><td>.proto Type</td><td>Notes</td><td>C++ Type</td><td>Java Type</td><td>Python Type</td></tr>
+      </thead>
+      <tbody>
+        <tr id="double">
+          <td>double</td>
+          <td></td>
+          <td>double</td>
+          <td>double</td>
+          <td>float</td>
+        </tr>
+        <tr id="float">
+          <td>float</td>
+          <td></td>
+          <td>float</td>
+          <td>float</td>
+          <td>float</td>
+        </tr>
+        <tr id="int32">
+          <td>int32</td>
+          <td>Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint32 instead.</td>
+          <td>int32</td>
+          <td>int</td>
+          <td>int</td>
+        </tr>
+        <tr id="int64">
+          <td>int64</td>
+          <td>Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint64 instead.</td>
+          <td>int64</td>
+          <td>long</td>
+          <td>int/long</td>
+        </tr>
+        <tr id="uint32">
+          <td>uint32</td>
+          <td>Uses variable-length encoding.</td>
+          <td>uint32</td>
+          <td>int</td>
+          <td>int/long</td>
+        </tr>
+        <tr id="uint64">
+          <td>uint64</td>
+          <td>Uses variable-length encoding.</td>
+          <td>uint64</td>
+          <td>long</td>
+          <td>int/long</td>
+        </tr>
+        <tr id="sint32">
+          <td>sint32</td>
+          <td>Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int32s.</td>
+          <td>int32</td>
+          <td>int</td>
+          <td>int</td>
+        </tr>
+        <tr id="sint64">
+          <td>sint64</td>
+          <td>Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int64s.</td>
+          <td>int64</td>
+          <td>long</td>
+          <td>int/long</td>
+        </tr>
+        <tr id="fixed32">
+          <td>fixed32</td>
+          <td>Always four bytes. More efficient than uint32 if values are often greater than 2^28.</td>
+          <td>uint32</td>
+          <td>int</td>
+          <td>int</td>
+        </tr>
+        <tr id="fixed64">
+          <td>fixed64</td>
+          <td>Always eight bytes. More efficient than uint64 if values are often greater than 2^56.</td>
+          <td>uint64</td>
+          <td>long</td>
+          <td>int/long</td>
+        </tr>
+        <tr id="sfixed32">
+          <td>sfixed32</td>
+          <td>Always four bytes.</td>
+          <td>int32</td>
+          <td>int</td>
+          <td>int</td>
+        </tr>
+        <tr id="sfixed64">
+          <td>sfixed64</td>
+          <td>Always eight bytes.</td>
+          <td>int64</td>
+          <td>long</td>
+          <td>int/long</td>
+        </tr>
+        <tr id="bool">
+          <td>bool</td>
+          <td></td>
+          <td>bool</td>
+          <td>boolean</td>
+          <td>boolean</td>
+        </tr>
+        <tr id="string">
+          <td>string</td>
+          <td>A string must always contain UTF-8 encoded or 7-bit ASCII text.</td>
+          <td>string</td>
+          <td>String</td>
+          <td>str/unicode</td>
+        </tr>
+        <tr id="bytes">
+          <td>bytes</td>
+          <td>May contain any arbitrary sequence of bytes.</td>
+          <td>string</td>
+          <td>ByteString</td>
+          <td>str</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </body>
+</html>

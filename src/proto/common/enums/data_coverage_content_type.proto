@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package bom.data_coverage_content_type;
+
+option java_package = "bom";
+option java_outer_classname="DataCoverageContentTypeProto";
+
+/// The coverage content type is an ISO codeList describing the general
+// content type of data
+enum DataCoverageContentType {
+  UNSET = 0;
+  UNKNOWN = 1;
+  /// Meaningful numerical representation of a physical parameter that is
+  // not the actual value of the physical parameter
+  IMAGE = 2;
+  /// Value with no quantitative meaning, used to represent a
+  // physical quantity
+  THEMATIC_CLASSIFICATION = 3;
+  /// Value in physical units of the quantity being measured
+  PHYSICAL_MEASUREMENT = 4;
+  ///	Data, usually a physical measurement, used to support the calculation
+  // of another variable
+  // (e.g. grid of aerosol optical thickness used in the calculation of a
+  // sea surface temperature product)
+  AUXILLARY_INFORMATION = 5;
+  /// Data used to provide coordinate axis values
+  COORDINATE = 6;
+  /// Resources with values that are calculated using a model rather than
+  // being observed or calculated from observations.
+  MODEL_RESULT 	= 7;
+  /// Data used to characterize the quality of another variable
+  QUALITY_INFORMATION = 8;
+  /// Reference information used to support the calculation of another variable
+  // (e.g. grids of latitude/longitude used to geolocate the physical
+  // measurements)
+  REFERENCE_INFORMATION = 9;
+  /// Values of extraneous data
+  AUXILLIARY_DATA = 10;
+}

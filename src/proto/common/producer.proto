@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package bom;
+
+option java_outer_classname="ProducerProto";
+
+import "common/component.proto";
+
+/// Event/message producer component and device details. Component is usually a
+// software component and device is usually the hardware the component is
+// running on, or the virtualised equivalent.
+message Producer {
+  /// Key components that contributed to the generation of this event.
+  repeated Component components = 1;
+  /// ID of component that corresponds to the system that most applies to this
+  // event. This normally corresponds to the system that created the event, but
+  // if monitoring components are involved it may refer to the system that is
+  // being monitored about which the event relates
+  int64 producer_component_id = 2;
+}

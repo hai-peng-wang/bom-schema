@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package bom.security_classification;
+
+option java_package = "bom";
+option java_outer_classname="SecurityClassificationProto";
+
+enum SecurityClassification {
+  UNSET = 0;
+  UNKNOWN = 1;
+
+  /// Security Classifications
+  UNCLASSIFIED = 2;
+  PROTECTED = 3;
+  CONFIDENTIAL = 4;
+  SECRET = 5;
+  TOP_SECRET = 6;
+}

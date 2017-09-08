@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package bom.maturity;
+
+option java_package = "bom";
+option java_outer_classname="MaturityProto";
+
+/// Maturity is based on the "Data Stewardship Maturity Matrix (DSMM)"
+// Refer to: http://doi.org/10.2481/dsj.14-049
+// Note: INTERMEDIATE is the recommended minimal level for Operational
+//       products stewarded by NCEI/CICS-NC/NOAA National Data Centers
+enum Maturity {
+  UNSET = 0;
+  UNKNOWN = 1;
+
+  AD_HOC = 2; /// Not managed
+  MINIMAL = 3; /// Limited managment
+  INTERMEDIATE = 4; /// Managed, defined, partially implemented
+  ADVANCED = 5; /// Managed, well-defined, fully implemented, partially verified
+  /// OPTIMAL: managed, well-defined, fully implemented, measured, controlled  &
+  // verified/audited
+  OPTIMAL = 6;
+}

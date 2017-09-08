@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package bom.log_type;
+
+option java_package = "bom";
+option java_outer_classname="LogTypeProto";
+
+/// LogType allows categorisation of logs into general types based
+// on the type of information logged and/or the intent of the log
+enum LogType {
+    UNSET = 0;
+    UNKNOWN = 1;
+
+    OUT = 2; /// General stdout or info-level information
+    ERROR = 3; /// For errors or for stdout
+    WARNING = 4; /// Log for warnings, if applicable
+    TRACE = 5; /// Log for additional trace-level output
+    SUBMIT = 6; /// Task submission log
+    PID = 7; /// Log for tracking tracking process ids or similar
+    TRANSACTION = 8; /// Tranactional or commit logs
+    SCHEDULER = 9; /// Log of job manager/scheduler/workflow or similar
+    ACCESS = 10; /// Resource access type logs
+    MESSAGE = 11; /// Logs that record conversations or similar
+    AUTHENTICATION = 12; /// Authentication related logs
+    SECURITY = 13; /// Security warning log
+    EVENT = 14; /// General event log
+}

@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+package bom.dataset_feature_type;
+
+option java_package = "bom";
+option java_outer_classname = "DatasetFeatureTypeProto";
+
+/// Dataset feature types describe arrangements of collections of
+// data (a set of measurements, analyses, forecasts etc), distinguished by
+// the geometry and topology of the collection.
+// Largely parallels CF Conventions Scientific Feature Types:
+// http://cfconventions.org/cf-conventions/cf-conventions.html#featureType
+// The most specific feature type should be chosen in the event of ambiguity.
+enum DatasetFeatureType {
+  UNSET = 0;
+  UNKNOWN = 1;
+
+  IMAGE = 2;
+  /// A set of data points in a two dimensional grid described by a
+  // connected set of radials using polar coordinates
+  // (connected, 2D elevation, azimuth, distance; ordered time)
+  /// Example: data from a fixed-position scanning radar or lidar
+  RADIAL = 3;
+  /// A set of data points in a two dimensional grid, where each
+  // coordinate is connected and a function of 2 dimensions
+  // (connected, 2D x, y, z, t)
+  // Examples: a polar orbiting satellite, airborne or ship instrument.
+  SWATH = 4;
+  /// Other cartesian, rectilinear or curvilinear grids
+  // (separable x, y, z, t)
+  STRUCTURED_GRID = 5;
+  UNSTRUCTURED_GRID = 6; /// Other unstructured (tesselated) grids
+  HYBRID_GRID = 7; /// Mix of structured and unstructured portions
+  /// A structured grid that moves with time (or each t, separable x, y, z)
+  MOVING_STRUCTURED_GRID = 8;
+  MOVING_UNSTRUCTURED_GRID = 9;
+  MOVING_HYBRID_GRID = 10;
+
+  /// A collection of one or more parameters, each parameter measured/valid at
+  // a single point in time and space. Includes point-cloud datasets.
+  // Examples: earthquake data, lightning data
+  // Note: Each data point has no implied coordinate relationship to other
+  // points.
+  // e.g. data(i) : x(i) y(i) t(i)
+  POINT = 50;
+  /// A time-series of data points at specified location(s)
+  // e.g. data(i,o) : x(i) y(i) t(i,o)
+  // Examples: Weather station data, idealized representation of moored buoys
+  // Note: sometimes referred to as as "STATION" data in meteorology
+  TIMESERIES = 51;
+  /// A set of data points along a vertical line for one or more locations
+  // (i.e. a vertical soundings) at fixed times.
+  // e.g. data(i,o) : x(i) y(i) z(i,o) t(i)
+  // Examples: Certain satellite profiles, vertical model soundings
+  PROFILE = 52;
+  /// A time-series of profile features at specified location(s).
+  // e.g. data(i,o) : x(i) y(i) t(i,o)
+  // Examples: Station profilers, idealized representations of
+  // balloon soundings
+  // Note: sometimes referred to as a "STATION_PROFILE"
+  TIMESERIES_PROFILE = 53;
+  /// A set of data points along a 1D curve in time and space
+  // e.g. data(i,o) : x(i,o) y(i,o) t(i,o)
+  // Examples: Aircraft data, ship data, drifting buoys
+  TRAJECTORY = 54;
+  /// A series of profile features located at points ordred along a
+  // trajectory
+  // data(i,p,o) : x(i,p) y(i,p) z(i,p,o) t(i,p)
+  // Example: Ship soundings
+  // Note: sometimes referred to as a "SECTION"
+  TRAJECTORY_PROFILE = 55;
+
+  /// The dataset is known to contain a mix of the above feature types.
+  // In this case, the mix is to be determined by inspection of each
+  // variable's feature type
+  MIXED = 126;
+  /// Use of OTHER is discouraged. Additional entries to this enum
+  // are preferred.
+  OTHER = 127;
+}

@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package bom;
+
+option java_outer_classname="DiagnosticProto";
+
+import "common/enums/error_type.proto";
+import "common/enums/severity.proto";
+import "common/address.proto";
+import "common/ensemble_member.proto";
+import "google/protobuf/timestamp.proto";
+
+/// Diagnostic information related to the functioning of a component or task.
+message Diagnostic {
+  /// The type of error or warning
+  bom.error_type.ErrorType type = 1;
+  /// Severity of warning or error; distinguishes between
+  // informational diagnostics, warnings that may warrant
+  // investigation, non-fatal errors and fatal errors
+  bom.severity.Severity severity = 2;
+  /// Return status/exit-code of process/task/sub-component
+  int64 return_status = 3;
+  /// Signal that was caught or trapped (irrespective of being handled
+  // or not)
+  string signal = 4;
+  /// The timestamp the diagnostic was recorded, if expected to
+  // be different to the event timestsamp or to help order a sequence
+  // of diagnostic messages
+  google.protobuf.Timestamp timestamp = 5;
+  /// The phase of the component during which the warning or error occured.
+  // For example, "initialization", "execution", "data_write", "cleanup" etc.
+  string phase = 6;
+  string message = 7;
+  string cause = 8;
+  string trace = 9; /// A stack trace or similar
+  /// If a known error pattern, link to troubleshooting info
+  URI troubleshooting = 10;
+  // TODO: info on process/thread/MPI rank & node with issue. 
+  ModelDiagnostic model_diagnostic = 12;
+}
+
+/// Additional diagnostic information pertaining to a numerical model
+// (or similar system)
+message ModelDiagnostic {
+  EnsembleMember ensemble_member = 1;
+  /// For models, the simulation step/time that was reached.
+  google.protobuf.Timestamp model_validity_time = 2;
+  // TODO: postprocessing vs model... how to express. More thought required
+  /// For models, the internal interation count that was reached.
+  int64 iteration = 3;
+}

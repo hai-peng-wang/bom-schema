@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package bom;
+
+option java_outer_classname="TimeProto";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+
+/// A generic time range
+message TimeRange {
+  google.protobuf.Timestamp start = 1;
+  google.protobuf.Timestamp end = 2;
+  /// Intervals within range. Used to construct a list of times from
+  // "start" at regular intervals onward, but not greater than "end".
+  google.protobuf.Duration interval = 3;
+}
+
+message TimePointOrRange {
+  oneof t {
+    google.protobuf.Timestamp point = 1; /// A point (moment) in time
+    TimeRange time_range = 2; /// A time range
+  }
+}

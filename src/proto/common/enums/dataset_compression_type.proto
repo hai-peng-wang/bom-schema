@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package bom.dataset_compression_type;
+
+option java_package = "bom";
+option java_outer_classname="DatasetCompressionTypeProto";
+
+/// General type of compression applied to a dataset.
+// Note interpolation and "reduce"/"aggregation" techniques are not considered
+// a form of compression for the purposes of DatasetCompressionType, even
+// though these techniques can result in reduced dataset sizes (or datasets
+// that may compress better). Instead these types of transformations are
+// considered to change the type of the data in the dataset.
+enum DatasetCompressionType {
+  UNSET = 0;
+  UNKNOWN = 1;
+
+  /// Dataset is uncompressed ("native" format)
+  NONE = 2;
+  /// Dataset is losslessly compressed ("native" data can be exactly restored)
+  LOSSLESS = 3;
+  /// Dataset is compressed via techniques that are known to result in
+  // no significant degradation to the information content
+  NEAR_LOSSLESS = 4;
+  /// Some lossy compression algorithm has been used, the error
+  // the characterics of which are thought to impact in a minimal way on the
+  // data
+  LOSSY_MINIMAL = 5;
+  /// More aggressive lossy compression settings, achieving a fair
+  // trade-off between quality and size
+  LOSSY_MODERATE = 6;
+  /// Very aggressive lossy compression settings, used to conserve
+  // bandwidth
+  LOSSY_AGGRESSIVE = 7;
+
+  /// Data has been packing/rounding
+  PACKED = 10;
+  /// Data has been resampled to a coarser grid in one or more dimensions
+  // (e.g. reduced horizontal grid, subset of vertical levels,
+  // fewer time-steps)
+  THINNED = 11;
+}

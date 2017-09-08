@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package bom.severity;
+
+option java_package = "bom";
+option java_outer_classname="SeverityProto";
+
+/// Inspired from: https://en.wikipedia.org/wiki/Syslog
+// The meaning of severity levels other than Emergency and Debug are relative
+// to the application. For example, if the purpose of the system is to
+// process transactions to update customer account balance information, an
+// error in the final step should be assigned Alert level. However, an error
+// occurring in an attempt to display the ZIP code of the customer may be
+// assigned Error or even Warning level.
+// The server process which handles the message (syslogd) usually includes
+// all lower (more severe) levels. That is, if messages are separated by
+// individual severity, a Warning level entry will also be included in Notice,
+// Info and Debug processing.
+enum Severity {
+    UNSET = 0;
+    UNKNOWN = 1;
+
+    DEBUG = 2; /// Information is useful for debug purposes
+    TRACE = 3; /// Debug information at a finer-grained level that DEBUG
+    INFO = 4; /// Routine information, such as ongoing status or performance.
+    NORMAL = 5; /// Normal but possibly more useful information that INFO.
+    /// Normal but significant conditions, such as start-up, shut-down, or a
+    // configuration change. May require investigation or special handling
+    // in some cases.
+    NOTICE = 6;
+    WARNING = 7; /// Warning events might cause problems.
+    /// Error conditions, likely to cause problems, but not nessecarily fatal
+    ERROR = 8;
+    /// A critical condition, likely to cause more severe problems or outages.
+    // e.g. task failure without retry, hard device errors etc
+    CRITICAL = 9;
+    /// A condition to be corrected immediately, such as a corrupted database,
+    // operational suite daemon failure
+    ALERT = 10;
+    EMERGENCY = 11; /// One or more systems are unusable. Panic condition.
+    // IB: Not convinced we need a CLEAR state (to clear a previously raised
+    // event). Doing so and relying on this shifts the onus of carefully
+    // tracking state for tasks on the producer. In-fact it is possible to
+    // infer a "CLEAR" state from the sequence of event messages by inspecting
+    // the updated task state, severity and importance
+}

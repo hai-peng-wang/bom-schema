@@ -1,0 +1,183 @@
+header {
+  producer {
+    components {
+      info {
+        level: PLATFORM
+        name: "Cylc"
+        type: "Workflow Scheduler"
+        version {
+          semver {
+            major: 2
+            minor: 3
+            patch: 1
+          }
+        }
+      }
+      relation_id: 1
+      tags {
+        key: "audit_status"
+        value: "passed"
+      }
+      tags {
+        key: "capability_level"
+        value: "awesome"
+      }
+    }
+    components {
+      info {
+        level: SUITE
+        name: "ACCESS-GE3"
+        type: "Model"
+        version {
+          semver {
+            major: 3
+            patch: 1
+          }
+        }
+        description: "Ensemble Global NWP Model Suite"
+        uri {
+          scheme: "http"
+          address {
+            hostname: "example.au"
+            port: 80
+          }
+          queries {
+            key: "model"
+            value: "ACCESS"
+          }
+          fragment: "info"
+        }
+        production_status {
+          status: STAGING
+        }
+      }
+      relation_id: 2
+      relationships {
+        id: 1
+        relationship: SUBCOMPONENT
+        relation_description: "This suite is composed of modelling tasksdesigned to run under the Cylc workflow scheduler"
+      }
+      relationships {
+        id: 3
+        relationship: INSTRUCTOR
+        relation_description: "This suite submits task jobsdispatched via a PBS batch scheduler."
+      }
+      host {
+        realm: STAGE
+        type: "VM"
+        physical_desc: "VM@SDC"
+        address {
+          hostname: "scs-cylc-stage"
+        }
+        architecture: "x86_64"
+        os: "RHEL 7"
+        os_version {
+          semver {
+            major: 4
+            minor: 11
+            patch: 12
+            build_ids: "200"
+            build_ids: "rhel7"
+            build_ids: "x86_64"
+          }
+        }
+      }
+    }
+    components {
+      info {
+        level: SERVICE
+        name: "PBS"
+        type: "Batch Scheduler"
+      }
+      relation_id: 3
+      host {
+        address {
+          hostname: "scs-master-pbs"
+        }
+      }
+    }
+    producer_component_id: 2
+  }
+  sequence_number: 1
+}
+event_type: "STATE_CHANGE"
+task_info {
+  name: "fractalCloudCalc"
+  namespace: "ensemble05/cloud_micro"
+  suite: "ACCESS-GE3"
+  is_idempotent: true
+  project: "pr_G3"
+  production_status {
+    status: STAGING
+  }
+  priority {
+    impact: MODERATE
+    urgency: LOW
+  }
+  task_debug {
+    scheme: "http"
+    address {
+      hostname: "bom"
+    }
+    queries {
+    }
+  }
+}
+task_context {
+  id {
+    workflow_id {
+      id_str: "myworkflow_id123"
+    }
+    batch_id {
+      id_uint: 123456789
+    }
+  }
+  settings {
+    user {
+      name: "ACCESS_stage"
+    }
+    is_edit_run: true
+    note: "Edited fractal similarity parameter to 3.14159 just \"because\""
+    debug {
+      debug_level: NORMAL
+    }
+  }
+  retry {
+    submit_number: 2
+    try_number: 2
+    retry_limit: 1
+  }
+  exec_vnodes {
+    hostname: "compute_node_23"
+  }
+}
+task_manager_context {
+  name: "PBS"
+  component_id: 3
+}
+task_status {
+  state: KILLED_BY_MEMORY_LIMIT
+  diagnostics {
+    type: RESOURCE_EXHAUSTED
+    severity: ERROR
+    return_status: -27
+    signal: "SIGUSR2"
+    timestamp {
+      seconds: 1504844125
+    }
+    model_diagnostic {
+      iteration: 54
+    }
+  }
+  reporter_type: WORKFLOW_SCHEDULER
+  severity: ERROR
+  time_info {
+    series_created_timestamp {
+      seconds: 1504840001
+    }
+    instance_end_timestamp {
+      seconds: 1504840399
+    }
+  }
+  number_of_consecutive_failures: 2
+}

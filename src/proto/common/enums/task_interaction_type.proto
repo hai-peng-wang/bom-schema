@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package bom.task_interaction_type;
+
+option java_package = "bom";
+option java_outer_classname = "TaskInteractionTypeProto";
+
+/// Interaction with a task performed by a user or system.
+enum TaskInteractionType {
+  UNSET = 0;
+  UNKNOWN = 1;
+
+  READY = 2; /// Put task in a ready state
+  QUEUE = 3; /// Queue task
+  SUBMIT = 4; /// Submit task for running
+  RUN = 5; /// Directly run the task
+  RETRY = 6; /// Retry a failed task
+  CONFIG_EDIT_RUN = 7; /// Submit routine task with modified configuration
+  EDIT_RUN = 8; /// Submit routine task with modified task content/logic
+  PREVALIDATE = 9; /// Run a task check/validation step (e.g. syntax check)
+  PREPROCESS = 10; /// Run a task preprocessing step (e.g. SMS preprocesor)
+  POSTVALIDATE = 11; /// Run a final validation step on the task
+
+  HOLD = 12; /// Hold job before execution/job submission
+  RELEASE = 13; /// Release a hold
+  SUSPEND = 14; /// Suspend task during execution
+  RESUME = 15; /// Suspend task during execution
+  CONTINUE = 16; /// Continue a task that is running but blocked
+  STOP = 17; /// Stop or shutdown a running task in nice way
+  KILL = 18; /// Kill a running task
+
+  ADD = 19; /// This task was newly added/defined (e.g. to a workflow)
+  DELETE = 20; /// This task was deleted/dropped (e.g. from a workflow)
+  MODIFY_CONFIG = 21; /// Update a task config in a persistent fashion
+  MODIFY = 22; /// Update a task content/logic in a persistent fashion
+  SET_COMPLETE = 23; /// The task is forced to be successfully completed
+  SET_ABORTED = 24; /// The task is forced to be in an error state
+  SKIP = 25; /// Skip running the task
+  /// Force the task to be put into an expired state. Usually an expired
+  // state implies a hard deadline was reached before the task executed
+  // or finished
+  EXPIRE = 26;
+  /// Delay running of the task
+  DEFER = 27;
+
+  REMOVE_DEPENDENCY = 28; /// Remove a task triggering condition
+  ADD_DEPENDENCY = 29; /// Add a task triggering condition
+  /// Delay the scheduled execution of a task by some time duration.
+  DELAY = 30;
+  /// Bring forward the scheduled execution of a task by some time duration.
+  BRING_FORWARD = 31;
+
+  /// Attempt to resurrect a task
+  RESURRECT = 32;
+  /// Migrate this task to another environment/scheduler
+  MIGRATE = 33;
+  /// Attempt to force a task to reload/refresh it's state/configuration
+  REFRESH = 34;
+  /// Perform a debugging operation on the task, or activate a
+  // debug or trace mode
+  DEBUG = 35;
+
+  /// Ask a model or system run by a task to create checkpoint
+  CHECKPOINT = 36;
+  /// Restore a task/system/model from a saved state
+  RESTORE = 37;
+
+  REPRIORITISE = 38; /// Change task urgency/priority
+  /// Change task resource limit(s) or other constraints
+  UPDATE_LIMIT = 39;
+
+  IGNORE = 127; /// Ignore and do nothing
+}

@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package bom;
+
+option java_outer_classname="EventHeaderProto";
+
+import "common/producer.proto";
+import "common/tag.proto";
+import "google/protobuf/timestamp.proto";
+
+/// Standard header to be included in all event messages.
+// Note unique message identifiers are tracked outside of the message content.
+// It is recommended the unique identifier:
+// KafkaTopic.kafka_message_timestamp.partition.offset
+// is used to allow agents to interact with events efficiently via Kafka.
+// The kafka_message_timestamp is a safeguard against the offset for
+// a particular partition being reset.
+// A suitable digital signature or other digest of the message could
+// alternatively be used.
+message EventHeader {
+  /// The producer of this message
+  Producer producer = 1;
+  /// Event timestamp for events where the message timestamp
+  // may not match the time of the event (e.g.
+  // for offline systems upon network sync)
+  google.protobuf.Timestamp timestamp = 2;
+  /// For those producers that can support this: a number that starts at 1
+  // and increments by 1 with each new event message of this type over the
+  // lifetime of this event message producer's instance. Upon producer restarts,
+  // this seuqence number is permitted to be reset to 1.
+  // This metadata is useful in a number of contexts, e.g. a missing number
+  // in a sequence is possible evidence of a lost event. An unexpected sequence
+  // number is possible evidence of spoofed message injection by a 3rd party.
+  uint64 sequence_number = 3;
+  /// Correlation id (sometimes known as a transit id) is an id that refers to
+  // a particular event chain
+  Id correlation_id = 4;
+  /// Interaction id for a event generated as a result of action(s)s initiated
+  // from a (usually user) interaction (e.g. with a business system). This is
+  // ideally tracked for all components handling the interaction
+  Id interaction_id = 5;
+  // TODO: consider interaction and/or correlation id at this level?
+}

@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package bom.prod_status;
+
+option java_package = "bom";
+option java_outer_classname="ProdStatusProto";
+
+/// The operational/production status of a system. This mainly relates to
+// the degree of support for the system along with the environment in which
+// it is running
+enum ProdStatus {
+  UNSET = 0;
+  UNKNOWN = 1;
+
+  CAT1 = 2; /// Production, CAT1 support
+  CAT2 = 3; /// Production, CAT2 support
+  CAT3 = 4; /// Production, CAT3 support
+  PRODUCTION_CONDITIONAL = 5; /// Production, but support arrangements are
+                              // conditional/complex
+  PRODUCTION_TEST = 6; /// Production test product
+  PRODUCTION_OTHER = 7; /// Production but support arrangements are not specified
+  PREOPERATIONAL = 8; /// Stable, running in stage or being trialled in prod
+  STAGING = 9; /// Trial runs in a staging environment
+  DEVELOPMENT = 10; /// Test runs in development environment
+  RESEARCH = 11; /// Experimental system
+  EXTERNAL = 12; /// Service provided by external vendor with unknown guarantees
+}

@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package bom;
+
+option java_outer_classname="AddressProto";
+
+import "common/tag.proto";
+
+/// A network address.
+// May contain a hostname (or a similar registered address),
+// IP address, or both. Note: it is permissible for hostname
+// to represent a batch scheduler cluster address,
+// eg SGE_CLUSTER_NAME
+message Address {
+  string hostname = 1;
+  string ip = 2;
+
+  oneof port_oneof { // Nullable since port 0 is technically valid
+    int32 port = 3; /// port is Nullable
+  }
+}
+
+/// Represents a URI/URL.
+message URI {
+  string scheme = 1;
+  string username = 2;
+  string password = 3;
+  Address address = 4;
+  string path = 5;
+  repeated Tag queries = 6;
+  string fragment = 7;
+}

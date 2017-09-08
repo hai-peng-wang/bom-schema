@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package bom.security_delimiting_marker;
+
+option java_package = "bom";
+option java_outer_classname="SecurityDelimitingMarkerProto";
+
+/// Dissemination Limiting Marker
+enum SecurityDelimitingMarker {
+  UNSET = 0;
+  UNKNOWN = 1;
+
+  UNCLASSIFIED = 2;
+  FOR_OFFICIAL_USE_ONLY = 3;
+  SENSITIVE = 4;
+  SENSITIVE_PERSONAL = 5;
+  SENSITIVE_LEGAL = 6;
+  SENSITIVE_CABINET = 7;
+}

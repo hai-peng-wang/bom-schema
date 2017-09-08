@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package bom.dataset_action_type;
+
+option java_package = "bom";
+option java_outer_classname="DatasetActionTypeProto";
+
+/// Actions/operations that can be performed on, with or in relation to a
+// dataset/document/resource.
+// Most entries from: ISO19115 code lists, see
+// https://geo-ide.noaa.gov/wiki/index.php?title=ISO_19115_and_19115-2_CodeList_Dictionaries#CI_DateTypeCode
+enum DatasetActionType {
+  UNSET = 0;
+  UNKNOWN = 1;
+
+  /// Resource created
+  CREATE = 2;
+  /// Resource issued/made available
+  PUBLISH = 3;
+  /// Resource updated or amended
+  REVISE = 4;
+  /// Resource reviewed, e.g. manually checked
+  REVIEW = 5;
+  /// Resource validated, generally an automated check
+  VALIDATE = 6;
+  /// Resource verified
+  VERIFY = 7;
+  /// Resource approved at some gateway or by some authority
+  APPROVE = 8;
+  /// Resource released for external or public access
+  RELEASE = 9;
+  /// Resource accessed, as relevant in the context of this event message
+  ACCESS = 10;
+  /// Resource was adopted
+  ADOPT = 11;
+  /// Resource was deprecated
+  DEPRECATE = 12;
+  /// Resource was distributed
+  DISTRIBUTE = 13;
+  /// Resource expired
+  EXPIRE = 14;
+  /// Resource come into force
+  IN_FORCE = 15;
+  /// Resource was superseded or replaced by another resource
+  SUPERSEDED = 16;
+  /// Resource was revoked
+  REVOKE = 17;
+  /// Resource was rejected
+  REJECT = 18;
+  /// Resource became not available or obtainable
+  UNAVAILABLE = 19;
+}

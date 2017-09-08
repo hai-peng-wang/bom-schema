@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package bom.computing_resource;
+
+option java_package = "bom";
+option java_outer_classname="ComputingResourceProto";
+
+/// Computing related resources, as relating to
+// capabilities or limits of a computing environment or
+// limits imposed on jobs or processes by policy or
+// management systems.
+/// TODO: ensure correct mapping to PBS resources is present and fully
+// covered with minimal ambiguity
+enum ComputingResource {
+    UNSET = 0;
+    UNKNOWN = 1;
+
+    /// Execution walltime available
+    WALLTIME = 2;
+    /// Execution cputime available
+    CPUTIME = 3;
+    /// Total RAM/memory available
+    MEMORY = 4;
+    /// Total virtual memory available
+    VIRT_MEMORY = 5;
+    /// RAM/memory available on a node
+    NODE_MEMORY = 6;
+    /// Total node virtual memory available
+    NODE_VIRT_MEMORY = 7;
+    /// Execution walltime available per process
+    PROC_WALLTIME = 8;
+    /// Execution cputime available per process
+    PROC_CPUTIME = 9;
+    /// Execution RAM/memory available per process
+    PROC_MEMORY = 10;
+    /// Stack size avaialable
+    STACK = 11;
+    /// Persistent disk storage available for job
+    DISK = 12;
+    /// Non-persistent cache storage available for job
+    CACHE = 13;
+    /// SWAP space storage available for job
+    SWAP = 14;
+    /// Maximum supported/allowed individual file creeation size
+    NEW_FILE_SIZE = 15;
+    /// Maximum supported/allowed individual file creation number
+    NEW_FILES = 16;
+    /// Maximum supported/allowed open file count
+    OPEN_FILES = 17;
+    /// Maximum number of processes
+    PROCESSES = 18;
+}

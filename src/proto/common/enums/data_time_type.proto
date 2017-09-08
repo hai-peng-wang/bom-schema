@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package bom.data_time_type;
+
+option java_package = "bom";
+option java_outer_classname="DataTimeTypeProto";
+
+/// Signficance of a specified datetime involved in describing
+// the content of a dataset.
+// Generally used in the context of a reference time or validity
+// period for a series of observations, model outputs or other
+// calculations
+enum DataTimeType {
+  UNSET = 0;
+  UNKNOWN = 1;
+
+  ANALYSIS = 2;
+  NOMINAL_ANALYSIS = 3;
+  /// The datetime(s) represent times that a (near) real-time (varying)
+  // quantity was observed.
+  OBSERVATION = 4;
+  /// The datetime(s) represent model forecast times at
+  // which the data is valid
+  FORECAST = 5;
+  START_OF_FORECAST = 6;
+  VERIFYING_TIME_OF_FORECAST = 7;
+
+  /// The datetime marking the start of some model/task/process that
+  // lead to the generation of the dataset
+  MODEL_START = 20;
+  /// The start of a sequence of model runs or observations etc
+  START_OF_SEQUENCE = 21;
+  /// The datetime(s) represent validity times that are not
+  // OBSERVATIONs or FORECASTs
+  VALIDITY = 22;
+
+  /// When dataset was last revised
+  LAST_REVISION = 60;
+  /// When dataset was last updated
+  LAST_UPDATE = 61;
+  /// When dataset will next be updated
+  NEXT_UPDATE = 62;
+  /// When the data/resource is considered to become valid.
+  // NOTE: There could be quite a delay between creation and validity begins
+  VALIDITY_BEGINS = 63;
+  /// When the data/resource is no longer considered to be valid
+  VALIDITY_EXPIRES = 64;
+}

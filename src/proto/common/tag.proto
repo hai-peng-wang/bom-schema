@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package bom;
+
+option java_outer_classname="TagProto";
+
+/// A generic (key, value) string pair used in various places for
+// parameters/tags/labels.
+message Tag {
+  string key = 1;
+  string value = 2;
+}
+
+/// A generic ID, it may be an array of bytes, a string or an integer.
+// This message may also be used to represent a
+// message digest (checksum/fingerprint/hash)
+//
+// One of id_str, id_bytes, id_int or id_uint is to be set
+message Id {
+  oneof id_type {
+    string id_str = 1;
+    bytes id_bytes = 2;
+    int64 id_int = 3;
+    uint64 id_uint = 4;
+  }
+}
