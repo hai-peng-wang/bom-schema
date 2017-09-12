@@ -3,6 +3,7 @@
 
 ## Table of Contents
 * [dataset.proto](#dataset.proto)
+ * [Coverage](#bom.Coverage)
  * [DataFile](#bom.DataFile)
  * [DataTimeInfo](#bom.DataTimeInfo)
  * [Dataset](#bom.Dataset)
@@ -11,6 +12,9 @@
  * [Dimension](#bom.Dimension)
  * [License](#bom.License)
  * [NWPDataSetForSingleBaseTime](#bom.NWPDataSetForSingleBaseTime)
+ * [Rights](#bom.Rights)
+ * [SpatialCoverage](#bom.SpatialCoverage)
+ * [TemporalCoverage](#bom.TemporalCoverage)
  * [Variable](#bom.Variable)
 * [task.proto](#task.proto)
  * [TaskContext](#bom.TaskContext)
@@ -80,6 +84,8 @@
  * [DatasetCompressionType](#bom.dataset_compression_type.DatasetCompressionType)
 * [dataset_feature_type.proto](#dataset_feature_type.proto)
  * [DatasetFeatureType](#bom.dataset_feature_type.DatasetFeatureType)
+* [dataset_production_context.proto](#dataset_production_context.proto)
+ * [DatasetProductionContext](#bom.dataset_production_context.DatasetProductionContext)
 * [data_time_type.proto](#data_time_type.proto)
  * [DataTimeType](#bom.data_time_type.DataTimeType)
 * [debug_level.proto](#debug_level.proto)
@@ -121,12 +127,20 @@
 
 
 
+<a name="bom.Coverage"/>
+### Coverage
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| subject_categories | [string](#string) | repeated | Subject categories covered by the dataset |
+| temporal | [TemporalCoverage](#bom.TemporalCoverage) | optional |  |
+| spatial | [SpatialCoverage](#bom.SpatialCoverage) | optional |  |
+
+
 <a name="bom.DataFile"/>
 ### DataFile
-Location and other metadata of data file. It is recommended
-DataFile represent a single file, but the flexibility to describe
-a directory along with "include" and "exclude" file matching patterns
-is provided.
+Location and other metadata of a data file
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
@@ -135,7 +149,7 @@ is provided.
 | data_format | [string](#string) | optional | Format of data |
 | digest | [Id](#bom.Id) | optional | Message digest/checksums/fingerprints of file |
 | data_size | [int64](#int64) | optional | Size of data uris in bytes. |
-| compressions | [DatasetCompressionType](#bom.dataset_compression_type.DatasetCompressionType) | repeated | Compression techniques applied.Multiple types can be specified; for example THINNED, PACKED and LOSSLESSare to be interpreted as data that has been thinned (a losssy operation)then packed (another lossy operation) and then this resultingthinned and packed data is further losslessly compressed |
+| compressions | [DatasetCompressionType](#bom.dataset_compression_type.DatasetCompressionType) | repeated | Compression techniques applied.Multiple types can be specified; for example THINNED, PACKED and LOSSLESSare to be interpreted as data that has been thinned (a lossy operation)then packed (another lossy operation) and then this resultingthinned and packed data is further losslessly compressed |
 
 
 <a name="bom.DataTimeInfo"/>
@@ -167,16 +181,12 @@ pertinent to the type of data being represented
 | id | [Id](#bom.Id) | optional | An identifier for the dataset, if applicable |
 | version | [Version](#bom.Version) | optional | The version of the dataset |
 | source | [DatasetSource](#bom.DatasetSource) | optional | Information about the source of the data |
-| subject_categories | [string](#string) | repeated | Subject categories covered by the dataset |
-| dataset_feature_type | [DatasetFeatureType](#bom.dataset_feature_type.DatasetFeatureType) | optional | The global dataset feature type (if applicable, and if all of thedata variables contained in this dataset are of a single feature type.If this is not the case, dataset_feature_type can be set to MIXED andper-variable feature types specified). |
-| data_files | [DataFile](#bom.DataFile) | repeated | URLs to where data can be found and data file metadata |
+| coverage | [Coverage](#bom.Coverage) | optional | Overview of temporal, spatial and subject-matter coverage |
+| feature_type | [DatasetFeatureType](#bom.dataset_feature_type.DatasetFeatureType) | optional | The global dataset feature type (if applicable, and if all of thedata variables contained in this dataset are of a single feature type.If this is not the case, dataset_feature_type can be set to MIXED andper-variable feature types specified). |
+| production_context | [DatasetProductionContext](#bom.dataset_production_context.DatasetProductionContext) | optional | Dataset context information that may be critical to interpreting thedata, e.g. if the dataset is sample data or "live" operational data. |
 | data_maturity | [Maturity](#bom.maturity.Maturity) | optional | Operational status of the system producing the dataset |
-| security_marking | [SecurityMarking](#bom.SecurityMarking) | optional |  |
-| license | [License](#bom.License) | optional | License under which the dataset is intended to be published |
+| data_files | [DataFile](#bom.DataFile) | repeated | URLs to where data can be found and data file metadata |
 | contacts | [Contact](#bom.Contact) | repeated | Relevant contacts for further information or to report dataset issues |
-| creation_timestamp | [Timestamp](#google.protobuf.Timestamp) | optional | Approximate time dataset was originally created |
-| reference_timestamp | [DataTimeInfo](#bom.DataTimeInfo) | optional | Reference datetime of the dataset. For example, the nominal("base") datetime for a NWP model run or the validity time ofan observational dataset or the start of a sequence of reanalyses etc |
-| data_times | [DataTimeInfo](#bom.DataTimeInfo) | repeated | Summary-level temporal coverage information for the dataset, .eg.the range of times the dataset covers, or the discrete times data inin the dataset is valid for |
 
 
 <a name="bom.DatasetAction"/>
@@ -201,7 +211,7 @@ approval process etc.
 
 <a name="bom.DatasetSource"/>
 ### DatasetSource
-Oerview of the source of the original data, i.e. the system or processes
+Overview of the source of the original data, i.e. the system or processes
 that generated this dataset
 The source is the method of production of the data. For example, if the
 data was model-generated, the details of the "source" component would
@@ -251,14 +261,41 @@ an API.
 | run_start_clock_timestamp | [Timestamp](#google.protobuf.Timestamp) | optional | The datetime at which the source began generation of the dataset.This would represent the real clocktime a model simulation began in thecase of model data; in this case this timestamp can be used to distinguishbetween model re-runs. |
 | number_of_ensemble_members | [int64](#int64) | optional | Total number of ensemble members run, if known. This includes membersthat may not be present in this dataset. 0 implies unknownif set to 1 implies a deterministic model. |
 | ensemble_members | [EnsembleMember](#bom.EnsembleMember) | repeated | Optional information about each ensemble_member |
-| observational_cutoff | [Duration](#google.protobuf.Duration) | optional | For models involving data assimilation, the observationaldata cutoff duration relative to the model (nominal) analysis time |
+| observational_cutoff | [Duration](#google.protobuf.Duration) | optional | For models involving data assimilation, the observationaldata cut-off duration relative to the model (nominal) analysis time |
 | dimensions | [Dimension](#bom.Dimension) | repeated |  |
 | variables | [Variable](#bom.Variable) | repeated |  |
 
 
+<a name="bom.Rights"/>
+### Rights
+IP or security rights for a resource
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| security_marking | [SecurityMarking](#bom.SecurityMarking) | optional |  |
+| license | [License](#bom.License) | optional | License under which the dataset is intended to be published |
+
+
+<a name="bom.SpatialCoverage"/>
+### SpatialCoverage
+
+
+
+
+<a name="bom.TemporalCoverage"/>
+### TemporalCoverage
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| creation_timestamp | [Timestamp](#google.protobuf.Timestamp) | optional | Approximate time dataset was originally created |
+| reference_timestamp | [DataTimeInfo](#bom.DataTimeInfo) | optional | Reference datetime of the dataset. For example, the nominal("base") datetime for a NWP model run or the validity time ofan observational dataset or the start of a sequence of reanalyses etc |
+| data_times | [DataTimeInfo](#bom.DataTimeInfo) | repeated | Summary-level temporal coverage information for the dataset, .eg.the range of times the dataset covers, or the discrete times data inin the dataset is valid for |
+
+
 <a name="bom.Variable"/>
 ### Variable
-A data, coordinate or auxillary coordinate variable, as per CF
+A data, coordinate or auxiliary coordinate variable, as per CF
 conventions.
 A data variable is a multidimensional array of values that is the
 result of sampling a continuous function at a discrete set of points.
@@ -267,7 +304,7 @@ system being observed.
 A coordinate variable a one-dimensional variable with the same name
 as its dimension [e.g., time(time) ], and it is defined as a numeric
 data type with values that are ordered monotonically.
-An auxillary coordinate is a variable that contains coordinate
+An auxiliary coordinate is a variable that contains coordinate
 data, but unlike coordinate variables, there is no relationship between
 the name of an auxiliary coordinate variable and the name(s) of
 its dimension(s).
@@ -278,7 +315,7 @@ its dimension(s).
 | cf_standard_name | [string](#string) | optional | From CF conventions, if applicable |
 | units | [string](#string) | optional | Units of the variable |
 | dimensions | [string](#string) | repeated | List of dimensions that define the multidimensional array shape.Zero dimensions implies a scalar variable or coordinate (a "singleton") |
-| aux_coordinates | [string](#string) | repeated | List of auxillary coordinates |
+| aux_coordinates | [string](#string) | repeated | List of auxiliary coordinates |
 | feature_type | [DatasetFeatureType](#bom.dataset_feature_type.DatasetFeatureType) | optional | Variable feature_type, if applicable. Should be set if global datasetconsists of a MIXED feature type |
 | coverage_content_type | [DataCoverageContentType](#bom.data_coverage_content_type.DataCoverageContentType) | optional | additional qualifying information about the sourceof the variable's data to aid with interpretation |
 | attributes | [Tag](#bom.Tag) | repeated | Other attributes, following CF conventions where relevant |
@@ -310,11 +347,11 @@ Summary context information pertaining to this task instance
 | queue | [TaskQueue](#bom.TaskQueue) | optional | The queue to which the task belongs |
 | submission_method | [string](#string) | optional |  |
 | comms_method | [TaskCommunicationMethod](#bom.task_communication_method.TaskCommunicationMethod) | optional |  |
-| priority | [Priority](#bom.Priority) | optional | Priority of task, as viewed by this scheduler. Priority may changedynamically based on the evolution of activies and business requirementsduring scheduling |
+| priority | [Priority](#bom.Priority) | optional | Priority of task, as viewed by this scheduler. Priority may changedynamically based on the evolution of activities and business requirementsduring scheduling |
 | group_limits | [TaskGroupLimits](#bom.TaskGroupLimits) | repeated | Limits placed on the running of this task (usually as part of a strategyto prevent saturating a particular resource) |
 | resource_limits | [TaskResource](#bom.TaskResource) | repeated | Resource limits requested of and/or imposed/enforced by this manager |
 | resource_use | [TaskResource](#bom.TaskResource) | repeated | Resources used by the task |
-| managers | [TaskManagerContext](#bom.TaskManagerContext) | repeated | Task manager(s) asssociated with this task. The first managerlisted should correspond to, or be closely aligned with, the componentthat produced this message |
+| managers | [TaskManagerContext](#bom.TaskManagerContext) | repeated | Task manager(s) associated with this task. The first managerlisted should correspond to, or be closely aligned with, the componentthat produced this message |
 | exec_hosts | [Address](#bom.Address) | repeated | List of execution hosts for task |
 | exec_vnodes | [Address](#bom.Address) | repeated | List of execution vnodes for task |
 
@@ -332,7 +369,7 @@ with a task by a user or system.
 | task_context | [TaskContext](#bom.TaskContext) | optional |  |
 | task_manager_context | [TaskManagerContext](#bom.TaskManagerContext) | optional |  |
 | task_status | [TaskStatus](#bom.TaskStatus) | optional | The current status of the task. |
-| task_interaction | [TaskInteraction](#bom.TaskInteraction) | optional | Interaction being perfomed on the task (if any).Note: the task_status in this particular event is not a result of thisparticular interaction. Rather, this task is in this event's task_statusstate when the task_interaction begins. Subsequent events may includetask_status changes as a result of this interaction |
+| task_interaction | [TaskInteraction](#bom.TaskInteraction) | optional | Interaction being performed on the task (if any).Note: the task_status in this particular event is not a result of thisparticular interaction. Rather, this task is in this event's task_statusstate when the task_interaction begins. Subsequent events may includetask_status changes as a result of this interaction |
 
 
 <a name="bom.TaskGroupLimits"/>
@@ -346,7 +383,7 @@ belonging to a particular group/type or using a particular resource
 | description | [string](#string) | optional | Description of this limit |
 | number | [int64](#int64) | optional | The limit number (maximum number of dispatched/running tasks) |
 | group | [string](#string) | optional | The task group the limit applies to (if applicable) |
-| resource | [string](#string) | optional | The resource the limit applies to (if applicable)Note: one of group or resource must be specified for the the limitto be meaingful |
+| resource | [string](#string) | optional | The resource the limit applies to (if applicable)Note: one of group or resource must be specified for the the limitto be meaningful |
 
 
 <a name="bom.TaskInfo"/>
@@ -357,9 +394,9 @@ This information should mostly be known ahead of the scheduling of the task.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | name | [string](#string) | optional |  |
-| namespace | [string](#string) | optional | Unique namespace for this task within a suite or workflow.This is typically the task familes to which the task belongs |
+| namespace | [string](#string) | optional | Unique namespace for this task within a suite or workflow.This is typically the task families to which the task belongs |
 | suite | [string](#string) | optional | The suite or workflow this task is a part of |
-| is_idempotent | [bool](#bool) | optional | Can repeated re-runs of the task (even following a crash during taskexeuction) safe and expected to produce the same result? |
+| is_idempotent | [bool](#bool) | optional | Can repeated re-runs of the task (even following a crash during taskexecution) safe and expected to produce the same result? |
 | groups | [string](#string) | repeated | The group(s) this task is part of, if relevant. Groups are generallya  grouping of similar tasks in the context of a workflow |
 | resources | [string](#string) | repeated | Named resources this task interacts with, e.g. particular databases,services, archive storage systems etc |
 | type | [string](#string) | optional | Type of task |
@@ -380,7 +417,7 @@ Metadata about the entity involved in some interaction
 | actorType | [TaskActorType](#bom.task_actor_type.TaskActorType) | optional | Type of entity carrying out or initiating the action/interaction |
 | contact | [Contact](#bom.Contact) | optional | Entity contact details for humans/organisations |
 | reason | [string](#string) | optional | Motivation for the interaction, if relevant |
-| system | [Id](#bom.Id) | optional | The system/equipment/tool via which the interaction took placeThis will generally be the scheduler, or a component of a scheduler |
+| system | [Id](#bom.Id) | optional | The system/equipment/tool via which the interaction took place.This will generally be the scheduler, or a component of a scheduler |
 | interaction_detail | [string](#string) | optional | Additional details/context |
 | interaction_id | [Id](#bom.Id) | optional | ID to track this interaction |
 | on_behalf_of | [TaskInteraction](#bom.TaskInteraction) | optional | To be set when this interaction is on behalf or as a consequence ofanother entity or interaction |
@@ -401,7 +438,7 @@ manager, is exposed in the parent TaskContext message
 | name | [string](#string) | optional | e.g. PBS |
 | component_id | [int64](#int64) | optional | The index in the Producer components list that corresponds to thistask manager component. |
 | id | [Id](#bom.Id) | optional | Id of manager/scheduler if relevant |
-| saga_id | [Id](#bom.Id) | optional | Additional id to track manager specific task context information,e.g. be used for dag_id (directed acylcic graph id), suite id etc |
+| saga_id | [Id](#bom.Id) | optional | Additional id to track manager specific task context information,e.g. be used for dag_id (directed acyclic graph id), suite id etc |
 | output_collection_task_ids | [Id](#bom.Id) | repeated | Tasks associated with collecting task outputs, if also managed bythis scheduler and if known |
 | monitoring_task_ids | [Id](#bom.Id) | repeated | Tasks associated with monitoring tasks, if also managed bythis scheduler and if known |
 
@@ -426,7 +463,7 @@ managed by a job or batch scheduler
 | ----- | ---- | ----- | ----------- |
 | resource | [ComputingResource](#bom.computing_resource.ComputingResource) | optional |  |
 | amount | [int64](#int64) | optional | Value in milliseconds for duration,bytes for memory/disk or a count in other contexts |
-| is_hard_limit | [bool](#bool) | optional | If limit the amount represents a resource limit, whether it ishard (ortherwise it is considered "soft"). To be ignored if thismessage does not correspond to a resource limit |
+| is_hard_limit | [bool](#bool) | optional | If limit the amount represents a resource limit, whether it ishard (otherwise it is considered "soft"). To be ignored if thismessage does not correspond to a resource limit |
 | steward | [TaskActorType](#bom.task_actor_type.TaskActorType) | optional | Entity responsible for measuring this resource, or for ensuringany limit (if applicable) is respected by some suitable means(e.g. the governor batch scheduler or native system) |
 
 
@@ -450,7 +487,7 @@ Metadata about expected automatic retries for tasks.
 | ----- | ---- | ----- | ----------- |
 | user | [Userid](#bom.Userid) | optional | The user/account/identity that the task is to run as |
 | subusers | [Userid](#bom.Userid) | repeated | Other users/accounts that processes/subcomponents launched by the taskwill run as (e.g. task involving sudo commands for another service account) |
-| is_simulation | [bool](#bool) | optional | If task is in a simulation mode; it is not running normal workloads,rather a dummy task to help simulate suite behavior. |
+| is_simulation | [bool](#bool) | optional | If task is in a simulation mode; it is not running normal workloads,rather a dummy task to help simulate suite behaviour. |
 | is_test | [bool](#bool) | optional | If task is in a test mode |
 | is_edit_run | [bool](#bool) | optional | If routine task is the result of an edit run of some type |
 | note | [string](#string) | optional | A note about the settings |
@@ -473,7 +510,7 @@ for real-time systems
 | message | [string](#string) | optional | A message/note about task state |
 | reporter_type | [TaskActorType](#bom.task_actor_type.TaskActorType) | optional | Type of entity reporting the new state |
 | reporter | [string](#string) | optional | The system or entity reporting the state, e.g. Cylc or PBS |
-| severity | [Severity](#bom.severity.Severity) | optional | Severity of new task state. Each diagnostic also has a severity,and this may be left unset if it is possible to infer the task stateseverityfrom the diagnostic(s) |
+| severity | [Severity](#bom.severity.Severity) | optional | Severity of new task state. Each diagnostic also has a severity,and this may be left unset if it is possible to infer the task stateseverity from the diagnostic(s) |
 | time_info | [TaskTimes](#bom.TaskTimes) | optional |  |
 | number_of_consecutive_failures | [int64](#int64) | optional | Number of consecutive task failures in a task series |
 | late | [Duration](#google.protobuf.Duration) | optional | If task is "late", set late to the length of time thetask is late by (valid at the time of event production) |
@@ -483,7 +520,7 @@ for real-time systems
 ### TaskTimes
 Times to track significant changes in task state, from the
 perspective of the event message producer.
-This tracking is a convencience feature; if events are produced
+This tracking is a convenience feature; if events are produced
 with sufficient granularity this information can be inferred from
 a sequence of changes in event state.
 
@@ -696,7 +733,7 @@ Contact information for a person, team or organisation.
 | url | [URI](#bom.URI) | optional | URL pointing to contact information |
 | email | [string](#string) | optional | The email address of the contact person/group/organisation |
 | phone_nums | [int64](#int64) | repeated | The phone numbers that can be used to call the contact |
-| others | [Tag](#bom.Tag) | repeated | Other contact mechanisms, e.g. {"Skype", "SkpeUserId"} |
+| others | [Tag](#bom.Tag) | repeated | Other contact mechanisms, e.g. {"Skype", "SkypeUserId"} |
 
 
 
@@ -1015,7 +1052,7 @@ User/account identification (Security Principal)
 <a name="bom.SemVer"/>
 ### SemVer
 A semantic or compatible version representation with the format:
-major.minor.patch.pre_release_id1.pre_release_id2+buid_id1.build_ids
+major.minor.patch.pre_release_id1.pre_release_id2+build_id1.build_ids
 
 where major, minor and patch are integers >= 0 and
 pre_release_ids and/or build_ids are optional and there can any number.
@@ -1038,7 +1075,7 @@ versioning scheme, which is also often also used for versioning datasets
 
 <a name="bom.Version"/>
 ### Version
-Flexibile representation of a version.
+Flexible representation of a version.
 One of semver, string_ver, int_ver or date_ver is allowed to be set
 
 | Field | Type | Label | Description |
@@ -1064,9 +1101,9 @@ One of semver, string_ver, int_ver or date_ver is allowed to be set
 <a name="bom.component_level.ComponentLevel"/>
 ### ComponentLevel
 ComponentLevel broadly describes terms useful to help delineate a software
-component or devices heiriachy amongst other related components of a wider
+component or devices hierarchy amongst other related components of a wider
 system.
-The heiriachial order of labels is dependent on the system and context.
+The hierarchical order of labels is dependent on the system and context.
 Note: excludes "environmental" concepts, e.g. versions
       of libraries, runtime systems, virtual machine, OS for an application
 
@@ -1075,8 +1112,8 @@ Note: excludes "environmental" concepts, e.g. versions
 | UNSET | 0 |  |
 | UNKNOWN | 1 |  |
 | SYSTEM | 2 | System-level / OS level |
-| PLATFORM | 3 | Platform is an entity that allow multiple products to be built within thesame technical framework. e.g. an enterprise service bus,a workflow manager, a web platform, an overarching gaming "service/app"like Valve's steam would consistute a platform |
-| SUITE | 4 | A suite of related software components. e.g. a suite of tasks thatconsitute the setup, running and post-processing of a NWP model |
+| PLATFORM | 3 | Platform is an entity that allow multiple products to be built within thesame technical framework. e.g. an enterprise service bus,a workflow manager, a web platform, an overarching gaming "service/app"like Valve's steam would constitute a platform |
+| SUITE | 4 | A suite of related software components. e.g. a suite of tasks thatconstitute the setup, running and post-processing of a NWP model |
 | DEVICE | 5 | A physical or virtual device |
 | APPLICATION | 6 | Application here means a computer program |
 | COMPONENT | 7 | A component of an application or device |
@@ -1098,7 +1135,7 @@ Note: excludes "environmental" concepts, e.g. versions
 <a name="bom.component_relation.ComponentRelation"/>
 ### ComponentRelation
 ComponentRelation describes the type of high-level data-flow, process or
-heiriachial relationship (whichever is most relevant) that this component
+hierarchical relationship (whichever is most relevant) that this component
 has to the other identified component. The relationship is usually
 directional, e.g.:
 1. an outbound data-push or downstream (sequentially) processing
@@ -1124,9 +1161,9 @@ SUBCOMPONENT through to EVENT_SINK describe "inbound" directed arcs/edges.
 | UNSET | 0 |  |
 | UNKNOWN | 1 |  |
 | SUPERCOMPONENT | 2 | This component is a supercomponent of the other component. ie theother component is a subcomponent. Generally a supercomponent manages/delegates work or pushes instructions/data to the subcomponent, hencethis is principally an outbound relationship from the perspective ofsequential process workflow |
-| UPSTREAM_REQUIREMENT | 3 | This component involves an upstream requirement that must be met beforethe other component can carry out its function. e.g. thiscomponent may be a task that must commplete before the other taskcan begin |
+| UPSTREAM_REQUIREMENT | 3 | This component involves an upstream requirement that must be met beforethe other component can carry out its function. e.g. thiscomponent may be a task that must complete before the other taskcan begin |
 | INSTRUCTOR | 4 | The two components are part of distinct ecosystems, yet thiscomponent is managing/directing (or delegating) activity in theother component. |
-| SYS_MONITORED | 5 | System characterstics of this components operation are being monitoredby the other component (in a "pull"/"query"/"poll"/"listen"-likefashion). This component may indeed not be directly "aware" of thismonitoring. In some cases this component may be providing an API orevent-based mechanism which supports such monitoring."System"-level monitoring entails watching system processes,metrics or diagnostic/logged data generated by this component tohelp ascertain the health or state of this component |
+| SYS_MONITORED | 5 | System characteristics of this components operation are being monitoredby the other component (in a "pull"/"query"/"poll"/"listen"-likefashion). This component may indeed not be directly "aware" of thismonitoring. In some cases this component may be providing an API orevent-based mechanism which supports such monitoring."System"-level monitoring entails watching system processes,metrics or diagnostic/logged data generated by this component tohelp ascertain the health or state of this component |
 | SYS_ANALYSED | 6 | As per SYS_MONITORED but the other system is also performing a moresignificant analysis of this components systems. Such analysis mayor may not be happening in real-time |
 | DATA_MONITORED | 7 | This components output data is being watched/monitored by the othercomponent (in a "pull"/"query"/"poll"/"listen"-like fashion)."Data"-level monitoring entails tracking output generatedby this component (e.g. gridded model output, product generation,observations collected from sensors etc). Typically such tracking maytake place to monitor the progress of this components run-timeor operation, to create dataset events on behalf of thisapplication or to direct yet another component to perform someoperation with the data (e.g. copying, validating, ingesting,notifying etc) |
 | DATA_SRC_FOR_VALIDATION | 8 | This components output data is read by the other componentfor a technical validation step. This component thereforerepresents a data source that is used by the other component |
@@ -1138,8 +1175,8 @@ SUBCOMPONENT through to EVENT_SINK describe "inbound" directed arcs/edges.
 | SRC_FOR_CLONING | 14 | This components state is cloned/mirrored/replicated to the othercomponent |
 | EVENT_SRC | 15 | This component issues event(s) for consumption by the other component |
 | SUBCOMPONENT | 64 | This component is a subcomponent of the other component |
-| DEPENDENT_ON | 65 | This compoenents depends on the other component to perform someaction(s) or reach/set some state(s) before this component can progressits function |
-| INSTRUCTED | 66 | This component is being unstructed to peform work by a componentbelonging to a different system tier/suite/device ecosystem |
+| DEPENDENT_ON | 65 | This components depends on the other component to perform someaction(s) or reach/set some state(s) before this component can progressits function |
+| INSTRUCTED | 66 | This component is being instructed to perform work by a componentbelonging to a different system tier/suite/device ecosystem |
 | SYS_MONITOR | 67 | This component pulls system-level data/metrics from the other componenti.e. this component is a consumer of system-related change of stateinformation generated by the other component |
 | SYS_ANALYSER | 68 | As per SYS_MONITOR but this system is also performing a more intensiveanalysis of the data collected |
 | DATA_MONITOR | 69 |  |
@@ -1184,11 +1221,11 @@ covered with minimal ambiguity
 | PROC_WALLTIME | 8 | Execution walltime available per process |
 | PROC_CPUTIME | 9 | Execution cputime available per process |
 | PROC_MEMORY | 10 | Execution RAM/memory available per process |
-| STACK | 11 | Stack size avaialable |
+| STACK | 11 | Stack size available |
 | DISK | 12 | Persistent disk storage available for job |
 | CACHE | 13 | Non-persistent cache storage available for job |
 | SWAP | 14 | SWAP space storage available for job |
-| NEW_FILE_SIZE | 15 | Maximum supported/allowed individual file creeation size |
+| NEW_FILE_SIZE | 15 | Maximum supported/allowed individual file creation size |
 | NEW_FILES | 16 | Maximum supported/allowed individual file creation number |
 | OPEN_FILES | 17 | Maximum supported/allowed open file count |
 | PROCESSES | 18 | Maximum number of processes |
@@ -1216,12 +1253,12 @@ content type of data
 | IMAGE | 2 | Meaningful numerical representation of a physical parameter that isnot the actual value of the physical parameter |
 | THEMATIC_CLASSIFICATION | 3 | Value with no quantitative meaning, used to represent aphysical quantity |
 | PHYSICAL_MEASUREMENT | 4 | Value in physical units of the quantity being measured |
-| AUXILLARY_INFORMATION | 5 | Data, usually a physical measurement, used to support the calculationof another variable(e.g. grid of aerosol optical thickness used in the calculation of asea surface temperature product) |
+| AUXILIARY_INFORMATION | 5 | Data, usually a physical measurement, used to support the calculationof another variable(e.g. grid of aerosol optical thickness used in the calculation of asea surface temperature product) |
 | COORDINATE | 6 | Data used to provide coordinate axis values |
 | MODEL_RESULT | 7 | Resources with values that are calculated using a model rather thanbeing observed or calculated from observations. |
 | QUALITY_INFORMATION | 8 | Data used to characterize the quality of another variable |
 | REFERENCE_INFORMATION | 9 | Reference information used to support the calculation of another variable(e.g. grids of latitude/longitude used to geolocate the physicalmeasurements) |
-| AUXILLIARY_DATA | 10 | Values of extraneous data |
+| AUXILIARY_DATA | 10 | Values of extraneous data |
 
 
 
@@ -1291,7 +1328,7 @@ considered to change the type of the data in the dataset.
 | NONE | 2 | Dataset is uncompressed ("native" format) |
 | LOSSLESS | 3 | Dataset is losslessly compressed ("native" data can be exactly restored) |
 | NEAR_LOSSLESS | 4 | Dataset is compressed via techniques that are known to result inno significant degradation to the information content |
-| LOSSY_MINIMAL | 5 | Some lossy compression algorithm has been used, the errorthe characterics of which are thought to impact in a minimal way on thedata |
+| LOSSY_MINIMAL | 5 | Some lossy compression algorithm has been used, the errorthe characteristics of which are thought to impact in a minimal way on thedata |
 | LOSSY_MODERATE | 6 | More aggressive lossy compression settings, achieving a fairtrade-off between quality and size |
 | LOSSY_AGGRESSIVE | 7 | Very aggressive lossy compression settings, used to conservebandwidth |
 | PACKED | 10 | Data has been packing/rounding |
@@ -1325,7 +1362,7 @@ The most specific feature type should be chosen in the event of ambiguity.
 | RADIAL | 3 | A set of data points in a two dimensional grid described by aconnected set of radials using polar coordinates(connected, 2D elevation, azimuth, distance; ordered time)/ Example: data from a fixed-position scanning radar or lidar |
 | SWATH | 4 | A set of data points in a two dimensional grid, where eachcoordinate is connected and a function of 2 dimensions(connected, 2D x, y, z, t)Examples: a polar orbiting satellite, airborne or ship instrument. |
 | STRUCTURED_GRID | 5 | Other cartesian, rectilinear or curvilinear grids(separable x, y, z, t) |
-| UNSTRUCTURED_GRID | 6 | Other unstructured (tesselated) grids |
+| UNSTRUCTURED_GRID | 6 | Other unstructured (tessellated) grids |
 | HYBRID_GRID | 7 | Mix of structured and unstructured portions |
 | MOVING_STRUCTURED_GRID | 8 | A structured grid that moves with time (or each t, separable x, y, z) |
 | MOVING_UNSTRUCTURED_GRID | 9 |  |
@@ -1335,9 +1372,41 @@ The most specific feature type should be chosen in the event of ambiguity.
 | PROFILE | 52 | A set of data points along a vertical line for one or more locations(i.e. a vertical soundings) at fixed times.e.g. data(i,o) : x(i) y(i) z(i,o) t(i)Examples: Certain satellite profiles, vertical model soundings |
 | TIMESERIES_PROFILE | 53 | A time-series of profile features at specified location(s).e.g. data(i,o) : x(i) y(i) t(i,o)Examples: Station profilers, idealized representations ofballoon soundingsNote: sometimes referred to as a "STATION_PROFILE" |
 | TRAJECTORY | 54 | A set of data points along a 1D curve in time and spacee.g. data(i,o) : x(i,o) y(i,o) t(i,o)Examples: Aircraft data, ship data, drifting buoys |
-| TRAJECTORY_PROFILE | 55 | A series of profile features located at points ordred along atrajectorydata(i,p,o) : x(i,p) y(i,p) z(i,p,o) t(i,p)Example: Ship soundingsNote: sometimes referred to as a "SECTION" |
+| TRAJECTORY_PROFILE | 55 | A series of profile features located at points ordered along atrajectorydata(i,p,o) : x(i,p) y(i,p) z(i,p,o) t(i,p)Example: Ship soundingsNote: sometimes referred to as a "SECTION" |
 | MIXED | 126 | The dataset is known to contain a mix of the above feature types.In this case, the mix is to be determined by inspection of eachvariable's feature type |
 | OTHER | 127 | Use of OTHER is discouraged. Additional entries to this enumare preferred. |
+
+
+
+
+<a name="dataset_production_context.proto"/>
+<p align="right"><a href="#top">Top</a></p>
+
+## dataset_production_context.proto
+
+
+
+
+<a name="bom.dataset_production_context.DatasetProductionContext"/>
+### DatasetProductionContext
+The context a dataset was generated under and should be interpreted
+by upon receipt. The main purpose of this meta-data is to help distinguish
+between data created as part of "normal" output of some system (e.g. a
+routinely running forecast model) and more usual modes this system could
+be made to run in to cater for particular purposes
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| UNSET | 0 |  |
+| UNKNOWN | 1 |  |
+| NORMAL | 2 | Dataset created in a "normal" fashion with respect to the typical/valuable range of intended purposes of the system creating the dataset.e.g. a NWP "normal" routine or on-demand NWP forecast |
+| SCENARIO | 3 | Dataset created as part of a hypothetical scenario/exercise of thesystem (not for or to support an actual real event).This data may be disseminated to 3rd parties as part of an exercise. |
+| RETROSPECTIVE | 4 | A special retrospective dataset for systems that normally provide currentor forecast data. |
+| TEST | 5 | Dataset is generated as part of an internal test of componentsinvolved in creation/manipulation/validation/verification. |
+| REAL_SAMPLE | 6 | Dataset represents realistic sample data. |
+| SYNTHETIC_SAMPLE | 7 | Dataset represents sample synthetic/mock data. |
+| TRIAL | 8 | Dataset for a system being trialled. This is pertinent for example if thesystem producing this dataset has a stable "NORMAL" counterpart, but thisslightly modified system is being run in parallel for evaluation purposesas part of an end-user trial. |
+| RESEARCH | 9 | Dataset for research or prototyping purposes |
 
 
 
@@ -1352,7 +1421,7 @@ The most specific feature type should be chosen in the event of ambiguity.
 
 <a name="bom.data_time_type.DataTimeType"/>
 ### DataTimeType
-Signficance of a specified datetime involved in describing
+Significance of a specified datetime involved in describing
 the content of a dataset.
 Generally used in the context of a reference time or validity
 period for a series of observations, model outputs or other
@@ -1452,15 +1521,15 @@ This list is inspired by TensorFlow's error_codes.proto (APACHE2 license)
 | UNAVAILABLE | 21 | A service is unavailable. This is a most likely a transientcondition and may be corrected by retrying with a backoff. |
 | CONNECTION | 22 | Connection refused or dropped/aborted for other reasons |
 | OUT_OF_RANGE | 23 | Operation tried to iterate past the valid input range.  E.g., seeking orreading past end of file.Unlike DATA_INVALID or DATA_LOSS, this error indicates a problem that maybe fixed if the system state changes. For example, a 32-bit filesystem will generate INVALID_ARGUMENT if asked to read at anoffset that is not in the range [0,2^32-1], but it will generateOUT_OF_RANGE if asked to read from an offset past the currentfile size. |
-| FAILED_PRECONDITION | 24 | Operation was rejected because the system is not in a staterequired for the operation's execution.  For example, directoryto be deleted may be non-empty, an rmdir operation is applied toa non-directory, etc.A litmus test that may help a service implementor in decidingbetween FAILED_PRECONDITION, ABORTED, and UNAVAILABLE: (a) Use UNAVAILABLE if a client can retry just the failing call. (b) Use ABORTED if the client should retry at a higher-level     (e.g., restarting a read-modify-write sequence). (c) Use FAILED_PRECONDITION if the client should not retry until     the system state has been explicitly fixed.  E.g., if an "rmdir"     fails because the directory is non-empty, FAILED_PRECONDITION     should be returned since the client should not retry unless     they have first fixed up the directory by deleting files from it. (d) Use FAILED_PRECONDITION if the client performs conditional     REST Get/Update/Delete on a resource and the resource on the     server does not match the condition. E.g., conflicting     read-modify-write on the same resource. |
+| FAILED_PRECONDITION | 24 | Operation was rejected because the system is not in a staterequired for the operation's execution.  For example, directoryto be deleted may be non-empty, an rmdir operation is applied toa non-directory, etc.A litmus test that may help a service implementer in decidingbetween FAILED_PRECONDITION, ABORTED, and UNAVAILABLE: (a) Use UNAVAILABLE if a client can retry just the failing call. (b) Use ABORTED if the client should retry at a higher-level     (e.g., restarting a read-modify-write sequence). (c) Use FAILED_PRECONDITION if the client should not retry until     the system state has been explicitly fixed.  E.g., if an "rmdir"     fails because the directory is non-empty, FAILED_PRECONDITION     should be returned since the client should not retry unless     they have first fixed up the directory by deleting files from it. (d) Use FAILED_PRECONDITION if the client performs conditional     REST Get/Update/Delete on a resource and the resource on the     server does not match the condition. E.g., conflicting     read-modify-write on the same resource. |
 | ABORTED | 25 | The operation was aborted, typically due to a concurrency issuelike sequencer check failures, transaction aborts, etc.See litmus test above for deciding between FAILED_PRECONDITION,ABORTED, and UNAVAILABLE. |
 | SEGFAULT | 26 |  |
 | MEMORY | 27 | Memory allocation error, bus error, invalid/double free |
 | MISSING_COMMAND | 28 | Command, alias or action type not found or known |
 | NOT_IMPLEMENTED | 29 | Attempted invocation of an unimplemented method/function/command |
-| DEPEDENCY_ERROR | 30 | Generic error due to a missing high-level dependency |
+| DEPENDENCY_ERROR | 30 | Generic error due to a missing high-level dependency |
 | DEAD_NODE | 31 | A required node was found to be dead or died during.Includes the situation when a multi-node job aborts due to one dead node. |
-| IO | 32 | Other I/O errors not covered by previous entries (e.g. file unexpectlyalready in use) |
+| IO | 32 | Other I/O errors not covered by previous entries (e.g. file unexpectedlyalready in use) |
 | TRAP | 33 | Unhandled trap/signal/interrupt |
 | BROKEN_PIPE | 34 |  |
 | WRONG_TYPE | 35 | Program internal operation applied to an inappropriate type |
@@ -1525,7 +1594,7 @@ on the type of information logged and/or the intent of the log
 | TRACE | 5 | Log for additional trace-level output |
 | SUBMIT | 6 | Task submission log |
 | PID | 7 | Log for tracking tracking process ids or similar |
-| TRANSACTION | 8 | Tranactional or commit logs |
+| TRANSACTION | 8 | Transactional or commit logs |
 | SCHEDULER | 9 | Log of job manager/scheduler/workflow or similar |
 | ACCESS | 10 | Resource access type logs |
 | MESSAGE | 11 | Logs that record conversations or similar |
@@ -1549,14 +1618,14 @@ on the type of information logged and/or the intent of the log
 Maturity is based on the "Data Stewardship Maturity Matrix (DSMM)"
 Refer to: http://doi.org/10.2481/dsj.14-049
 Note: INTERMEDIATE is the recommended minimal level for Operational
-      products stewarded by NCEI/CICS-NC/NOAA National Data Centers
+      products stewarded by NCEI/CICS-NC/NOAA National Data Centres
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
 | UNSET | 0 |  |
 | UNKNOWN | 1 |  |
 | AD_HOC | 2 | Not managed |
-| MINIMAL | 3 | Limited managment |
+| MINIMAL | 3 | Limited management |
 | INTERMEDIATE | 4 | Managed, defined, partially implemented |
 | ADVANCED | 5 | Managed, well-defined, fully implemented, partially verified |
 | OPTIMAL | 6 | OPTIMAL: managed, well-defined, fully implemented, measured, controlled  &verified/audited |
@@ -1705,7 +1774,7 @@ Info and Debug processing.
 | NORMAL | 5 | Normal but possibly more useful information that INFO. |
 | NOTICE | 6 | Normal but significant conditions, such as start-up, shut-down, or aconfiguration change. May require investigation or special handlingin some cases. |
 | WARNING | 7 | Warning events might cause problems. |
-| ERROR | 8 | Error conditions, likely to cause problems, but not nessecarily fatal |
+| ERROR | 8 | Error conditions, likely to cause problems, but not necessarily fatal |
 | CRITICAL | 9 | A critical condition, likely to cause more severe problems or outages.e.g. task failure without retry, hard device errors etc |
 | ALERT | 10 | A condition to be corrected immediately, such as a corrupted database,operational suite daemon failure |
 | EMERGENCY | 11 | One or more systems are unusable. Panic condition. |
@@ -1725,7 +1794,7 @@ Info and Debug processing.
 ### TaskActorType
 Type of entity involved in an interaction with a task.
 For example, this type can be used to represent the entity
-responsible for iniatiting the running of a task, the
+responsible for initiating the running of a task, the
 entity/system reporting a change in task state or the type
 of entity responsible for imposing/enforcing resource limits.
 
@@ -1880,7 +1949,7 @@ a workflow/batch system by system basis.
 | CHECKPOINTING | 32 | Checkpoint information about a task or the system |
 | CHECKPOINT_FAIL | 33 | Failure during checkpointing |
 | CHECKPOINT_SUCCESS | 34 |  |
-| RETRYING | 35 | Retring, progressed beyond submission |
+| RETRYING | 35 | Retrying, progressed beyond submission |
 | RESURRECTING | 36 |  |
 | RESURRECTED | 37 |  |
 | RESURRECT_FAIL | 38 |  |
@@ -1894,19 +1963,19 @@ a workflow/batch system by system basis.
 | EXITING | 46 | Job is exiting after having run (normally in a batch scheduler context) |
 | INDETERMINATE | 47 | May or may not be eventually run |
 | DORMANT | 48 | Task proxy exists in a scheduler but is not currently in aconfiguration that permits it to be progressed to a queued or run state |
-| DROPPED | 49 | Task definition dropped/omitted before exeuction from scheduler |
+| DROPPED | 49 | Task definition dropped/omitted before execution from scheduler |
 | SKIPPED | 50 | Task to be skipped |
 | MIGRATING | 51 | Job control responsibility is being migrated to another system |
 | MIGRATED | 52 |  |
 | MIGRATING_FAIL | 53 |  |
 | DEFERRED | 54 |  |
 | REJECTED | 55 | Task rejected by batch scheduler or a security layer prior to execution |
-| TRANSIT | 56 | A transit state can be meaingful for certain scheduler systems. |
+| TRANSIT | 56 | A transit state can be meaningful for certain scheduler systems. |
 | ABNORMAL_SUCCESS | 57 | Diagnostics suggest task appears to have succeededbut some warnings/errors/abnormalities were encountered |
 | FAILED | 58 | Task failed (desired outcome of the task was not reached) |
 | RETRY_LIMIT_REACHED | 59 | Multiple task retries have all failed. This is |
 | WARNING | 60 |  |
-| ERROR_WITH_CONTINUATION | 61 | An error was found during exeuction but task is continuing. |
+| ERROR_WITH_CONTINUATION | 61 | An error was found during execution but task is continuing. |
 | KILLING | 62 | An attempt at killing the task has taken place |
 | KILLING_FAIL | 63 | An attempt at killing the task has apparently failed |
 | KILLED_BY_COMMAND | 64 | For example via kill or qdel |

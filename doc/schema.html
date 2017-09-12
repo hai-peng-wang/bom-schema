@@ -176,6 +176,12 @@
           <a href="#dataset.proto">dataset.proto</a>
           <ul>
             <li>
+              <a href="#bom.Coverage">
+                <span class="badge">M</span>
+                Coverage
+              </a>
+            </li>
+            <li>
               <a href="#bom.DataFile">
                 <span class="badge">M</span>
                 DataFile
@@ -221,6 +227,24 @@
               <a href="#bom.NWPDataSetForSingleBaseTime">
                 <span class="badge">M</span>
                 NWPDataSetForSingleBaseTime
+              </a>
+            </li>
+            <li>
+              <a href="#bom.Rights">
+                <span class="badge">M</span>
+                Rights
+              </a>
+            </li>
+            <li>
+              <a href="#bom.SpatialCoverage">
+                <span class="badge">M</span>
+                SpatialCoverage
+              </a>
+            </li>
+            <li>
+              <a href="#bom.TemporalCoverage">
+                <span class="badge">M</span>
+                TemporalCoverage
               </a>
             </li>
             <li>
@@ -617,6 +641,17 @@
           </ul>
         </li>
         <li>
+          <a href="#dataset_production_context.proto">dataset_production_context.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.dataset_production_context.DatasetProductionContext">
+                <span class="badge">E</span>
+                DatasetProductionContext
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
           <a href="#data_time_type.proto">data_time_type.proto</a>
           <ul>
             <li>
@@ -800,11 +835,35 @@
       <h2 id="dataset.proto">dataset.proto</h2><a href="#title">Top</a>
     </div>
     
+    <h3 id="bom.Coverage">Coverage</h3>
+    <p></p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>subject_categories</td>
+          <td><a href="#string">string</a></td>
+          <td>repeated</td>
+          <td><p>Subject categories covered by the dataset</p></td>
+        </tr>
+        <tr>
+          <td>temporal</td>
+          <td><a href="#bom.TemporalCoverage">TemporalCoverage</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>spatial</td>
+          <td><a href="#bom.SpatialCoverage">SpatialCoverage</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+      </tbody>
+    </table>
     <h3 id="bom.DataFile">DataFile</h3>
-    <p>Location and other metadata of data file. It is recommended
-DataFile represent a single file, but the flexibility to describe
-a directory along with &quot;include&quot; and &quot;exclude&quot; file matching patterns
-is provided.</p>
+    <p>Location and other metadata of a data file</p>
     <table class="field-table">
       <thead>
         <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
@@ -847,7 +906,7 @@ of the same data file or set of data files</p></td>
           <td>repeated</td>
           <td><p>Compression techniques applied.
 Multiple types can be specified; for example THINNED, PACKED and LOSSLESS
-are to be interpreted as data that has been thinned (a losssy operation)
+are to be interpreted as data that has been thinned (a lossy operation)
 then packed (another lossy operation) and then this resulting
 thinned and packed data is further losslessly compressed</p></td>
         </tr>
@@ -932,13 +991,13 @@ pertinent to the type of data being represented</p>
           <td><p>Information about the source of the data</p></td>
         </tr>
         <tr>
-          <td>subject_categories</td>
-          <td><a href="#string">string</a></td>
-          <td>repeated</td>
-          <td><p>Subject categories covered by the dataset</p></td>
+          <td>coverage</td>
+          <td><a href="#bom.Coverage">Coverage</a></td>
+          <td>optional</td>
+          <td><p>Overview of temporal, spatial and subject-matter coverage</p></td>
         </tr>
         <tr>
-          <td>dataset_feature_type</td>
+          <td>feature_type</td>
           <td><a href="#bom.dataset_feature_type.DatasetFeatureType">DatasetFeatureType</a></td>
           <td>optional</td>
           <td><p>The global dataset feature type (if applicable, and if all of the
@@ -947,10 +1006,11 @@ If this is not the case, dataset_feature_type can be set to MIXED and
 per-variable feature types specified).</p></td>
         </tr>
         <tr>
-          <td>data_files</td>
-          <td><a href="#bom.DataFile">DataFile</a></td>
-          <td>repeated</td>
-          <td><p>URLs to where data can be found and data file metadata</p></td>
+          <td>production_context</td>
+          <td><a href="#bom.dataset_production_context.DatasetProductionContext">DatasetProductionContext</a></td>
+          <td>optional</td>
+          <td><p>Dataset context information that may be critical to interpreting the
+data, e.g. if the dataset is sample data or &quot;live&quot; operational data.</p></td>
         </tr>
         <tr>
           <td>data_maturity</td>
@@ -959,44 +1019,16 @@ per-variable feature types specified).</p></td>
           <td><p>Operational status of the system producing the dataset</p></td>
         </tr>
         <tr>
-          <td>security_marking</td>
-          <td><a href="#bom.SecurityMarking">SecurityMarking</a></td>
-          <td>optional</td>
-          <td><p></p></td>
-        </tr>
-        <tr>
-          <td>license</td>
-          <td><a href="#bom.License">License</a></td>
-          <td>optional</td>
-          <td><p>License under which the dataset is intended to be published</p></td>
+          <td>data_files</td>
+          <td><a href="#bom.DataFile">DataFile</a></td>
+          <td>repeated</td>
+          <td><p>URLs to where data can be found and data file metadata</p></td>
         </tr>
         <tr>
           <td>contacts</td>
           <td><a href="#bom.Contact">Contact</a></td>
           <td>repeated</td>
           <td><p>Relevant contacts for further information or to report dataset issues</p></td>
-        </tr>
-        <tr>
-          <td>creation_timestamp</td>
-          <td><a href="#google.protobuf.Timestamp">Timestamp</a></td>
-          <td>optional</td>
-          <td><p>Approximate time dataset was originally created</p></td>
-        </tr>
-        <tr>
-          <td>reference_timestamp</td>
-          <td><a href="#bom.DataTimeInfo">DataTimeInfo</a></td>
-          <td>optional</td>
-          <td><p>Reference datetime of the dataset. For example, the nominal
-(&quot;base&quot;) datetime for a NWP model run or the validity time of
-an observational dataset or the start of a sequence of reanalyses etc</p></td>
-        </tr>
-        <tr>
-          <td>data_times</td>
-          <td><a href="#bom.DataTimeInfo">DataTimeInfo</a></td>
-          <td>repeated</td>
-          <td><p>Summary-level temporal coverage information for the dataset, .eg.
-the range of times the dataset covers, or the discrete times data in
-in the dataset is valid for</p></td>
         </tr>
       </tbody>
     </table>
@@ -1079,7 +1111,7 @@ provide an explanation for this outcome</p></td>
       </tbody>
     </table>
     <h3 id="bom.DatasetSource">DatasetSource</h3>
-    <p>Oerview of the source of the original data, i.e. the system or processes
+    <p>Overview of the source of the original data, i.e. the system or processes
 that generated this dataset
 The source is the method of production of the data. For example, if the
 data was model-generated, the details of the &quot;source&quot; component would
@@ -1209,7 +1241,7 @@ if set to 1 implies a deterministic model.</p></td>
           <td><a href="#google.protobuf.Duration">Duration</a></td>
           <td>optional</td>
           <td><p>For models involving data assimilation, the observational
-data cutoff duration relative to the model (nominal) analysis time</p></td>
+data cut-off duration relative to the model (nominal) analysis time</p></td>
         </tr>
         <tr>
           <td>dimensions</td>
@@ -1225,8 +1257,62 @@ data cutoff duration relative to the model (nominal) analysis time</p></td>
         </tr>
       </tbody>
     </table>
+    <h3 id="bom.Rights">Rights</h3>
+    <p>IP or security rights for a resource</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>security_marking</td>
+          <td><a href="#bom.SecurityMarking">SecurityMarking</a></td>
+          <td>optional</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>license</td>
+          <td><a href="#bom.License">License</a></td>
+          <td>optional</td>
+          <td><p>License under which the dataset is intended to be published</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="bom.SpatialCoverage">SpatialCoverage</h3>
+    <p></p>
+    <h3 id="bom.TemporalCoverage">TemporalCoverage</h3>
+    <p></p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>creation_timestamp</td>
+          <td><a href="#google.protobuf.Timestamp">Timestamp</a></td>
+          <td>optional</td>
+          <td><p>Approximate time dataset was originally created</p></td>
+        </tr>
+        <tr>
+          <td>reference_timestamp</td>
+          <td><a href="#bom.DataTimeInfo">DataTimeInfo</a></td>
+          <td>optional</td>
+          <td><p>Reference datetime of the dataset. For example, the nominal
+(&quot;base&quot;) datetime for a NWP model run or the validity time of
+an observational dataset or the start of a sequence of reanalyses etc</p></td>
+        </tr>
+        <tr>
+          <td>data_times</td>
+          <td><a href="#bom.DataTimeInfo">DataTimeInfo</a></td>
+          <td>repeated</td>
+          <td><p>Summary-level temporal coverage information for the dataset, .eg.
+the range of times the dataset covers, or the discrete times data in
+in the dataset is valid for</p></td>
+        </tr>
+      </tbody>
+    </table>
     <h3 id="bom.Variable">Variable</h3>
-    <p>A data, coordinate or auxillary coordinate variable, as per CF
+    <p>A data, coordinate or auxiliary coordinate variable, as per CF
 conventions.
 A data variable is a multidimensional array of values that is the
 result of sampling a continuous function at a discrete set of points.
@@ -1235,7 +1321,7 @@ system being observed.
 A coordinate variable a one-dimensional variable with the same name
 as its dimension [e.g., time(time) ], and it is defined as a numeric
 data type with values that are ordered monotonically.
-An auxillary coordinate is a variable that contains coordinate
+An auxiliary coordinate is a variable that contains coordinate
 data, but unlike coordinate variables, there is no relationship between
 the name of an auxiliary coordinate variable and the name(s) of
 its dimension(s).</p>
@@ -1273,7 +1359,7 @@ Zero dimensions implies a scalar variable or coordinate (a &quot;singleton&quot;
           <td>aux_coordinates</td>
           <td><a href="#string">string</a></td>
           <td>repeated</td>
-          <td><p>List of auxillary coordinates</p></td>
+          <td><p>List of auxiliary coordinates</p></td>
         </tr>
         <tr>
           <td>feature_type</td>
@@ -1368,7 +1454,7 @@ outputs etc (if such a location exists)</p></td>
           <td><a href="#bom.Priority">Priority</a></td>
           <td>optional</td>
           <td><p>Priority of task, as viewed by this scheduler. Priority may change
-dynamically based on the evolution of activies and business requirements
+dynamically based on the evolution of activities and business requirements
 during scheduling</p></td>
         </tr>
         <tr>
@@ -1394,7 +1480,7 @@ to prevent saturating a particular resource)</p></td>
           <td>managers</td>
           <td><a href="#bom.TaskManagerContext">TaskManagerContext</a></td>
           <td>repeated</td>
-          <td><p>Task manager(s) asssociated with this task. The first manager
+          <td><p>Task manager(s) associated with this task. The first manager
 listed should correspond to, or be closely aligned with, the component
 that produced this message</p></td>
         </tr>
@@ -1464,7 +1550,7 @@ RESOURCE_LIMIT_CHANGE, PRIORITY_CHANGE etc</p></td>
           <td>task_interaction</td>
           <td><a href="#bom.TaskInteraction">TaskInteraction</a></td>
           <td>optional</td>
-          <td><p>Interaction being perfomed on the task (if any).
+          <td><p>Interaction being performed on the task (if any).
 Note: the task_status in this particular event is not a result of this
 particular interaction. Rather, this task is in this event's task_status
 state when the task_interaction begins. Subsequent events may include
@@ -1510,7 +1596,7 @@ belonging to a particular group/type or using a particular resource</p>
           <td>optional</td>
           <td><p>The resource the limit applies to (if applicable)
 Note: one of group or resource must be specified for the the limit
-to be meaingful</p></td>
+to be meaningful</p></td>
         </tr>
       </tbody>
     </table>
@@ -1533,7 +1619,7 @@ This information should mostly be known ahead of the scheduling of the task.</p>
           <td><a href="#string">string</a></td>
           <td>optional</td>
           <td><p>Unique namespace for this task within a suite or workflow.
-This is typically the task familes to which the task belongs</p></td>
+This is typically the task families to which the task belongs</p></td>
         </tr>
         <tr>
           <td>suite</td>
@@ -1546,7 +1632,7 @@ This is typically the task familes to which the task belongs</p></td>
           <td><a href="#bool">bool</a></td>
           <td>optional</td>
           <td><p>Can repeated re-runs of the task (even following a crash during task
-exeuction) safe and expected to produce the same result?</p></td>
+execution) safe and expected to produce the same result?</p></td>
         </tr>
         <tr>
           <td>groups</td>
@@ -1636,7 +1722,7 @@ urgency</p></td>
           <td>system</td>
           <td><a href="#bom.Id">Id</a></td>
           <td>optional</td>
-          <td><p>The system/equipment/tool via which the interaction took place
+          <td><p>The system/equipment/tool via which the interaction took place.
 This will generally be the scheduler, or a component of a scheduler</p></td>
         </tr>
         <tr>
@@ -1697,7 +1783,7 @@ task manager component.</p></td>
           <td><a href="#bom.Id">Id</a></td>
           <td>optional</td>
           <td><p>Additional id to track manager specific task context information,
-e.g. be used for dag_id (directed acylcic graph id), suite id etc</p></td>
+e.g. be used for dag_id (directed acyclic graph id), suite id etc</p></td>
         </tr>
         <tr>
           <td>output_collection_task_ids</td>
@@ -1769,7 +1855,7 @@ bytes for memory/disk or a count in other contexts</p></td>
           <td><a href="#bool">bool</a></td>
           <td>optional</td>
           <td><p>If limit the amount represents a resource limit, whether it is
-hard (ortherwise it is considered &quot;soft&quot;). To be ignored if this
+hard (otherwise it is considered &quot;soft&quot;). To be ignored if this
 message does not correspond to a resource limit</p></td>
         </tr>
         <tr>
@@ -1844,7 +1930,7 @@ will run as (e.g. task involving sudo commands for another service account)</p><
           <td><a href="#bool">bool</a></td>
           <td>optional</td>
           <td><p>If task is in a simulation mode; it is not running normal workloads,
-rather a dummy task to help simulate suite behavior.</p></td>
+rather a dummy task to help simulate suite behaviour.</p></td>
         </tr>
         <tr>
           <td>is_test</td>
@@ -1926,7 +2012,7 @@ warnings that may be associated with this task state</p></td>
           <td>optional</td>
           <td><p>Severity of new task state. Each diagnostic also has a severity,
 and this may be left unset if it is possible to infer the task state
-severityfrom the diagnostic(s)</p></td>
+severity from the diagnostic(s)</p></td>
         </tr>
         <tr>
           <td>time_info</td>
@@ -1952,7 +2038,7 @@ task is late by (valid at the time of event production)</p></td>
     <h3 id="bom.TaskTimes">TaskTimes</h3>
     <p>Times to track significant changes in task state, from the
 perspective of the event message producer.
-This tracking is a convencience feature; if events are produced
+This tracking is a convenience feature; if events are produced
 with sufficient granularity this information can be inferred from
 a sequence of changes in event state.</p>
     <table class="field-table">
@@ -2598,7 +2684,7 @@ mediator, rights_holder, stakeholder</p></td>
           <td>others</td>
           <td><a href="#bom.Tag">Tag</a></td>
           <td>repeated</td>
-          <td><p>Other contact mechanisms, e.g. {&quot;Skype&quot;, &quot;SkpeUserId&quot;}</p></td>
+          <td><p>Other contact mechanisms, e.g. {&quot;Skype&quot;, &quot;SkypeUserId&quot;}</p></td>
         </tr>
       </tbody>
     </table>
@@ -3140,7 +3226,7 @@ NT_EXPORT_NAME, NT_HOSTBASED_SERVICE</p></td>
     
     <h3 id="bom.SemVer">SemVer</h3>
     <p>A semantic or compatible version representation with the format:
-major.minor.patch.pre_release_id1.pre_release_id2+buid_id1.build_ids</p><p>where major, minor and patch are integers &gt;= 0 and
+major.minor.patch.pre_release_id1.pre_release_id2+build_id1.build_ids</p><p>where major, minor and patch are integers &gt;= 0 and
 pre_release_ids and/or build_ids are optional and there can any number.</p><p>If all major, minor and patch levels are specified this complies with the
 Semantic Version scheme (although with a upper bound imposed on the range
 of integers).</p><p>If patch level is omitted it is compliant with the Common Version (ComVer)
@@ -3184,7 +3270,7 @@ versioning scheme, which is also often also used for versioning datasets</p>
       </tbody>
     </table>
     <h3 id="bom.Version">Version</h3>
-    <p>Flexibile representation of a version.
+    <p>Flexible representation of a version.
 One of semver, string_ver, int_ver or date_ver is allowed to be set</p>
     <table class="field-table">
       <thead>
@@ -3223,9 +3309,9 @@ One of semver, string_ver, int_ver or date_ver is allowed to be set</p>
     
     <h3 id="bom.component_level.ComponentLevel">ComponentLevel</h3>
     <p>ComponentLevel broadly describes terms useful to help delineate a software
-component or devices heiriachy amongst other related components of a wider
+component or devices hierarchy amongst other related components of a wider
 system.
-The heiriachial order of labels is dependent on the system and context.
+The hierarchical order of labels is dependent on the system and context.
 Note: excludes &quot;environmental&quot; concepts, e.g. versions
       of libraries, runtime systems, virtual machine, OS for an application</p>
     <table class="enum-table">
@@ -3254,13 +3340,13 @@ Note: excludes &quot;environmental&quot; concepts, e.g. versions
           <td><p>Platform is an entity that allow multiple products to be built within the
 same technical framework. e.g. an enterprise service bus,
 a workflow manager, a web platform, an overarching gaming &quot;service/app&quot;
-like Valve's steam would consistute a platform</p></td>
+like Valve's steam would constitute a platform</p></td>
         </tr>
         <tr>
           <td>SUITE</td>
           <td>4</td>
           <td><p>A suite of related software components. e.g. a suite of tasks that
-consitute the setup, running and post-processing of a NWP model</p></td>
+constitute the setup, running and post-processing of a NWP model</p></td>
         </tr>
         <tr>
           <td>DEVICE</td>
@@ -3301,7 +3387,7 @@ information e.g. a log file reader daemon, a Kafka connector, a data relay</p></
     
     <h3 id="bom.component_relation.ComponentRelation">ComponentRelation</h3>
     <p>ComponentRelation describes the type of high-level data-flow, process or
-heiriachial relationship (whichever is most relevant) that this component
+hierarchical relationship (whichever is most relevant) that this component
 has to the other identified component. The relationship is usually
 directional, e.g.:
 1. an outbound data-push or downstream (sequentially) processing
@@ -3346,7 +3432,7 @@ sequential process workflow</p></td>
           <td>3</td>
           <td><p>This component involves an upstream requirement that must be met before
 the other component can carry out its function. e.g. this
-component may be a task that must commplete before the other task
+component may be a task that must complete before the other task
 can begin</p></td>
         </tr>
         <tr>
@@ -3359,7 +3445,7 @@ other component.</p></td>
         <tr>
           <td>SYS_MONITORED</td>
           <td>5</td>
-          <td><p>System characterstics of this components operation are being monitored
+          <td><p>System characteristics of this components operation are being monitored
 by the other component (in a &quot;pull&quot;/&quot;query&quot;/&quot;poll&quot;/&quot;listen&quot;-like
 fashion). This component may indeed not be directly &quot;aware&quot; of this
 monitoring. In some cases this component may be providing an API or
@@ -3447,14 +3533,14 @@ component</p></td>
         <tr>
           <td>DEPENDENT_ON</td>
           <td>65</td>
-          <td><p>This compoenents depends on the other component to perform some
+          <td><p>This components depends on the other component to perform some
 action(s) or reach/set some state(s) before this component can progress
 its function</p></td>
         </tr>
         <tr>
           <td>INSTRUCTED</td>
           <td>66</td>
-          <td><p>This component is being unstructed to peform work by a component
+          <td><p>This component is being instructed to perform work by a component
 belonging to a different system tier/suite/device ecosystem</p></td>
         </tr>
         <tr>
@@ -3591,7 +3677,7 @@ covered with minimal ambiguity</p>
         <tr>
           <td>STACK</td>
           <td>11</td>
-          <td><p>Stack size avaialable</p></td>
+          <td><p>Stack size available</p></td>
         </tr>
         <tr>
           <td>DISK</td>
@@ -3611,7 +3697,7 @@ covered with minimal ambiguity</p>
         <tr>
           <td>NEW_FILE_SIZE</td>
           <td>15</td>
-          <td><p>Maximum supported/allowed individual file creeation size</p></td>
+          <td><p>Maximum supported/allowed individual file creation size</p></td>
         </tr>
         <tr>
           <td>NEW_FILES</td>
@@ -3670,7 +3756,7 @@ physical quantity</p></td>
           <td><p>Value in physical units of the quantity being measured</p></td>
         </tr>
         <tr>
-          <td>AUXILLARY_INFORMATION</td>
+          <td>AUXILIARY_INFORMATION</td>
           <td>5</td>
           <td><p>Data, usually a physical measurement, used to support the calculation
 of another variable
@@ -3701,7 +3787,7 @@ being observed or calculated from observations.</p></td>
 measurements)</p></td>
         </tr>
         <tr>
-          <td>AUXILLIARY_DATA</td>
+          <td>AUXILIARY_DATA</td>
           <td>10</td>
           <td><p>Values of extraneous data</p></td>
         </tr>
@@ -3869,7 +3955,7 @@ no significant degradation to the information content</p></td>
           <td>LOSSY_MINIMAL</td>
           <td>5</td>
           <td><p>Some lossy compression algorithm has been used, the error
-the characterics of which are thought to impact in a minimal way on the
+the characteristics of which are thought to impact in a minimal way on the
 data</p></td>
         </tr>
         <tr>
@@ -3954,7 +4040,7 @@ Examples: a polar orbiting satellite, airborne or ship instrument.</p></td>
         <tr>
           <td>UNSTRUCTURED_GRID</td>
           <td>6</td>
-          <td><p>Other unstructured (tesselated) grids</p></td>
+          <td><p>Other unstructured (tessellated) grids</p></td>
         </tr>
         <tr>
           <td>HYBRID_GRID</td>
@@ -4021,7 +4107,7 @@ Examples: Aircraft data, ship data, drifting buoys</p></td>
         <tr>
           <td>TRAJECTORY_PROFILE</td>
           <td>55</td>
-          <td><p>A series of profile features located at points ordred along a
+          <td><p>A series of profile features located at points ordered along a
 trajectory
 data(i,p,o) : x(i,p) y(i,p) z(i,p,o) t(i,p)
 Example: Ship soundings
@@ -4043,11 +4129,87 @@ are preferred.</p></td>
       </tbody>
     </table>
     <div class="file-heading">
+      <h2 id="dataset_production_context.proto">dataset_production_context.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.dataset_production_context.DatasetProductionContext">DatasetProductionContext</h3>
+    <p>The context a dataset was generated under and should be interpreted
+by upon receipt. The main purpose of this meta-data is to help distinguish
+between data created as part of &quot;normal&quot; output of some system (e.g. a
+routinely running forecast model) and more usual modes this system could
+be made to run in to cater for particular purposes</p>
+    <table class="enum-table">
+      <thead>
+        <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UNSET</td>
+          <td>0</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>UNKNOWN</td>
+          <td>1</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>NORMAL</td>
+          <td>2</td>
+          <td><p>Dataset created in a &quot;normal&quot; fashion with respect to the typical/
+valuable range of intended purposes of the system creating the dataset.
+e.g. a NWP &quot;normal&quot; routine or on-demand NWP forecast</p></td>
+        </tr>
+        <tr>
+          <td>SCENARIO</td>
+          <td>3</td>
+          <td><p>Dataset created as part of a hypothetical scenario/exercise of the
+system (not for or to support an actual real event).
+This data may be disseminated to 3rd parties as part of an exercise.</p></td>
+        </tr>
+        <tr>
+          <td>RETROSPECTIVE</td>
+          <td>4</td>
+          <td><p>A special retrospective dataset for systems that normally provide current
+or forecast data.</p></td>
+        </tr>
+        <tr>
+          <td>TEST</td>
+          <td>5</td>
+          <td><p>Dataset is generated as part of an internal test of components
+involved in creation/manipulation/validation/verification.</p></td>
+        </tr>
+        <tr>
+          <td>REAL_SAMPLE</td>
+          <td>6</td>
+          <td><p>Dataset represents realistic sample data.</p></td>
+        </tr>
+        <tr>
+          <td>SYNTHETIC_SAMPLE</td>
+          <td>7</td>
+          <td><p>Dataset represents sample synthetic/mock data.</p></td>
+        </tr>
+        <tr>
+          <td>TRIAL</td>
+          <td>8</td>
+          <td><p>Dataset for a system being trialled. This is pertinent for example if the
+system producing this dataset has a stable &quot;NORMAL&quot; counterpart, but this
+slightly modified system is being run in parallel for evaluation purposes
+as part of an end-user trial.</p></td>
+        </tr>
+        <tr>
+          <td>RESEARCH</td>
+          <td>9</td>
+          <td><p>Dataset for research or prototyping purposes</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
       <h2 id="data_time_type.proto">data_time_type.proto</h2><a href="#title">Top</a>
     </div>
     
     <h3 id="bom.data_time_type.DataTimeType">DataTimeType</h3>
-    <p>Signficance of a specified datetime involved in describing
+    <p>Significance of a specified datetime involved in describing
 the content of a dataset.
 Generally used in the context of a reference time or validity
 period for a series of observations, model outputs or other
@@ -4367,7 +4529,7 @@ file size.</p></td>
           <td><p>Operation was rejected because the system is not in a state
 required for the operation's execution.  For example, directory
 to be deleted may be non-empty, an rmdir operation is applied to
-a non-directory, etc.</p><p>A litmus test that may help a service implementor in deciding
+a non-directory, etc.</p><p>A litmus test that may help a service implementer in deciding
 between FAILED_PRECONDITION, ABORTED, and UNAVAILABLE:
  (a) Use UNAVAILABLE if a client can retry just the failing call.
  (b) Use ABORTED if the client should retry at a higher-level
@@ -4411,7 +4573,7 @@ ABORTED, and UNAVAILABLE.</p></td>
           <td><p>Attempted invocation of an unimplemented method/function/command</p></td>
         </tr>
         <tr>
-          <td>DEPEDENCY_ERROR</td>
+          <td>DEPENDENCY_ERROR</td>
           <td>30</td>
           <td><p>Generic error due to a missing high-level dependency</p></td>
         </tr>
@@ -4424,7 +4586,7 @@ Includes the situation when a multi-node job aborts due to one dead node.</p></t
         <tr>
           <td>IO</td>
           <td>32</td>
-          <td><p>Other I/O errors not covered by previous entries (e.g. file unexpectly
+          <td><p>Other I/O errors not covered by previous entries (e.g. file unexpectedly
 already in use)</p></td>
         </tr>
         <tr>
@@ -4585,7 +4747,7 @@ on the type of information logged and/or the intent of the log</p>
         <tr>
           <td>TRANSACTION</td>
           <td>8</td>
-          <td><p>Tranactional or commit logs</p></td>
+          <td><p>Transactional or commit logs</p></td>
         </tr>
         <tr>
           <td>SCHEDULER</td>
@@ -4627,7 +4789,7 @@ on the type of information logged and/or the intent of the log</p>
     <p>Maturity is based on the &quot;Data Stewardship Maturity Matrix (DSMM)&quot;
 Refer to: http://doi.org/10.2481/dsj.14-049
 Note: INTERMEDIATE is the recommended minimal level for Operational
-      products stewarded by NCEI/CICS-NC/NOAA National Data Centers</p>
+      products stewarded by NCEI/CICS-NC/NOAA National Data Centres</p>
     <table class="enum-table">
       <thead>
         <tr><td>Name</td><td>Number</td><td>Description</td></tr>
@@ -4651,7 +4813,7 @@ Note: INTERMEDIATE is the recommended minimal level for Operational
         <tr>
           <td>MINIMAL</td>
           <td>3</td>
-          <td><p>Limited managment</p></td>
+          <td><p>Limited management</p></td>
         </tr>
         <tr>
           <td>INTERMEDIATE</td>
@@ -4967,7 +5129,7 @@ in some cases.</p></td>
         <tr>
           <td>ERROR</td>
           <td>8</td>
-          <td><p>Error conditions, likely to cause problems, but not nessecarily fatal</p></td>
+          <td><p>Error conditions, likely to cause problems, but not necessarily fatal</p></td>
         </tr>
         <tr>
           <td>CRITICAL</td>
@@ -4995,7 +5157,7 @@ operational suite daemon failure</p></td>
     <h3 id="bom.task_actor_type.TaskActorType">TaskActorType</h3>
     <p>Type of entity involved in an interaction with a task.
 For example, this type can be used to represent the entity
-responsible for iniatiting the running of a task, the
+responsible for initiating the running of a task, the
 entity/system reporting a change in task state or the type
 of entity responsible for imposing/enforcing resource limits.</p>
     <table class="enum-table">
@@ -5518,7 +5680,7 @@ Sometimes referred to as task vacating or a task vacation.</p></td>
         <tr>
           <td>RETRYING</td>
           <td>35</td>
-          <td><p>Retring, progressed beyond submission</p></td>
+          <td><p>Retrying, progressed beyond submission</p></td>
         </tr>
         <tr>
           <td>RESURRECTING</td>
@@ -5589,7 +5751,7 @@ configuration that permits it to be progressed to a queued or run state</p></td>
         <tr>
           <td>DROPPED</td>
           <td>49</td>
-          <td><p>Task definition dropped/omitted before exeuction from scheduler</p></td>
+          <td><p>Task definition dropped/omitted before execution from scheduler</p></td>
         </tr>
         <tr>
           <td>SKIPPED</td>
@@ -5624,7 +5786,7 @@ configuration that permits it to be progressed to a queued or run state</p></td>
         <tr>
           <td>TRANSIT</td>
           <td>56</td>
-          <td><p>A transit state can be meaingful for certain scheduler systems.</p></td>
+          <td><p>A transit state can be meaningful for certain scheduler systems.</p></td>
         </tr>
         <tr>
           <td>ABNORMAL_SUCCESS</td>
@@ -5650,7 +5812,7 @@ but some warnings/errors/abnormalities were encountered</p></td>
         <tr>
           <td>ERROR_WITH_CONTINUATION</td>
           <td>61</td>
-          <td><p>An error was found during exeuction but task is continuing.</p></td>
+          <td><p>An error was found during execution but task is continuing.</p></td>
         </tr>
         <tr>
           <td>KILLING</td>
