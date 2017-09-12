@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package bom.dataset_production_context;
+
+option java_package = "bom";
+option java_outer_classname="DatasetProductionContextProto";
+
+/// The context a dataset was generated under and should be interpreted
+// by upon receipt. The main purpose of this meta-data is to help distinguish
+// between data created as part of "normal" output of some system (e.g. a
+// routinely running forecast model) and more unsual modes this system could
+// be made to run in to cater for particular purposes
+enum DatasetProductionContext {
+  UNSET = 0;
+  UNKNOWN = 1;
+  /// Dataset created in a "normal" fashion with respect to the typical/
+  // valuable range of intended purposes of the system creating the dataset.
+  // e.g. a NWP "normal" routien or on-demand NWP forecast
+  NORMAL = 2;
+
+  /// Dataset created as part of a hypothetical scenario/exercise of the
+  // system (not for or to support an actual real event).
+  // This data may be disseminated to 3rd parties as part of an exercise.
+  SCENARIO = 3;
+
+  /// A special retrospective dataset for systems that normally provide current
+  // or forecast data.
+  RETROSPECTIVE = 4;
+
+  /// Dataset is generated as part of an internal test of components
+  // involved in creation/manipulation/validation/verification.
+  TEST = 5;
+  /// Dataset represents realistic sample data.
+  REAL_SAMPLE = 6;
+  /// Dataset represents sample synthetic/mock data.
+  SYNTHETIC_SAMPLE = 7;
+  /// Dataset for a system being trialled. This is pertinent for example if the
+  // system producing this dataset has a stable "NORMAL" counterpart, but this
+  // slightly modified system is being run in parallel for evaluation purposes
+  // as part of an end-user trial.
+  TRIAL = 8;
+  /// Dataset for research or prototyping purposes
+  RESEARCH = 9;
+}

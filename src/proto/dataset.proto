@@ -16,6 +16,7 @@ import "common/enums/maturity.proto";
 import "common/enums/task_state.proto";
 import "common/enums/data_coverage_content_type.proto";
 import "common/enums/data_time_type.proto";
+import "common/enums/dataset_production_context.proto";
 import "common/enums/dataset_action_type.proto";
 import "common/enums/dataset_compression_type.proto";
 import "common/enums/dataset_feature_type.proto";
@@ -101,7 +102,6 @@ message DataTimeInfo {
   }
 }
 
-
 /// License under which a dataset is intended to be published, or the
 // license conditions for data obtainable from a service or repository via
 // an API.
@@ -137,6 +137,36 @@ message DatasetSource {
   string institution = 4;
 }
 
+message TemporalCoverage {
+  /// Approximate time dataset was originally created
+  google.protobuf.Timestamp creation_timestamp = 1;
+  /// Reference datetime of the dataset. For example, the nominal
+  // ("base") datetime for a NWP model run or the validity time of
+  // an observational dataset or the start of a sequence of reanalyses etc
+  DataTimeInfo reference_timestamp = 2;
+  /// Summary-level temporal coverage information for the dataset, .eg.
+  // the range of times the dataset covers, or the discrete times data in
+  // in the dataset is valid for
+  repeated DataTimeInfo data_times = 3;
+}
+message SpatialCoverage {
+  /// TODO
+}
+
+message Coverage {
+  /// Subject categories covered by the dataset
+  repeated string subject_categories = 1;
+  TemporalCoverage temporal = 2;
+  SpatialCoverage spatial  = 3;
+}
+
+/// IP or security rights for a resource
+message Rights {
+  SecurityMarking security_marking = 1;
+  /// License under which the dataset is intended to be published
+  License license = 2;
+}
+
 /// Basic information about a Dataset.
 // A dataset comprises of data related in some way,
 // for example from a single instrument or collocated instruments,
@@ -155,34 +185,24 @@ message Dataset {
   Version version = 4;
   /// Information about the source of the data
   DatasetSource source = 5;
-  /// Subject categories covered by the dataset
-  repeated string subject_categories = 6;
+  /// Overview of temporal, spatial and subject-matter coverage
+  Coverage coverage = 6;
   /// The global dataset feature type (if applicable, and if all of the
   // data variables contained in this dataset are of a single feature type.
   // If this is not the case, dataset_feature_type can be set to MIXED and
   // per-variable feature types specified).
-  bom.dataset_feature_type.DatasetFeatureType dataset_feature_type = 7;
-  /// URLs to where data can be found and data file metadata
-  repeated DataFile data_files = 8;  //TODO: information about extraction
-                                    // via an API or database etc.. ?
-
+  bom.dataset_feature_type.DatasetFeatureType feature_type = 7;
+  /// Dataset context information that may be critical to interpreting the
+  // data, e.g. if the dataset is sample data or "live" operational data.
+  bom.dataset_production_context.DatasetProductionContext production_context = 8;
   /// Operational status of the system producing the dataset
   bom.maturity.Maturity data_maturity = 9;
-  SecurityMarking security_marking = 10;
-  /// License under which the dataset is intended to be published
-  License license = 11;
+  /// URLs to where data can be found and data file metadata
+  repeated DataFile data_files = 10;  //TODO: information about extraction
+                                    // via an API or database etc.. ?
+
   /// Relevant contacts for further information or to report dataset issues
-  repeated Contact contacts = 12;
-  /// Approximate time dataset was originally created
-  google.protobuf.Timestamp creation_timestamp = 13;
-  /// Reference datetime of the dataset. For example, the nominal
-  // ("base") datetime for a NWP model run or the validity time of
-  // an observational dataset or the start of a sequence of reanalyses etc
-  DataTimeInfo reference_timestamp = 14;
-  /// Summary-level temporal coverage information for the dataset, .eg.
-  // the range of times the dataset covers, or the discrete times data in
-  // in the dataset is valid for
-  repeated DataTimeInfo data_times = 15;
+  repeated Contact contacts = 11;
 }
 
 message NWPDataSetForSingleBaseTime {
