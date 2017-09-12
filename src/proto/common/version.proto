@@ -6,7 +6,7 @@ option java_outer_classname="VersionProto";
 
 import "google/protobuf/timestamp.proto";
 
-/// Flexibile representation of a version.
+/// Flexible representation of a version.
 // One of semver, string_ver, int_ver or date_ver is allowed to be set
 message Version {
   oneof version {
@@ -18,7 +18,7 @@ message Version {
 }
 
 /// A semantic or compatible version representation with the format:
-// major.minor.patch.pre_release_id1.pre_release_id2+buid_id1.build_ids
+// major.minor.patch.pre_release_id1.pre_release_id2+build_id1.build_ids
 //
 // where major, minor and patch are integers >= 0 and
 // pre_release_ids and/or build_ids are optional and there can any number.

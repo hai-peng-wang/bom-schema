@@ -92,7 +92,7 @@ enum ErrorType {
   // to be deleted may be non-empty, an rmdir operation is applied to
   // a non-directory, etc.
   //
-  // A litmus test that may help a service implementor in deciding
+  // A litmus test that may help a service implementer in deciding
   // between FAILED_PRECONDITION, ABORTED, and UNAVAILABLE:
   //  (a) Use UNAVAILABLE if a client can retry just the failing call.
   //  (b) Use ABORTED if the client should retry at a higher-level
@@ -120,11 +120,11 @@ enum ErrorType {
   /// Attempted invocation of an unimplemented method/function/command
   NOT_IMPLEMENTED = 29;
   /// Generic error due to a missing high-level dependency
-  DEPEDENCY_ERROR = 30;
+  DEPENDENCY_ERROR = 30;
   /// A required node was found to be dead or died during.
   // Includes the situation when a multi-node job aborts due to one dead node.
   DEAD_NODE = 31;
-  /// Other I/O errors not covered by previous entries (e.g. file unexpectly
+  /// Other I/O errors not covered by previous entries (e.g. file unexpectedly
   // already in use)
   IO = 32;
   TRAP = 33; /// Unhandled trap/signal/interrupt

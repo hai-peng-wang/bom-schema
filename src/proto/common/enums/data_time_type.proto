@@ -5,7 +5,7 @@ package bom.data_time_type;
 option java_package = "bom";
 option java_outer_classname="DataTimeTypeProto";
 
-/// Signficance of a specified datetime involved in describing
+/// Significance of a specified datetime involved in describing
 // the content of a dataset.
 // Generally used in the context of a reference time or validity
 // period for a series of observations, model outputs or other

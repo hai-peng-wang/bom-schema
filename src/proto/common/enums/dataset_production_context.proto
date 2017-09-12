@@ -8,14 +8,14 @@ option java_outer_classname="DatasetProductionContextProto";
 /// The context a dataset was generated under and should be interpreted
 // by upon receipt. The main purpose of this meta-data is to help distinguish
 // between data created as part of "normal" output of some system (e.g. a
-// routinely running forecast model) and more unsual modes this system could
+// routinely running forecast model) and more usual modes this system could
 // be made to run in to cater for particular purposes
 enum DatasetProductionContext {
   UNSET = 0;
   UNKNOWN = 1;
   /// Dataset created in a "normal" fashion with respect to the typical/
   // valuable range of intended purposes of the system creating the dataset.
-  // e.g. a NWP "normal" routien or on-demand NWP forecast
+  // e.g. a NWP "normal" routine or on-demand NWP forecast
   NORMAL = 2;
 
   /// Dataset created as part of a hypothetical scenario/exercise of the

@@ -23,7 +23,7 @@ enum DatasetCompressionType {
   // no significant degradation to the information content
   NEAR_LOSSLESS = 4;
   /// Some lossy compression algorithm has been used, the error
-  // the characterics of which are thought to impact in a minimal way on the
+  // the characteristics of which are thought to impact in a minimal way on the
   // data
   LOSSY_MINIMAL = 5;
   /// More aggressive lossy compression settings, achieving a fair

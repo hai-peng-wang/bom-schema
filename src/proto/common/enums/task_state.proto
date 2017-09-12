@@ -66,7 +66,7 @@ enum TaskState {
                       // run by a task
   CHECKPOINT_FAIL = 33; /// Failure during checkpointing
   CHECKPOINT_SUCCESS = 34;
-  RETRYING = 35; /// Retring, progressed beyond submission
+  RETRYING = 35; /// Retrying, progressed beyond submission
   RESURRECTING = 36;
   RESURRECTED = 37;
   RESURRECT_FAIL = 38;
@@ -87,7 +87,7 @@ enum TaskState {
   /// Task proxy exists in a scheduler but is not currently in a
   // configuration that permits it to be progressed to a queued or run state
   DORMANT = 48;
-  /// Task definition dropped/omitted before exeuction from scheduler
+  /// Task definition dropped/omitted before execution from scheduler
   DROPPED = 49;
   SKIPPED = 50; /// Task to be skipped
   /// Job control responsibility is being migrated to another system
@@ -98,7 +98,7 @@ enum TaskState {
   DEFERRED = 54;
   /// Task rejected by batch scheduler or a security layer prior to execution
   REJECTED = 55;
-  /// A transit state can be meaingful for certain scheduler systems.
+  /// A transit state can be meaningful for certain scheduler systems.
   TRANSIT = 56;
 
   /// Diagnostics suggest task appears to have succeeded
@@ -107,12 +107,12 @@ enum TaskState {
   FAILED = 58; /// Task failed (desired outcome of the task was not reached)
   RETRY_LIMIT_REACHED = 59; /// Multiple task retries have all failed. This is
   // a failed state.
-  /// Task is reporting a warning during exeuction but has not
+  /// Task is reporting a warning during execution but has not
   // finished. This is a potential intermediate state of a task:
   // If it succeeds ABNORMAL_SUCCESS should be reported.
   // If it fails one of the many failure modes should be reported.
   WARNING = 60;
-  /// An error was found during exeuction but task is continuing.
+  /// An error was found during execution but task is continuing.
   ERROR_WITH_CONTINUATION = 61;
   /// An attempt at killing the task has taken place
   KILLING = 62;

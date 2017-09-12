@@ -27,12 +27,12 @@ import "google/protobuf/duration.proto";
 message TaskInfo {
   string name = 1;
   /// Unique namespace for this task within a suite or workflow.
-  // This is typically the task familes to which the task belongs
+  // This is typically the task families to which the task belongs
   string namespace = 2;
   /// The suite or workflow this task is a part of
   string suite = 3;
   /// Can repeated re-runs of the task (even following a crash during task
-  // exeuction) safe and expected to produce the same result?
+  // execution) safe and expected to produce the same result?
   bool is_idempotent = 4;
   /// The group(s) this task is part of, if relevant. Groups are generally
   // a  grouping of similar tasks in the context of a workflow
@@ -72,7 +72,7 @@ message TaskRetry {
 
 /// Times to track significant changes in task state, from the
 // perspective of the event message producer.
-// This tracking is a convencience feature; if events are produced
+// This tracking is a convenience feature; if events are produced
 // with sufficient granularity this information can be inferred from
 // a sequence of changes in event state.
 message TaskTimes {
@@ -111,7 +111,7 @@ message TaskStatus {
   string reporter = 5;
   /// Severity of new task state. Each diagnostic also has a severity,
   // and this may be left unset if it is possible to infer the task state
-  // severityfrom the diagnostic(s)
+  // severity from the diagnostic(s)
   bom.severity.Severity severity = 6;
   TaskTimes time_info = 7;
   /// Number of consecutive task failures in a task series
@@ -127,7 +127,7 @@ message TaskInteraction {
   bom.task_actor_type.TaskActorType actorType = 1;
   Contact contact = 2; /// Entity contact details for humans/organisations
   string reason = 3; /// Motivation for the interaction, if relevant
-  /// The system/equipment/tool via which the interaction took place
+  /// The system/equipment/tool via which the interaction took place.
   // This will generally be the scheduler, or a component of a scheduler
   Id system = 4;
   /// Additional details/context
@@ -152,7 +152,7 @@ message TaskGroupLimits {
   string group = 4;
   /// The resource the limit applies to (if applicable)
   // Note: one of group or resource must be specified for the the limit
-  // to be meaingful
+  // to be meaningful
   string resource = 5;
 }
 
@@ -162,7 +162,7 @@ message TaskResource {
   // bytes for memory/disk or a count in other contexts
   int64 amount = 2;
   /// If limit the amount represents a resource limit, whether it is
-  // hard (ortherwise it is considered "soft"). To be ignored if this
+  // hard (otherwise it is considered "soft"). To be ignored if this
   // message does not correspond to a resource limit
   bool is_hard_limit = 3;
   /// Entity responsible for measuring this resource, or for ensuring
@@ -178,7 +178,7 @@ message TaskSettings {
   // will run as (e.g. task involving sudo commands for another service account)
   repeated Userid subusers = 2;
   /// If task is in a simulation mode; it is not running normal workloads,
-  // rather a dummy task to help simulate suite behavior.
+  // rather a dummy task to help simulate suite behaviour.
   bool is_simulation = 3;
   /// If task is in a test mode
   bool is_test = 4;
@@ -240,7 +240,7 @@ message TaskContext {
   string submission_method = 8;
   bom.task_communication_method.TaskCommunicationMethod comms_method = 9;
   /// Priority of task, as viewed by this scheduler. Priority may change
-  // dynamically based on the evolution of activies and business requirements
+  // dynamically based on the evolution of activities and business requirements
   // during scheduling
   Priority priority = 10;
   /// Limits placed on the running of this task (usually as part of a strategy
@@ -250,7 +250,7 @@ message TaskContext {
   repeated TaskResource resource_limits = 12;
   /// Resources used by the task
   repeated TaskResource resource_use = 13;
-  /// Task manager(s) asssociated with this task. The first manager
+  /// Task manager(s) associated with this task. The first manager
   // listed should correspond to, or be closely aligned with, the component
   // that produced this message
   repeated TaskManagerContext managers = 14;
@@ -274,7 +274,7 @@ message TaskManagerContext {
   int64 component_id = 2;
   Id id = 3; /// Id of manager/scheduler if relevant
   /// Additional id to track manager specific task context information,
-  // e.g. be used for dag_id (directed acylcic graph id), suite id etc
+  // e.g. be used for dag_id (directed acyclic graph id), suite id etc
   Id saga_id = 4;
   /// Tasks associated with collecting task outputs, if also managed by
   // this scheduler and if known
@@ -299,7 +299,7 @@ message TaskEvent {
   TaskManagerContext task_manager_context = 5;
   /// The current status of the task.
   TaskStatus task_status = 6;
-  /// Interaction being perfomed on the task (if any).
+  /// Interaction being performed on the task (if any).
   // Note: the task_status in this particular event is not a result of this
   // particular interaction. Rather, this task is in this event's task_status
   // state when the task_interaction begins. Subsequent events may include

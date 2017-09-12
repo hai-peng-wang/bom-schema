@@ -29,7 +29,7 @@ enum DatasetFeatureType {
   /// Other cartesian, rectilinear or curvilinear grids
   // (separable x, y, z, t)
   STRUCTURED_GRID = 5;
-  UNSTRUCTURED_GRID = 6; /// Other unstructured (tesselated) grids
+  UNSTRUCTURED_GRID = 6; /// Other unstructured (tessellated) grids
   HYBRID_GRID = 7; /// Mix of structured and unstructured portions
   /// A structured grid that moves with time (or each t, separable x, y, z)
   MOVING_STRUCTURED_GRID = 8;
@@ -63,7 +63,7 @@ enum DatasetFeatureType {
   // e.g. data(i,o) : x(i,o) y(i,o) t(i,o)
   // Examples: Aircraft data, ship data, drifting buoys
   TRAJECTORY = 54;
-  /// A series of profile features located at points ordred along a
+  /// A series of profile features located at points ordered along a
   // trajectory
   // data(i,p,o) : x(i,p) y(i,p) z(i,p,o) t(i,p)
   // Example: Ship soundings

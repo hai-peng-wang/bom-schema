@@ -35,7 +35,7 @@ message Diagnostic {
   string trace = 9; /// A stack trace or similar
   /// If a known error pattern, link to troubleshooting info
   URI troubleshooting = 10;
-  // TODO: info on process/thread/MPI rank & node with issue. 
+  // TODO: info on process/thread/MPI rank & node with issue.
   ModelDiagnostic model_diagnostic = 12;
 }
 
@@ -46,6 +46,6 @@ message ModelDiagnostic {
   /// For models, the simulation step/time that was reached.
   google.protobuf.Timestamp model_validity_time = 2;
   // TODO: postprocessing vs model... how to express. More thought required
-  /// For models, the internal interation count that was reached.
+  /// For models, the internal iteration count that was reached.
   int64 iteration = 3;
 }

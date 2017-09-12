@@ -23,10 +23,7 @@ import "common/enums/dataset_feature_type.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/duration.proto";
 
-/// Location and other metadata of data file. It is recommended
-// DataFile represent a single file, but the flexibility to describe
-// a directory along with "include" and "exclude" file matching patterns
-// is provided.
+/// Location and other metadata of a data file
 message DataFile {
   /// Where data can be found. Multiple URLs must lead to mirrored locations
   // of the same data file or set of data files
@@ -41,7 +38,7 @@ message DataFile {
   int64 data_size = 5;
   /// Compression techniques applied.
   // Multiple types can be specified; for example THINNED, PACKED and LOSSLESS
-  // are to be interpreted as data that has been thinned (a losssy operation)
+  // are to be interpreted as data that has been thinned (a lossy operation)
   // then packed (another lossy operation) and then this resulting
   // thinned and packed data is further losslessly compressed
   repeated bom.dataset_compression_type.DatasetCompressionType compressions = 6;
@@ -72,7 +69,7 @@ message DatasetAction {
   // If a range is specified it represents the action begin and end times
   // of the action
   repeated TimePointOrRange times = 4;
-  /// An estimate of temporaral uncertainty if known/significant/relevant
+  /// An estimate of temporal uncertainty if known/significant/relevant
   oneof t_uncertainty {
     google.protobuf.Duration time_uncertainty = 5;
   }
@@ -96,7 +93,7 @@ message DataTimeInfo {
   bool is_model_time = 1;
   bom.data_time_type.DataTimeType time_type = 2;
   repeated TimePointOrRange values = 3;
-  /// An estimate of temporaral uncertainty if known/significant/relevant
+  /// An estimate of temporal uncertainty if known/significant/relevant
   oneof t_uncertainty {
     google.protobuf.Duration uncertainty = 4;
   }
@@ -110,7 +107,7 @@ message License {
   URI url = 2; /// A URL to the license used
 }
 
-/// Oerview of the source of the original data, i.e. the system or processes
+/// Overview of the source of the original data, i.e. the system or processes
 // that generated this dataset
 // The source is the method of production of the data. For example, if the
 // data was model-generated, the details of the "source" component would
@@ -150,7 +147,7 @@ message TemporalCoverage {
   repeated DataTimeInfo data_times = 3;
 }
 message SpatialCoverage {
-  /// TODO
+  // TODO: BoundingBox, and other things
 }
 
 message Coverage {
@@ -219,10 +216,9 @@ message NWPDataSetForSingleBaseTime {
   int64 number_of_ensemble_members = 3;
   /// Optional information about each ensemble_member
   repeated EnsembleMember ensemble_members = 4;
-  // TODO: BoundingBox
 
   /// For models involving data assimilation, the observational
-  // data cutoff duration relative to the model (nominal) analysis time
+  // data cut-off duration relative to the model (nominal) analysis time
   google.protobuf.Duration observational_cutoff = 5;
 
   repeated Dimension dimensions = 6;
@@ -238,7 +234,7 @@ message Dimension {
   uint64 length = 2;
 }
 
-/// A data, coordinate or auxillary coordinate variable, as per CF
+/// A data, coordinate or auxiliary coordinate variable, as per CF
 // conventions.
 // A data variable is a multidimensional array of values that is the
 // result of sampling a continuous function at a discrete set of points.
@@ -247,7 +243,7 @@ message Dimension {
 // A coordinate variable a one-dimensional variable with the same name
 // as its dimension [e.g., time(time) ], and it is defined as a numeric
 // data type with values that are ordered monotonically.
-// An auxillary coordinate is a variable that contains coordinate
+// An auxiliary coordinate is a variable that contains coordinate
 // data, but unlike coordinate variables, there is no relationship between
 // the name of an auxiliary coordinate variable and the name(s) of
 // its dimension(s).
@@ -258,7 +254,7 @@ message Variable {
   /// List of dimensions that define the multidimensional array shape.
   // Zero dimensions implies a scalar variable or coordinate (a "singleton")
   repeated string dimensions = 4;
-  /// List of auxillary coordinates
+  /// List of auxiliary coordinates
   repeated string aux_coordinates = 5;
   /// Variable feature_type, if applicable. Should be set if global dataset
   // consists of a MIXED feature type
@@ -274,7 +270,6 @@ message Variable {
   // if model cold-run
   // quality flags
   // number of obs ... ?
-  // geospatial coverage, some description of!
   // resolution
   // simulation_mode
   // fixed_step_size

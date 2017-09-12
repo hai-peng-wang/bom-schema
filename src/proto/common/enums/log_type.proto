@@ -17,7 +17,7 @@ enum LogType {
     TRACE = 5; /// Log for additional trace-level output
     SUBMIT = 6; /// Task submission log
     PID = 7; /// Log for tracking tracking process ids or similar
-    TRANSACTION = 8; /// Tranactional or commit logs
+    TRANSACTION = 8; /// Transactional or commit logs
     SCHEDULER = 9; /// Log of job manager/scheduler/workflow or similar
     ACCESS = 10; /// Resource access type logs
     MESSAGE = 11; /// Logs that record conversations or similar

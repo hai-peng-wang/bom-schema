@@ -6,7 +6,7 @@ option java_package = "bom";
 option java_outer_classname="ComponentRelationProto";
 
 /// ComponentRelation describes the type of high-level data-flow, process or
-// heiriachial relationship (whichever is most relevant) that this component
+// hierarchical relationship (whichever is most relevant) that this component
 // has to the other identified component. The relationship is usually
 // directional, e.g.:
 // 1. an outbound data-push or downstream (sequentially) processing
@@ -38,14 +38,14 @@ enum ComponentRelation {
   SUPERCOMPONENT = 2;
   /// This component involves an upstream requirement that must be met before
   // the other component can carry out its function. e.g. this
-  // component may be a task that must commplete before the other task
+  // component may be a task that must complete before the other task
   // can begin
   UPSTREAM_REQUIREMENT = 3;
   /// The two components are part of distinct ecosystems, yet this
   // component is managing/directing (or delegating) activity in the
   // other component.
   INSTRUCTOR = 4;
-  /// System characterstics of this components operation are being monitored
+  /// System characteristics of this components operation are being monitored
   // by the other component (in a "pull"/"query"/"poll"/"listen"-like
   // fashion). This component may indeed not be directly "aware" of this
   // monitoring. In some cases this component may be providing an API or
@@ -98,11 +98,11 @@ enum ComponentRelation {
 
   /// This component is a subcomponent of the other component
   SUBCOMPONENT = 64;
-  /// This compoenents depends on the other component to perform some
+  /// This components depends on the other component to perform some
   // action(s) or reach/set some state(s) before this component can progress
   // its function
   DEPENDENT_ON = 65;
-  /// This component is being unstructed to peform work by a component
+  /// This component is being instructed to perform work by a component
   // belonging to a different system tier/suite/device ecosystem
   INSTRUCTED = 66;
   /// This component pulls system-level data/metrics from the other component

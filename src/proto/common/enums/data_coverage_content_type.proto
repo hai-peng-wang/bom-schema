@@ -22,7 +22,7 @@ enum DataCoverageContentType {
   // of another variable
   // (e.g. grid of aerosol optical thickness used in the calculation of a
   // sea surface temperature product)
-  AUXILLARY_INFORMATION = 5;
+  AUXILIARY_INFORMATION = 5;
   /// Data used to provide coordinate axis values
   COORDINATE = 6;
   /// Resources with values that are calculated using a model rather than
@@ -35,5 +35,5 @@ enum DataCoverageContentType {
   // measurements)
   REFERENCE_INFORMATION = 9;
   /// Values of extraneous data
-  AUXILLIARY_DATA = 10;
+  AUXILIARY_DATA = 10;
 }

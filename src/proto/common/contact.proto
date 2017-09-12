@@ -23,6 +23,6 @@ message Contact {
   string email = 5;
   /// The phone numbers that can be used to call the contact
   repeated int64 phone_nums = 6;
-  /// Other contact mechanisms, e.g. {"Skype", "SkpeUserId"}
+  /// Other contact mechanisms, e.g. {"Skype", "SkypeUserId"}
   repeated Tag others = 7;
 }

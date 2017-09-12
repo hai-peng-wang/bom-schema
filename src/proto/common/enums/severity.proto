@@ -29,7 +29,7 @@ enum Severity {
     // in some cases.
     NOTICE = 6;
     WARNING = 7; /// Warning events might cause problems.
-    /// Error conditions, likely to cause problems, but not nessecarily fatal
+    /// Error conditions, likely to cause problems, but not necessarily fatal
     ERROR = 8;
     /// A critical condition, likely to cause more severe problems or outages.
     // e.g. task failure without retry, hard device errors etc
@@ -38,6 +38,7 @@ enum Severity {
     // operational suite daemon failure
     ALERT = 10;
     EMERGENCY = 11; /// One or more systems are unusable. Panic condition.
+
     // IB: Not convinced we need a CLEAR state (to clear a previously raised
     // event). Doing so and relying on this shifts the onus of carefully
     // tracking state for tasks on the producer. In-fact it is possible to

@@ -7,7 +7,7 @@ option java_outer_classname="TaskActorTypeProto";
 
 /// Type of entity involved in an interaction with a task.
 // For example, this type can be used to represent the entity
-// responsible for iniatiting the running of a task, the
+// responsible for initiating the running of a task, the
 // entity/system reporting a change in task state or the type
 // of entity responsible for imposing/enforcing resource limits.
 enum TaskActorType {
