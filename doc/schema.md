@@ -414,7 +414,9 @@ Metadata about the entity involved in some interaction
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| actorType | [TaskActorType](#bom.task_actor_type.TaskActorType) | optional | Type of entity carrying out or initiating the action/interaction |
+| action_type | [TaskInteractionType](#bom.task_interaction_type.TaskInteractionType) | optional |  |
+| actor_type | [TaskActorType](#bom.task_actor_type.TaskActorType) | optional | Type of entity carrying out or initiating the action/interaction |
+| actor_id | [Userid](#bom.Userid) | optional | The user/account/identity corresponding to the acting entity, ifapplicable and known |
 | contact | [Contact](#bom.Contact) | optional | Entity contact details for humans/organisations |
 | reason | [string](#string) | optional | Motivation for the interaction, if relevant |
 | system | [Id](#bom.Id) | optional | The system/equipment/tool via which the interaction took place.This will generally be the scheduler, or a component of a scheduler |
