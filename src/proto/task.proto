@@ -15,6 +15,7 @@ import "common/log_info.proto";
 import "common/diagnostic.proto";
 import "common/debug_settings.proto";
 import "common/enums/task_communication_method.proto";
+import "common/enums/task_interaction_type.proto";
 import "common/enums/severity.proto";
 import "common/enums/task_state.proto";
 import "common/enums/task_actor_type.proto";
@@ -123,20 +124,24 @@ message TaskStatus {
 
 /// Metadata about the entity involved in some interaction
 message TaskInteraction {
+  bom.task_interaction_type.TaskInteractionType action_type = 1;
   /// Type of entity carrying out or initiating the action/interaction
-  bom.task_actor_type.TaskActorType actorType = 1;
-  Contact contact = 2; /// Entity contact details for humans/organisations
-  string reason = 3; /// Motivation for the interaction, if relevant
+  bom.task_actor_type.TaskActorType actor_type = 2;
+  /// The user/account/identity corresponding to the acting entity, if
+  // applicable and known
+  Userid actor_id = 3;
+  Contact contact = 4; /// Entity contact details for humans/organisations
+  string reason = 5; /// Motivation for the interaction, if relevant
   /// The system/equipment/tool via which the interaction took place.
   // This will generally be the scheduler, or a component of a scheduler
-  Id system = 4;
+  Id system = 6;
   /// Additional details/context
-  string interaction_detail = 5;
+  string interaction_detail = 7;
   /// ID to track this interaction
-  Id interaction_id = 6;
+  Id interaction_id = 8;
   /// To be set when this interaction is on behalf or as a consequence of
   // another entity or interaction
-  TaskInteraction on_behalf_of = 7;
+  TaskInteraction on_behalf_of = 9;
 }
 
 /// Limit placed on the number of simultaneously running tasks for tasks
