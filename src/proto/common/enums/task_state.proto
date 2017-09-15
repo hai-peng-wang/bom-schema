@@ -20,7 +20,7 @@ enum TaskState {
   PREVALIDATING = 3;
   PREVALIDATING_FAIL = 4; /// Prevalidation step failed
   INVALID = 5; /// Task found to be invalid prior to execution
-  WAITING = 6; /// Waiting on trigger conditions to be satisified
+  WAITING = 6; /// Waiting on pre-conditions to be satisfied
   HELD = 7; /// Held before submission
   /// In a task pre-processing step, probably run as part of the
   // workflow scheduler
@@ -32,7 +32,7 @@ enum TaskState {
   SUBMITTED = 13; /// Queued/ready to run by a workflow scheduler
   SUBMIT_SUCCESS = 14; /// The task has been successfully submitted/dispatched
   /// The task submit process failed or was killed before the start of task
-  // exeuction
+  // execution
   SUBMIT_FAIL = 15;
   /// As per SUBMIT_FAIL but a resubmit (possibly after a configured delay)
   // will be attempted automatically
@@ -43,8 +43,9 @@ enum TaskState {
   AUTHENTICATING = 19;
   AUTHENTICATE_SUCCESS = 20;
   AUTHENTICATE_FAIL = 21;
-
-  STARTED = 22; /// Task started running/reported commencement of execution
+  /// Task started running/reported commencement of execution,
+  // sometimes referred to as the "BEGUN" state
+  STARTED = 22;
   PROGRESS = 23; /// Task in progress (used for possible progress updates)
   SUCCESS = 24; /// Task appears to have concluded normally & successfully
   STOPPED = 25; /// Task stopped mid execution as part of workflow design
@@ -98,7 +99,8 @@ enum TaskState {
   DEFERRED = 54;
   /// Task rejected by batch scheduler or a security layer prior to execution
   REJECTED = 55;
-  /// A transit state can be meaningful for certain scheduler systems.
+  /// The job/task is in process of being routed or moved to a new
+  // destination
   TRANSIT = 56;
 
   /// Diagnostics suggest task appears to have succeeded
