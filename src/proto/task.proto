@@ -19,6 +19,7 @@ import "common/enums/task_interaction_type.proto";
 import "common/enums/severity.proto";
 import "common/enums/task_state.proto";
 import "common/enums/task_actor_type.proto";
+import "common/enums/job_array_type.proto";
 import "common/enums/computing_resource.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/duration.proto";
@@ -43,16 +44,18 @@ message TaskInfo {
   repeated string resources = 6;
   /// Type of task
   string type = 7;
+  /// If job/task is an array job or array subjob
+  bom.job_array_type.JobArrayType array_type = 8;
   /// project (in the context of a batch system scheduler, or similar)
-  string project = 8;
+  string project = 9;
   /// Production status of task
-  ProductionStatus production_status = 9;
+  ProductionStatus production_status = 10;
   /// Priority of task. Note this can include information about impact and
   // urgency
-  Priority priority = 10;
-  URI task_url = 11; /// Overview information
-  URI task_debug = 12; /// Troubleshooting information
-  repeated Tag tags = 13; /// User-defined additional tags
+  Priority priority = 11;
+  URI task_url = 12; /// Overview information
+  URI task_debug = 13; /// Troubleshooting information
+  repeated Tag tags = 14; /// User-defined additional tags
 }
 
 /// Metadata about expected automatic retries for tasks.
@@ -218,13 +221,15 @@ message Taskid {
 message TaskQueue {
   /// Name of the queue
   string name = 1;
-  /// Rank of task in queue. TODO: ask Altair... or is this a
-  // ranking of queues (in terms of priority?)
-  int64 rank = 2;
+  /// Type of the queue
+  string type = 2;
+  /// Number indicating position of job/task within the queue.
+  int64 rank = 3;
   /// The time the task entered this queue
-  google.protobuf.Timestamp time = 3;
+  google.protobuf.Timestamp time = 4;
   // TODO ask Altair: what is PBS job ordering? Is it a queue concept
-  // or something else
+  // or something else. Source code calls "ji_ordering" a
+  // "special scheduling ordering"
 }
 
 /// Summary context information pertaining to this task instance

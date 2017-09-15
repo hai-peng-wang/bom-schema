@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package bom.job_array_type;
+
+option java_package = "bom";
+option java_outer_classname="JobArrayTypeProto";
+
+/// Job array type (usually a batch-scheduler concept)
+enum JobArrayType {
+  UNSET = 0;
+  UNKNOWN = 1;
+
+  NOT_ARRAY = 2; /// Not an array job nor subjob
+  IS_ARRAY = 3; /// Is an array job
+  IS_ARRAY_SINGLE = 4; /// A single subjob
+  IS_ARRAY_RANGE = 5; // A range of subjobs
+}

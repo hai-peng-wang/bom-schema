@@ -696,6 +696,17 @@
           </ul>
         </li>
         <li>
+          <a href="#job_array_type.proto">job_array_type.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.job_array_type.JobArrayType">
+                <span class="badge">E</span>
+                JobArrayType
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
           <a href="#log_type.proto">log_type.proto</a>
           <ul>
             <li>
@@ -1655,6 +1666,12 @@ services, archive storage systems etc</p></td>
           <td><p>Type of task</p></td>
         </tr>
         <tr>
+          <td>array_type</td>
+          <td><a href="#bom.job_array_type.JobArrayType">JobArrayType</a></td>
+          <td>optional</td>
+          <td><p>If job/task is an array job or array subjob</p></td>
+        </tr>
+        <tr>
           <td>project</td>
           <td><a href="#string">string</a></td>
           <td>optional</td>
@@ -1829,11 +1846,16 @@ managed by a job or batch scheduler</p>
           <td><p>Name of the queue</p></td>
         </tr>
         <tr>
+          <td>type</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Type of the queue</p></td>
+        </tr>
+        <tr>
           <td>rank</td>
           <td><a href="#int64">int64</a></td>
           <td>optional</td>
-          <td><p>Rank of task in queue. TODO: ask Altair... or is this a
-ranking of queues (in terms of priority?)</p></td>
+          <td><p>Number indicating position of job/task within the queue.</p></td>
         </tr>
         <tr>
           <td>time</td>
@@ -4706,12 +4728,55 @@ highly important or sensitive systems</p></td>
       </tbody>
     </table>
     <div class="file-heading">
+      <h2 id="job_array_type.proto">job_array_type.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.job_array_type.JobArrayType">JobArrayType</h3>
+    <p>Job array type (usually a batch-scheduler concept)</p>
+    <table class="enum-table">
+      <thead>
+        <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UNSET</td>
+          <td>0</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>UNKNOWN</td>
+          <td>1</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>NOT_ARRAY</td>
+          <td>2</td>
+          <td><p>Not an array job nor subjob</p></td>
+        </tr>
+        <tr>
+          <td>IS_ARRAY</td>
+          <td>3</td>
+          <td><p>Is an array job</p></td>
+        </tr>
+        <tr>
+          <td>IS_ARRAY_SINGLE</td>
+          <td>4</td>
+          <td><p>A single subjob</p></td>
+        </tr>
+        <tr>
+          <td>IS_ARRAY_RANGE</td>
+          <td>5</td>
+          <td><p></p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
       <h2 id="log_type.proto">log_type.proto</h2><a href="#title">Top</a>
     </div>
     
     <h3 id="bom.log_type.LogType">LogType</h3>
     <p>LogType allows categorisation of logs into general types based
-on the type of information logged and/or the intent of the log</p>
+on the type of information logged and/or the intent of the log.</p>
     <table class="enum-table">
       <thead>
         <tr><td>Name</td><td>Number</td><td>Description</td></tr>
@@ -4735,7 +4800,7 @@ on the type of information logged and/or the intent of the log</p>
         <tr>
           <td>ERROR</td>
           <td>3</td>
-          <td><p>For errors or for stdout</p></td>
+          <td><p>For errors or for stderr</p></td>
         </tr>
         <tr>
           <td>WARNING</td>
@@ -4763,33 +4828,55 @@ on the type of information logged and/or the intent of the log</p>
           <td><p>Transactional or commit logs</p></td>
         </tr>
         <tr>
-          <td>SCHEDULER</td>
+          <td>CHECKPOINT</td>
           <td>9</td>
+          <td><p>Checkpoint/snapshot files - generally self-contained files sufficient
+to allow resumption of running from that point/state</p></td>
+        </tr>
+        <tr>
+          <td>SCHEDULER</td>
+          <td>10</td>
           <td><p>Log of job manager/scheduler/workflow or similar</p></td>
         </tr>
         <tr>
           <td>ACCESS</td>
-          <td>10</td>
+          <td>11</td>
           <td><p>Resource access type logs</p></td>
         </tr>
         <tr>
           <td>MESSAGE</td>
-          <td>11</td>
+          <td>12</td>
           <td><p>Logs that record conversations or similar</p></td>
         </tr>
         <tr>
+          <td>AUDIT</td>
+          <td>13</td>
+          <td><p>An audit log may contain a mix of information for audit purposes, e.g.
+user login/logoff, expired user sessions, output delivery times etc</p></td>
+        </tr>
+        <tr>
           <td>AUTHENTICATION</td>
-          <td>12</td>
+          <td>14</td>
           <td><p>Authentication related logs</p></td>
         </tr>
         <tr>
           <td>SECURITY</td>
-          <td>13</td>
+          <td>15</td>
           <td><p>Security warning log</p></td>
         </tr>
         <tr>
+          <td>SESSION</td>
+          <td>16</td>
+          <td><p>Session activities for components/services associated with user requests</p></td>
+        </tr>
+        <tr>
+          <td>PRODUCT</td>
+          <td>17</td>
+          <td><p>Log out generated/published outputs/products</p></td>
+        </tr>
+        <tr>
           <td>EVENT</td>
-          <td>14</td>
+          <td>18</td>
           <td><p>General event log</p></td>
         </tr>
       </tbody>
@@ -5541,7 +5628,7 @@ or as part of a workflow, dispatch, submit or pre-run process</p></td>
         <tr>
           <td>WAITING</td>
           <td>6</td>
-          <td><p>Waiting on trigger conditions to be satisified</p></td>
+          <td><p>Waiting on pre-conditions to be satisfied</p></td>
         </tr>
         <tr>
           <td>HELD</td>
@@ -5588,7 +5675,7 @@ workflow scheduler</p></td>
           <td>SUBMIT_FAIL</td>
           <td>15</td>
           <td><p>The task submit process failed or was killed before the start of task
-exeuction</p></td>
+execution</p></td>
         </tr>
         <tr>
           <td>SUBMIT_RETRYING</td>
@@ -5624,7 +5711,8 @@ will be attempted automatically</p></td>
         <tr>
           <td>STARTED</td>
           <td>22</td>
-          <td><p>Task started running/reported commencement of execution</p></td>
+          <td><p>Task started running/reported commencement of execution,
+sometimes referred to as the &quot;BEGUN&quot; state</p></td>
         </tr>
         <tr>
           <td>PROGRESS</td>
@@ -5799,7 +5887,8 @@ configuration that permits it to be progressed to a queued or run state</p></td>
         <tr>
           <td>TRANSIT</td>
           <td>56</td>
-          <td><p>A transit state can be meaningful for certain scheduler systems.</p></td>
+          <td><p>The job/task is in process of being routed or moved to a new
+destination</p></td>
         </tr>
         <tr>
           <td>ABNORMAL_SUCCESS</td>

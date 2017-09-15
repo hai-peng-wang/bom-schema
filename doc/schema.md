@@ -94,6 +94,8 @@
  * [ErrorType](#bom.error_type.ErrorType)
 * [impact.proto](#impact.proto)
  * [Impact](#bom.impact.Impact)
+* [job_array_type.proto](#job_array_type.proto)
+ * [JobArrayType](#bom.job_array_type.JobArrayType)
 * [log_type.proto](#log_type.proto)
  * [LogType](#bom.log_type.LogType)
 * [maturity.proto](#maturity.proto)
@@ -400,6 +402,7 @@ This information should mostly be known ahead of the scheduling of the task.
 | groups | [string](#string) | repeated | The group(s) this task is part of, if relevant. Groups are generallya  grouping of similar tasks in the context of a workflow |
 | resources | [string](#string) | repeated | Named resources this task interacts with, e.g. particular databases,services, archive storage systems etc |
 | type | [string](#string) | optional | Type of task |
+| array_type | [JobArrayType](#bom.job_array_type.JobArrayType) | optional | If job/task is an array job or array subjob |
 | project | [string](#string) | optional | project (in the context of a batch system scheduler, or similar) |
 | production_status | [ProductionStatus](#bom.ProductionStatus) | optional | Production status of task |
 | priority | [Priority](#bom.Priority) | optional | Priority of task. Note this can include information about impact andurgency |
@@ -453,7 +456,8 @@ managed by a job or batch scheduler
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | name | [string](#string) | optional | Name of the queue |
-| rank | [int64](#int64) | optional | Rank of task in queue. TODO: ask Altair... or is this aranking of queues (in terms of priority?) |
+| type | [string](#string) | optional | Type of the queue |
+| rank | [int64](#int64) | optional | Number indicating position of job/task within the queue. |
 | time | [Timestamp](#google.protobuf.Timestamp) | optional | The time the task entered this queue |
 
 
@@ -1573,6 +1577,30 @@ organisation-wide impact of a sustained outage.
 
 
 
+<a name="job_array_type.proto"/>
+<p align="right"><a href="#top">Top</a></p>
+
+## job_array_type.proto
+
+
+
+
+<a name="bom.job_array_type.JobArrayType"/>
+### JobArrayType
+Job array type (usually a batch-scheduler concept)
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| UNSET | 0 |  |
+| UNKNOWN | 1 |  |
+| NOT_ARRAY | 2 | Not an array job nor subjob |
+| IS_ARRAY | 3 | Is an array job |
+| IS_ARRAY_SINGLE | 4 | A single subjob |
+| IS_ARRAY_RANGE | 5 |  |
+
+
+
+
 <a name="log_type.proto"/>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -1584,25 +1612,29 @@ organisation-wide impact of a sustained outage.
 <a name="bom.log_type.LogType"/>
 ### LogType
 LogType allows categorisation of logs into general types based
-on the type of information logged and/or the intent of the log
+on the type of information logged and/or the intent of the log.
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
 | UNSET | 0 |  |
 | UNKNOWN | 1 |  |
 | OUT | 2 | General stdout or info-level information |
-| ERROR | 3 | For errors or for stdout |
+| ERROR | 3 | For errors or for stderr |
 | WARNING | 4 | Log for warnings, if applicable |
 | TRACE | 5 | Log for additional trace-level output |
 | SUBMIT | 6 | Task submission log |
 | PID | 7 | Log for tracking tracking process ids or similar |
 | TRANSACTION | 8 | Transactional or commit logs |
-| SCHEDULER | 9 | Log of job manager/scheduler/workflow or similar |
-| ACCESS | 10 | Resource access type logs |
-| MESSAGE | 11 | Logs that record conversations or similar |
-| AUTHENTICATION | 12 | Authentication related logs |
-| SECURITY | 13 | Security warning log |
-| EVENT | 14 | General event log |
+| CHECKPOINT | 9 | Checkpoint/snapshot files - generally self-contained files sufficientto allow resumption of running from that point/state |
+| SCHEDULER | 10 | Log of job manager/scheduler/workflow or similar |
+| ACCESS | 11 | Resource access type logs |
+| MESSAGE | 12 | Logs that record conversations or similar |
+| AUDIT | 13 | An audit log may contain a mix of information for audit purposes, e.g.user login/logoff, expired user sessions, output delivery times etc |
+| AUTHENTICATION | 14 | Authentication related logs |
+| SECURITY | 15 | Security warning log |
+| SESSION | 16 | Session activities for components/services associated with user requests |
+| PRODUCT | 17 | Log out generated/published outputs/products |
+| EVENT | 18 | General event log |
 
 
 
@@ -1922,7 +1954,7 @@ a workflow/batch system by system basis.
 | PREVALIDATING | 3 | Task configuration/content is being validated beforeor as part of a workflow, dispatch, submit or pre-run process |
 | PREVALIDATING_FAIL | 4 | Prevalidation step failed |
 | INVALID | 5 | Task found to be invalid prior to execution |
-| WAITING | 6 | Waiting on trigger conditions to be satisified |
+| WAITING | 6 | Waiting on pre-conditions to be satisfied |
 | HELD | 7 | Held before submission |
 | PREPROCESSING | 8 | In a task pre-processing step, probably run as part of theworkflow scheduler |
 | PREPROCESSING_FAIL | 9 |  |
@@ -1931,14 +1963,14 @@ a workflow/batch system by system basis.
 | EXPIRED | 12 | A deadline has been passed and this task won't be completed |
 | SUBMITTED | 13 | Queued/ready to run by a workflow scheduler |
 | SUBMIT_SUCCESS | 14 | The task has been successfully submitted/dispatched |
-| SUBMIT_FAIL | 15 | The task submit process failed or was killed before the start of taskexeuction |
+| SUBMIT_FAIL | 15 | The task submit process failed or was killed before the start of taskexecution |
 | SUBMIT_RETRYING | 16 | As per SUBMIT_FAIL but a resubmit (possibly after a configured delay)will be attempted automatically |
 | PREJOB | 17 | Running a pre-job/setup step |
 | PREJOB_FAIL | 18 |  |
 | AUTHENTICATING | 19 |  |
 | AUTHENTICATE_SUCCESS | 20 |  |
 | AUTHENTICATE_FAIL | 21 |  |
-| STARTED | 22 | Task started running/reported commencement of execution |
+| STARTED | 22 | Task started running/reported commencement of execution,sometimes referred to as the "BEGUN" state |
 | PROGRESS | 23 | Task in progress (used for possible progress updates) |
 | SUCCESS | 24 | Task appears to have concluded normally & successfully |
 | STOPPED | 25 | Task stopped mid execution as part of workflow design |
@@ -1972,7 +2004,7 @@ a workflow/batch system by system basis.
 | MIGRATING_FAIL | 53 |  |
 | DEFERRED | 54 |  |
 | REJECTED | 55 | Task rejected by batch scheduler or a security layer prior to execution |
-| TRANSIT | 56 | A transit state can be meaningful for certain scheduler systems. |
+| TRANSIT | 56 | The job/task is in process of being routed or moved to a newdestination |
 | ABNORMAL_SUCCESS | 57 | Diagnostics suggest task appears to have succeededbut some warnings/errors/abnormalities were encountered |
 | FAILED | 58 | Task failed (desired outcome of the task was not reached) |
 | RETRY_LIMIT_REACHED | 59 | Multiple task retries have all failed. This is |
