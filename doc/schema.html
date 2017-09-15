@@ -1571,7 +1571,7 @@ task_status changes as a result of this interaction</p></td>
     </table>
     <h3 id="bom.TaskGroupLimits">TaskGroupLimits</h3>
     <p>Limit placed on the number of simultaneously running tasks for tasks
-belonging to a particular group/type or using a particular resource</p>
+belonging to a particular group/type/pool or using a particular resource</p>
     <table class="field-table">
       <thead>
         <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
@@ -1917,10 +1917,24 @@ any limit (if applicable) is respected by some suitable means
           <td><p>Current known submit number</p></td>
         </tr>
         <tr>
+          <td>submit_retry_limit</td>
+          <td><a href="#int64">int64</a></td>
+          <td>optional</td>
+          <td><p>Number of times this task's submit phase should be retried automatically</p></td>
+        </tr>
+        <tr>
+          <td>submit_retry_delay</td>
+          <td><a href="#google.protobuf.Duration">Duration</a></td>
+          <td>optional</td>
+          <td><p>Delay before next submit retry is attempted. If retrying is underway
+presently, then this refers to the delay (if any) before
+this fresh retry attempt is progressed</p></td>
+        </tr>
+        <tr>
           <td>try_number</td>
           <td><a href="#int64">int64</a></td>
           <td>optional</td>
-          <td><p>Current known try number</p></td>
+          <td><p>Current known execution try number</p></td>
         </tr>
         <tr>
           <td>retry_limit</td>

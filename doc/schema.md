@@ -377,7 +377,7 @@ with a task by a user or system.
 <a name="bom.TaskGroupLimits"/>
 ### TaskGroupLimits
 Limit placed on the number of simultaneously running tasks for tasks
-belonging to a particular group/type or using a particular resource
+belonging to a particular group/type/pool or using a particular resource
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
@@ -480,7 +480,9 @@ Metadata about expected automatic retries for tasks.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | submit_number | [int64](#int64) | optional | Current known submit number |
-| try_number | [int64](#int64) | optional | Current known try number |
+| submit_retry_limit | [int64](#int64) | optional | Number of times this task's submit phase should be retried automatically |
+| submit_retry_delay | [Duration](#google.protobuf.Duration) | optional | Delay before next submit retry is attempted. If retrying is underwaypresently, then this refers to the delay (if any) beforethis fresh retry attempt is progressed |
+| try_number | [int64](#int64) | optional | Current known execution try number |
 | retry_limit | [int64](#int64) | optional | Number of times this task should be retried automatically, asset in a top-level workflow scheduler before the task isconsidered to have failed/aborted |
 | retry_delay | [Duration](#google.protobuf.Duration) | optional | Delay before next retry is attempted. If retrying is underwaypresently, then this refers to the delay (if any) beforethis fresh retry attempt is progressed |
 
