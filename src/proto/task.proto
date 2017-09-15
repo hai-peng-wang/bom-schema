@@ -62,16 +62,22 @@ message TaskInfo {
 message TaskRetry {
   /// Current known submit number
   int64 submit_number = 1;
-  /// Current known try number
-  int64 try_number = 2;
+  /// Number of times this task's submit phase should be retried automatically
+  int64 submit_retry_limit = 2;
+  /// Delay before next submit retry is attempted. If retrying is underway
+  // presently, then this refers to the delay (if any) before
+  // this fresh retry attempt is progressed
+  google.protobuf.Duration submit_retry_delay = 3;
+  /// Current known execution try number
+  int64 try_number = 4;
   /// Number of times this task should be retried automatically, as
   // set in a top-level workflow scheduler before the task is
   // considered to have failed/aborted
-  int64 retry_limit = 3;
+  int64 retry_limit = 5;
   /// Delay before next retry is attempted. If retrying is underway
   // presently, then this refers to the delay (if any) before
   // this fresh retry attempt is progressed
-  google.protobuf.Duration retry_delay = 4;
+  google.protobuf.Duration retry_delay = 6;
 }
 
 /// Times to track significant changes in task state, from the
@@ -148,7 +154,7 @@ message TaskInteraction {
 }
 
 /// Limit placed on the number of simultaneously running tasks for tasks
-// belonging to a particular group/type or using a particular resource
+// belonging to a particular group/type/pool or using a particular resource
 message TaskGroupLimits {
   /// Name of the limit
   string name = 1;
