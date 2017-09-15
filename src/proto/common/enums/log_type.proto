@@ -6,22 +6,31 @@ option java_package = "bom";
 option java_outer_classname="LogTypeProto";
 
 /// LogType allows categorisation of logs into general types based
-// on the type of information logged and/or the intent of the log
+// on the type of information logged and/or the intent of the log.
 enum LogType {
     UNSET = 0;
     UNKNOWN = 1;
 
     OUT = 2; /// General stdout or info-level information
-    ERROR = 3; /// For errors or for stdout
+    ERROR = 3; /// For errors or for stderr
     WARNING = 4; /// Log for warnings, if applicable
     TRACE = 5; /// Log for additional trace-level output
     SUBMIT = 6; /// Task submission log
     PID = 7; /// Log for tracking tracking process ids or similar
     TRANSACTION = 8; /// Transactional or commit logs
-    SCHEDULER = 9; /// Log of job manager/scheduler/workflow or similar
-    ACCESS = 10; /// Resource access type logs
-    MESSAGE = 11; /// Logs that record conversations or similar
-    AUTHENTICATION = 12; /// Authentication related logs
-    SECURITY = 13; /// Security warning log
-    EVENT = 14; /// General event log
+    /// Checkpoint/snapshot files - generally self-contained files sufficient
+    // to allow resumption of running from that point/state
+    CHECKPOINT = 9;
+    SCHEDULER = 10; /// Log of job manager/scheduler/workflow or similar
+    ACCESS = 11; /// Resource access type logs
+    MESSAGE = 12; /// Logs that record conversations or similar
+    /// An audit log may contain a mix of information for audit purposes, e.g.
+    // user login/logoff, expired user sessions, output delivery times etc
+    AUDIT = 13;
+    AUTHENTICATION = 14; /// Authentication related logs
+    SECURITY = 15; /// Security warning log
+    /// Session activities for components/services associated with user requests
+    SESSION = 16;
+    PRODUCT = 17; /// Log out generated/published outputs/products
+    EVENT = 18; /// General event log
 }
