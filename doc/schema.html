@@ -5599,10 +5599,14 @@ debug or trace mode</p></td>
     </div>
     
     <h3 id="bom.task_state.TaskState">TaskState</h3>
-    <p>Task state itself. Many states below may represent
-states that don't apply to many systems or intermediate states
+    <p>Task state. Many states represented by TaskState won't
+be applicable to most systems or may represent intermediate states
 that are not tracked. Please choose an appropriate subset on
-a workflow/batch system by system basis.</p>
+a workflow/batch system by system basis. More specific states are
+preferred over their generic counterparts.
+Note: a late task is represented by setting a late time duration in
+the TaskStatus message; e.g. a task may have a TaskState of WAITING or
+RETRYING and also be late</p>
     <table class="enum-table">
       <thead>
         <tr><td>Name</td><td>Number</td><td>Description</td></tr>
@@ -5616,12 +5620,12 @@ a workflow/batch system by system basis.</p>
         <tr>
           <td>UNKNOWN</td>
           <td>1</td>
-          <td><p></p></td>
+          <td><p>Unknown/indeterminate state</p></td>
         </tr>
         <tr>
-          <td>RUNAHEAD</td>
+          <td>CREATED</td>
           <td>2</td>
-          <td><p>Will possibly be queued to run</p></td>
+          <td><p>Newly created task</p></td>
         </tr>
         <tr>
           <td>PREVALIDATING</td>
@@ -5632,7 +5636,7 @@ or as part of a workflow, dispatch, submit or pre-run process</p></td>
         <tr>
           <td>PREVALIDATING_FAIL</td>
           <td>4</td>
-          <td><p>Prevalidation step failed</p></td>
+          <td><p>Pre-validation step failed</p></td>
         </tr>
         <tr>
           <td>INVALID</td>
@@ -5640,127 +5644,233 @@ or as part of a workflow, dispatch, submit or pre-run process</p></td>
           <td><p>Task found to be invalid prior to execution</p></td>
         </tr>
         <tr>
-          <td>WAITING</td>
+          <td>DORMANT</td>
           <td>6</td>
-          <td><p>Waiting on pre-conditions to be satisfied</p></td>
+          <td><p>Task proxy exists in a scheduler but is not currently in a
+configuration that permits it to be progressed to a waiting, queued or
+run state</p></td>
+        </tr>
+        <tr>
+          <td>WAITING</td>
+          <td>9</td>
+          <td><p>Generic waiting state (waiting on one more conditions to be met).
+ Better qualified waiting states follow below</p></td>
+        </tr>
+        <tr>
+          <td>WAITING_TIME</td>
+          <td>10</td>
+          <td><p>Waiting purely on a time condition</p></td>
+        </tr>
+        <tr>
+          <td>WAITING_PRECONDITIONS</td>
+          <td>11</td>
+          <td><p>Waiting on trigger(s)/event(s)/pre-condition(s) to be set/satisfied prior
+to execution. This includes a mix of a temporal trigger and other
+dependencies.</p></td>
+        </tr>
+        <tr>
+          <td>WAITING_RUNAHEAD</td>
+          <td>12</td>
+          <td><p>Task is eligible to run (normal pre-conditions have been met) but
+is will not yet be submitted/executed due to a &quot;runahead&quot; restriction
+which is a limit imposed on many cycles ahead/ tasks from a cycling suite
+are permitted to run.</p></td>
+        </tr>
+        <tr>
+          <td>WAITING_QUEUE</td>
+          <td>13</td>
+          <td><p>Job waiting in a queue or is part of some group or allocation that has
+reached a constraint/limit (e.g. there may be a maximum number of jobs a
+specific user can run per day).</p></td>
+        </tr>
+        <tr>
+          <td>WAITING_RESOURCES</td>
+          <td>14</td>
+          <td><p>The resources requested by the job do not currently exist in an available
+state (e.g. they are busy, reserved or temporarily offline).</p></td>
+        </tr>
+        <tr>
+          <td>WAITING_AUTHORISATION</td>
+          <td>15</td>
+          <td><p>The task is ready to run pending an authorisation step
+ (e.g. awaiting approval of an operator via a GUI)</p></td>
         </tr>
         <tr>
           <td>HELD</td>
-          <td>7</td>
-          <td><p>Held before submission</p></td>
+          <td>20</td>
+          <td><p>Generic held/on-hold state. Better qualified held states follow below</p></td>
+        </tr>
+        <tr>
+          <td>HELD_BY_USER</td>
+          <td>21</td>
+          <td><p>User initiated task/job hold</p></td>
+        </tr>
+        <tr>
+          <td>HELD_BY_OPERATOR</td>
+          <td>22</td>
+          <td><p>Operator initiated job hold. If operators can't be distinguished from
+users, HELD_BY_USER should be used instead.</p></td>
+        </tr>
+        <tr>
+          <td>HELD_BY_ADMIN</td>
+          <td>23</td>
+          <td><p>Administrator-level job hold</p></td>
+        </tr>
+        <tr>
+          <td>HELD_BY_SYSTEM</td>
+          <td>24</td>
+          <td><p>System-level or resource-manager job hold.</p></td>
+        </tr>
+        <tr>
+          <td>HELD_BY_RESOURCES</td>
+          <td>25</td>
+          <td><p>The resources requested by the job do not currently exist in an available
+state and this is treated as a hold rather than a waiting
+(WAITING_RESOURCES) state. This is more specific than HELD_BY_SYSTEM.</p></td>
         </tr>
         <tr>
           <td>PREPROCESSING</td>
-          <td>8</td>
+          <td>29</td>
           <td><p>In a task pre-processing step, probably run as part of the
 workflow scheduler</p></td>
         </tr>
         <tr>
           <td>PREPROCESSING_FAIL</td>
-          <td>9</td>
+          <td>30</td>
           <td><p></p></td>
         </tr>
         <tr>
+          <td>PREPROCESSING_SUCCESS</td>
+          <td>31</td>
+          <td><p>Successful completion of a task preprocessing stage</p></td>
+        </tr>
+        <tr>
           <td>QUEUED</td>
-          <td>10</td>
+          <td>34</td>
           <td><p>Queued/getting ready to run</p></td>
         </tr>
         <tr>
           <td>READY</td>
-          <td>11</td>
-          <td><p>Ready to run/submit</p></td>
+          <td>35</td>
+          <td><p>Ready to run/submit, not waiting and not held</p></td>
         </tr>
         <tr>
           <td>EXPIRED</td>
-          <td>12</td>
+          <td>36</td>
           <td><p>A deadline has been passed and this task won't be completed</p></td>
         </tr>
         <tr>
-          <td>SUBMITTED</td>
-          <td>13</td>
-          <td><p>Queued/ready to run by a workflow scheduler</p></td>
+          <td>SUBMITTING</td>
+          <td>38</td>
+          <td><p>The task/job has is in the process of being submitted/dispatched</p></td>
         </tr>
         <tr>
           <td>SUBMIT_SUCCESS</td>
-          <td>14</td>
+          <td>39</td>
           <td><p>The task has been successfully submitted/dispatched</p></td>
         </tr>
         <tr>
           <td>SUBMIT_FAIL</td>
-          <td>15</td>
+          <td>40</td>
           <td><p>The task submit process failed or was killed before the start of task
 execution</p></td>
         </tr>
         <tr>
+          <td>SUBMIT_TIMEOUT</td>
+          <td>41</td>
+          <td><p>The task submit process appeared to hang/timed-out.</p></td>
+        </tr>
+        <tr>
           <td>SUBMIT_RETRYING</td>
-          <td>16</td>
-          <td><p>As per SUBMIT_FAIL but a resubmit (possibly after a configured delay)
-will be attempted automatically</p></td>
+          <td>42</td>
+          <td><p>As per SUBMIT_FAIL or SUBMIT_TIMEOUT but a resubmit (possibly after a
+configured delay) will be attempted automatically</p></td>
+        </tr>
+        <tr>
+          <td>REJECTED</td>
+          <td>44</td>
+          <td><p>Task rejected by batch scheduler or a security layer prior to execution</p></td>
         </tr>
         <tr>
           <td>PREJOB</td>
-          <td>17</td>
+          <td>45</td>
           <td><p>Running a pre-job/setup step</p></td>
         </tr>
         <tr>
           <td>PREJOB_FAIL</td>
-          <td>18</td>
+          <td>46</td>
           <td><p></p></td>
         </tr>
         <tr>
+          <td>PREJOB_SUCCESS</td>
+          <td>47</td>
+          <td><p>Successful completion of the pre-job step(s)</p></td>
+        </tr>
+        <tr>
           <td>AUTHENTICATING</td>
-          <td>19</td>
+          <td>49</td>
           <td><p></p></td>
         </tr>
         <tr>
           <td>AUTHENTICATE_SUCCESS</td>
-          <td>20</td>
+          <td>50</td>
           <td><p></p></td>
         </tr>
         <tr>
           <td>AUTHENTICATE_FAIL</td>
-          <td>21</td>
+          <td>51</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>AUTHENTICATE_TIMEOUT</td>
+          <td>52</td>
           <td><p></p></td>
         </tr>
         <tr>
           <td>STARTED</td>
-          <td>22</td>
+          <td>54</td>
           <td><p>Task started running/reported commencement of execution,
 sometimes referred to as the &quot;BEGUN&quot; state</p></td>
         </tr>
         <tr>
           <td>PROGRESS</td>
-          <td>23</td>
+          <td>55</td>
           <td><p>Task in progress (used for possible progress updates)</p></td>
         </tr>
         <tr>
           <td>SUCCESS</td>
-          <td>24</td>
+          <td>56</td>
           <td><p>Task appears to have concluded normally &amp; successfully</p></td>
         </tr>
         <tr>
           <td>STOPPED</td>
-          <td>25</td>
+          <td>57</td>
           <td><p>Task stopped mid execution as part of workflow design</p></td>
         </tr>
         <tr>
           <td>PAUSING</td>
-          <td>26</td>
+          <td>58</td>
           <td><p>Task execution in process of pausing</p></td>
         </tr>
         <tr>
           <td>PAUSED</td>
-          <td>27</td>
+          <td>59</td>
           <td><p>Task execution paused; task still memory/process resident (not vacated)</p></td>
         </tr>
         <tr>
           <td>PAUSE_FAIL</td>
-          <td>28</td>
+          <td>60</td>
           <td><p>Pausing the task failed</p></td>
         </tr>
         <tr>
+          <td>PROMPTING</td>
+          <td>62</td>
+          <td><p>Task, during the course of execution, is requesting/prompting
+for additional interactive input or authorisation</p></td>
+        </tr>
+        <tr>
           <td>SUSPENDING</td>
-          <td>29</td>
+          <td>64</td>
           <td><p>Task in the process of suspending. Usually used as a mechanism
 to free up resources for other higher priority jobs in a batch scheduler
 context which usually involves some sort of snap-shotting of task state
@@ -5769,265 +5879,271 @@ Sometimes referred to as task vacating or a task vacation.</p></td>
         </tr>
         <tr>
           <td>SUSPENDED</td>
-          <td>30</td>
+          <td>65</td>
           <td><p>Task suspended/vacated and needs to be resumed to progress/complete.</p></td>
         </tr>
         <tr>
           <td>SUSPEND_FAIL</td>
-          <td>31</td>
+          <td>66</td>
           <td><p>Suspending/vacating the task failed</p></td>
         </tr>
         <tr>
-          <td>CHECKPOINTING</td>
-          <td>32</td>
-          <td><p>Checkpoint information about a task or the system</p></td>
+          <td>SUSPEND_TIMEOUT</td>
+          <td>67</td>
+          <td><p>Suspending failed due to hanging or taking too long</p></td>
         </tr>
         <tr>
-          <td>CHECKPOINT_FAIL</td>
-          <td>33</td>
-          <td><p>Failure during checkpointing</p></td>
+          <td>CHECKPOINTING</td>
+          <td>68</td>
+          <td><p>Job/task is in the process of creating checkpoint</p></td>
         </tr>
         <tr>
           <td>CHECKPOINT_SUCCESS</td>
-          <td>34</td>
-          <td><p></p></td>
-        </tr>
-        <tr>
-          <td>RETRYING</td>
-          <td>35</td>
-          <td><p>Retrying, progressed beyond submission</p></td>
-        </tr>
-        <tr>
-          <td>RESURRECTING</td>
-          <td>36</td>
-          <td><p></p></td>
-        </tr>
-        <tr>
-          <td>RESURRECTED</td>
-          <td>37</td>
-          <td><p></p></td>
-        </tr>
-        <tr>
-          <td>RESURRECT_FAIL</td>
-          <td>38</td>
-          <td><p></p></td>
-        </tr>
-        <tr>
-          <td>RESTORING</td>
-          <td>39</td>
-          <td><p>Restoring from a check-point or other saved state</p></td>
-        </tr>
-        <tr>
-          <td>RESTORE_FAIL</td>
-          <td>40</td>
-          <td><p></p></td>
-        </tr>
-        <tr>
-          <td>RESTORE_SUCCESS</td>
-          <td>41</td>
-          <td><p></p></td>
-        </tr>
-        <tr>
-          <td>POSTJOB</td>
-          <td>42</td>
-          <td><p>Running a post-job/clean step</p></td>
-        </tr>
-        <tr>
-          <td>POSTJOB_FAIL</td>
-          <td>43</td>
-          <td><p></p></td>
-        </tr>
-        <tr>
-          <td>POSTVALIDATING</td>
-          <td>44</td>
-          <td><p>Running a validation step as part of the task following execution</p></td>
-        </tr>
-        <tr>
-          <td>POSTVALIDATING_FAIL</td>
-          <td>45</td>
-          <td><p></p></td>
-        </tr>
-        <tr>
-          <td>EXITING</td>
-          <td>46</td>
-          <td><p>Job is exiting after having run (normally in a batch scheduler context)</p></td>
-        </tr>
-        <tr>
-          <td>INDETERMINATE</td>
-          <td>47</td>
-          <td><p>May or may not be eventually run</p></td>
-        </tr>
-        <tr>
-          <td>DORMANT</td>
-          <td>48</td>
-          <td><p>Task proxy exists in a scheduler but is not currently in a
-configuration that permits it to be progressed to a queued or run state</p></td>
-        </tr>
-        <tr>
-          <td>DROPPED</td>
-          <td>49</td>
-          <td><p>Task definition dropped/omitted before execution from scheduler</p></td>
-        </tr>
-        <tr>
-          <td>SKIPPED</td>
-          <td>50</td>
-          <td><p>Task to be skipped</p></td>
-        </tr>
-        <tr>
-          <td>MIGRATING</td>
-          <td>51</td>
-          <td><p>Job control responsibility is being migrated to another system</p></td>
-        </tr>
-        <tr>
-          <td>MIGRATED</td>
-          <td>52</td>
-          <td><p></p></td>
-        </tr>
-        <tr>
-          <td>MIGRATING_FAIL</td>
-          <td>53</td>
-          <td><p></p></td>
-        </tr>
-        <tr>
-          <td>DEFERRED</td>
-          <td>54</td>
-          <td><p></p></td>
-        </tr>
-        <tr>
-          <td>REJECTED</td>
-          <td>55</td>
-          <td><p>Task rejected by batch scheduler or a security layer prior to execution</p></td>
-        </tr>
-        <tr>
-          <td>TRANSIT</td>
-          <td>56</td>
-          <td><p>The job/task is in process of being routed or moved to a new
-destination</p></td>
-        </tr>
-        <tr>
-          <td>ABNORMAL_SUCCESS</td>
-          <td>57</td>
-          <td><p>Diagnostics suggest task appears to have succeeded
-but some warnings/errors/abnormalities were encountered</p></td>
-        </tr>
-        <tr>
-          <td>FAILED</td>
-          <td>58</td>
-          <td><p>Task failed (desired outcome of the task was not reached)</p></td>
-        </tr>
-        <tr>
-          <td>RETRY_LIMIT_REACHED</td>
-          <td>59</td>
-          <td><p>Multiple task retries have all failed. This is</p></td>
-        </tr>
-        <tr>
-          <td>WARNING</td>
-          <td>60</td>
-          <td><p></p></td>
-        </tr>
-        <tr>
-          <td>ERROR_WITH_CONTINUATION</td>
-          <td>61</td>
-          <td><p>An error was found during execution but task is continuing.</p></td>
-        </tr>
-        <tr>
-          <td>KILLING</td>
-          <td>62</td>
-          <td><p>An attempt at killing the task has taken place</p></td>
-        </tr>
-        <tr>
-          <td>KILLING_FAIL</td>
-          <td>63</td>
-          <td><p>An attempt at killing the task has apparently failed</p></td>
-        </tr>
-        <tr>
-          <td>KILLED_BY_COMMAND</td>
-          <td>64</td>
-          <td><p>For example via kill or qdel</p></td>
-        </tr>
-        <tr>
-          <td>KILLED_BY_TIME_LIMIT</td>
-          <td>65</td>
-          <td><p></p></td>
-        </tr>
-        <tr>
-          <td>KILLED_BY_CPU_LIMIT</td>
-          <td>66</td>
-          <td><p></p></td>
-        </tr>
-        <tr>
-          <td>KILLED_BY_MEMORY_LIMIT</td>
-          <td>67</td>
-          <td><p></p></td>
-        </tr>
-        <tr>
-          <td>KILLED_BY_PROCESS_LIMIT</td>
-          <td>68</td>
-          <td><p></p></td>
-        </tr>
-        <tr>
-          <td>KILLED_BY_FILE_SIZE_LIMIT</td>
           <td>69</td>
           <td><p></p></td>
         </tr>
         <tr>
-          <td>KILLED_BY_FILE_NUMBER_LIMIT</td>
+          <td>CHECKPOINT_FAIL</td>
           <td>70</td>
+          <td><p>Failure during check-pointing</p></td>
+        </tr>
+        <tr>
+          <td>RESTORING</td>
+          <td>72</td>
+          <td><p>Restoring/resuming from a check-point or other saved state</p></td>
+        </tr>
+        <tr>
+          <td>RESTORE_FAIL</td>
+          <td>73</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>RESTORE_SUCCESS</td>
+          <td>74</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>POSTJOB</td>
+          <td>76</td>
+          <td><p>Running a post-job/clean step. Note: if prior task</p></td>
+        </tr>
+        <tr>
+          <td>POSTJOB_FAIL</td>
+          <td>77</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>POSTVALIDATING</td>
+          <td>79</td>
+          <td><p>Running a validation step as part of the task following execution</p></td>
+        </tr>
+        <tr>
+          <td>POSTVALIDATING_FAIL</td>
+          <td>80</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>EXITING</td>
+          <td>82</td>
+          <td><p>Job is exiting after having run (normally in a batch scheduler context).</p></td>
+        </tr>
+        <tr>
+          <td>RETRYING</td>
+          <td>84</td>
+          <td><p>Retrying after having previously progressed to some</p></td>
+        </tr>
+        <tr>
+          <td>FAILED</td>
+          <td>86</td>
+          <td><p>Task failed (desired outcome of the task was not reached)</p></td>
+        </tr>
+        <tr>
+          <td>RETRY_LIMIT_REACHED</td>
+          <td>88</td>
+          <td><p>Multiple task retries have all failed. This is a failed state.</p></td>
+        </tr>
+        <tr>
+          <td>ABNORMAL_SUCCESS</td>
+          <td>89</td>
+          <td><p>Diagnostics suggest task appears to have succeeded
+but some warnings/errors/abnormalities were encountered</p></td>
+        </tr>
+        <tr>
+          <td>WARNING</td>
+          <td>90</td>
+          <td><p>Task is reporting a warning during execution but has not
+finished. This is a potential intermediate state of a task:
+If it succeeds ABNORMAL_SUCCESS should be reported.
+If it fails one of the many failure modes should be reported.</p></td>
+        </tr>
+        <tr>
+          <td>ERROR_WITH_CONTINUATION</td>
+          <td>91</td>
+          <td><p>An error was found during execution but task is continuing.</p></td>
+        </tr>
+        <tr>
+          <td>KILLING</td>
+          <td>93</td>
+          <td><p>An attempt at killing the task has taken place</p></td>
+        </tr>
+        <tr>
+          <td>KILLING_FAIL</td>
+          <td>94</td>
+          <td><p>An attempt at killing the task has apparently failed</p></td>
+        </tr>
+        <tr>
+          <td>KILLING_TIMEOUT</td>
+          <td>95</td>
+          <td><p>An attempt at killing the task has apparently hung/timed-out and may
+not have taken effect</p></td>
+        </tr>
+        <tr>
+          <td>KILLED_BY_COMMAND</td>
+          <td>96</td>
+          <td><p>For example via kill or qdel</p></td>
+        </tr>
+        <tr>
+          <td>KILLED_BY_TIME_LIMIT</td>
+          <td>97</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>KILLED_BY_CPU_LIMIT</td>
+          <td>98</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>KILLED_BY_MEMORY_LIMIT</td>
+          <td>99</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>KILLED_BY_PROCESS_LIMIT</td>
+          <td>100</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>KILLED_BY_FILE_SIZE_LIMIT</td>
+          <td>101</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>KILLED_BY_FILE_NUMBER_LIMIT</td>
+          <td>102</td>
           <td><p></p></td>
         </tr>
         <tr>
           <td>KILLED_BY_SECURITY_POLICY</td>
-          <td>71</td>
+          <td>103</td>
           <td><p></p></td>
         </tr>
         <tr>
           <td>KILLED</td>
-          <td>72</td>
+          <td>106</td>
           <td><p>Killed by another or unspecified mechanism</p></td>
         </tr>
         <tr>
           <td>CANCELLED</td>
-          <td>73</td>
-          <td><p>Program/model run cancelled via some mechanism other than kill
-or a retry limit</p></td>
+          <td>107</td>
+          <td><p>Program/model run cancelled during execution via some mechanism other
+than kill or a retry limit</p></td>
+        </tr>
+        <tr>
+          <td>DROPPED</td>
+          <td>109</td>
+          <td><p>Task definition dropped/omitted before execution from scheduler</p></td>
+        </tr>
+        <tr>
+          <td>SKIPPED</td>
+          <td>110</td>
+          <td><p>Task to be skipped</p></td>
+        </tr>
+        <tr>
+          <td>MIGRATING</td>
+          <td>111</td>
+          <td><p>Job control responsibility is being migrated to another system</p></td>
+        </tr>
+        <tr>
+          <td>MIGRATED</td>
+          <td>112</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>MIGRATING_FAIL</td>
+          <td>113</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>TRANSIT</td>
+          <td>114</td>
+          <td><p>The job/task itself is in the process of being routed or moved to a new
+destination</p></td>
+        </tr>
+        <tr>
+          <td>TRANSIT_SUCCESS</td>
+          <td>115</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>TRANSIT_FAIL</td>
+          <td>116</td>
+          <td><p></p></td>
         </tr>
         <tr>
           <td>BLOCKED</td>
-          <td>74</td>
+          <td>117</td>
           <td><p>Task is executing but progress is blocked</p></td>
         </tr>
         <tr>
           <td>HUNG</td>
-          <td>75</td>
+          <td>118</td>
           <td><p>Execution has hung and become unresponsive.</p></td>
         </tr>
         <tr>
           <td>UNREACHABLE</td>
-          <td>76</td>
+          <td>119</td>
           <td><p>Attempts to determine task state have failed (e.g. network outage).
-It is unknown if the task is still running or not, etc</p></td>
+It is unknown if the task is still running or not</p></td>
         </tr>
         <tr>
           <td>LOST</td>
-          <td>77</td>
+          <td>120</td>
           <td><p>Attempts to track a task have failed and it is now considered
 lost by this system.</p></td>
         </tr>
         <tr>
           <td>ZOMBIE</td>
-          <td>78</td>
+          <td>121</td>
           <td><p>Process has become a zombie (process is still running but is become
 detached in some way from the managing process)</p></td>
         </tr>
         <tr>
+          <td>RESURRECTING</td>
+          <td>122</td>
+          <td><p>Resurrecting is the process of restoring a ZOMBIE or possibly a
+previously UNREACHABLE task to a &quot;normal&quot; task</p></td>
+        </tr>
+        <tr>
+          <td>RESURRECTED</td>
+          <td>123</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>RESURRECT_FAIL</td>
+          <td>124</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
           <td>FORCE_COMPLETED</td>
-          <td>79</td>
-          <td><p>Task forced to be in a completed state.</p></td>
+          <td>125</td>
+          <td><p>Task forced to be in a completed state from the perspective of a
+scheduler/job manager. It may in-fact never have run or
+may still be running if it had previously launched.</p></td>
         </tr>
         <tr>
           <td>MODEL_STOP</td>
-          <td>80</td>
-          <td><p>Model progress was blocked by a model mechanism, for example numerical
+          <td>127</td>
+          <td><p>Model progress was stopped by a model mechanism, for example numerical
 convergence thresholds were not met.</p></td>
         </tr>
       </tbody>

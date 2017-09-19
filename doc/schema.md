@@ -1943,94 +1943,116 @@ Interaction with a task performed by a user or system.
 
 <a name="bom.task_state.TaskState"/>
 ### TaskState
-Task state itself. Many states below may represent
-states that don't apply to many systems or intermediate states
+Task state. Many states represented by TaskState won't
+be applicable to most systems or may represent intermediate states
 that are not tracked. Please choose an appropriate subset on
-a workflow/batch system by system basis.
+a workflow/batch system by system basis. More specific states are
+preferred over their generic counterparts.
+Note: a late task is represented by setting a late time duration in
+the TaskStatus message; e.g. a task may have a TaskState of WAITING or
+RETRYING and also be late
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
 | UNSET | 0 |  |
-| UNKNOWN | 1 |  |
-| RUNAHEAD | 2 | Will possibly be queued to run |
+| UNKNOWN | 1 | Unknown/indeterminate state |
+| CREATED | 2 | Newly created task |
 | PREVALIDATING | 3 | Task configuration/content is being validated beforeor as part of a workflow, dispatch, submit or pre-run process |
-| PREVALIDATING_FAIL | 4 | Prevalidation step failed |
+| PREVALIDATING_FAIL | 4 | Pre-validation step failed |
 | INVALID | 5 | Task found to be invalid prior to execution |
-| WAITING | 6 | Waiting on pre-conditions to be satisfied |
-| HELD | 7 | Held before submission |
-| PREPROCESSING | 8 | In a task pre-processing step, probably run as part of theworkflow scheduler |
-| PREPROCESSING_FAIL | 9 |  |
-| QUEUED | 10 | Queued/getting ready to run |
-| READY | 11 | Ready to run/submit |
-| EXPIRED | 12 | A deadline has been passed and this task won't be completed |
-| SUBMITTED | 13 | Queued/ready to run by a workflow scheduler |
-| SUBMIT_SUCCESS | 14 | The task has been successfully submitted/dispatched |
-| SUBMIT_FAIL | 15 | The task submit process failed or was killed before the start of taskexecution |
-| SUBMIT_RETRYING | 16 | As per SUBMIT_FAIL but a resubmit (possibly after a configured delay)will be attempted automatically |
-| PREJOB | 17 | Running a pre-job/setup step |
-| PREJOB_FAIL | 18 |  |
-| AUTHENTICATING | 19 |  |
-| AUTHENTICATE_SUCCESS | 20 |  |
-| AUTHENTICATE_FAIL | 21 |  |
-| STARTED | 22 | Task started running/reported commencement of execution,sometimes referred to as the "BEGUN" state |
-| PROGRESS | 23 | Task in progress (used for possible progress updates) |
-| SUCCESS | 24 | Task appears to have concluded normally & successfully |
-| STOPPED | 25 | Task stopped mid execution as part of workflow design |
-| PAUSING | 26 | Task execution in process of pausing |
-| PAUSED | 27 | Task execution paused; task still memory/process resident (not vacated) |
-| PAUSE_FAIL | 28 | Pausing the task failed |
-| SUSPENDING | 29 | Task in the process of suspending. Usually used as a mechanismto free up resources for other higher priority jobs in a batch schedulercontext which usually involves some sort of snap-shotting of task stateand temporarily stopping task execution.Sometimes referred to as task vacating or a task vacation. |
-| SUSPENDED | 30 | Task suspended/vacated and needs to be resumed to progress/complete. |
-| SUSPEND_FAIL | 31 | Suspending/vacating the task failed |
-| CHECKPOINTING | 32 | Checkpoint information about a task or the system |
-| CHECKPOINT_FAIL | 33 | Failure during checkpointing |
-| CHECKPOINT_SUCCESS | 34 |  |
-| RETRYING | 35 | Retrying, progressed beyond submission |
-| RESURRECTING | 36 |  |
-| RESURRECTED | 37 |  |
-| RESURRECT_FAIL | 38 |  |
-| RESTORING | 39 | Restoring from a check-point or other saved state |
-| RESTORE_FAIL | 40 |  |
-| RESTORE_SUCCESS | 41 |  |
-| POSTJOB | 42 | Running a post-job/clean step |
-| POSTJOB_FAIL | 43 |  |
-| POSTVALIDATING | 44 | Running a validation step as part of the task following execution |
-| POSTVALIDATING_FAIL | 45 |  |
-| EXITING | 46 | Job is exiting after having run (normally in a batch scheduler context) |
-| INDETERMINATE | 47 | May or may not be eventually run |
-| DORMANT | 48 | Task proxy exists in a scheduler but is not currently in aconfiguration that permits it to be progressed to a queued or run state |
-| DROPPED | 49 | Task definition dropped/omitted before execution from scheduler |
-| SKIPPED | 50 | Task to be skipped |
-| MIGRATING | 51 | Job control responsibility is being migrated to another system |
-| MIGRATED | 52 |  |
-| MIGRATING_FAIL | 53 |  |
-| DEFERRED | 54 |  |
-| REJECTED | 55 | Task rejected by batch scheduler or a security layer prior to execution |
-| TRANSIT | 56 | The job/task is in process of being routed or moved to a newdestination |
-| ABNORMAL_SUCCESS | 57 | Diagnostics suggest task appears to have succeededbut some warnings/errors/abnormalities were encountered |
-| FAILED | 58 | Task failed (desired outcome of the task was not reached) |
-| RETRY_LIMIT_REACHED | 59 | Multiple task retries have all failed. This is |
-| WARNING | 60 |  |
-| ERROR_WITH_CONTINUATION | 61 | An error was found during execution but task is continuing. |
-| KILLING | 62 | An attempt at killing the task has taken place |
-| KILLING_FAIL | 63 | An attempt at killing the task has apparently failed |
-| KILLED_BY_COMMAND | 64 | For example via kill or qdel |
-| KILLED_BY_TIME_LIMIT | 65 |  |
-| KILLED_BY_CPU_LIMIT | 66 |  |
-| KILLED_BY_MEMORY_LIMIT | 67 |  |
-| KILLED_BY_PROCESS_LIMIT | 68 |  |
-| KILLED_BY_FILE_SIZE_LIMIT | 69 |  |
-| KILLED_BY_FILE_NUMBER_LIMIT | 70 |  |
-| KILLED_BY_SECURITY_POLICY | 71 |  |
-| KILLED | 72 | Killed by another or unspecified mechanism |
-| CANCELLED | 73 | Program/model run cancelled via some mechanism other than killor a retry limit |
-| BLOCKED | 74 | Task is executing but progress is blocked |
-| HUNG | 75 | Execution has hung and become unresponsive. |
-| UNREACHABLE | 76 | Attempts to determine task state have failed (e.g. network outage).It is unknown if the task is still running or not, etc |
-| LOST | 77 | Attempts to track a task have failed and it is now consideredlost by this system. |
-| ZOMBIE | 78 | Process has become a zombie (process is still running but is becomedetached in some way from the managing process) |
-| FORCE_COMPLETED | 79 | Task forced to be in a completed state. |
-| MODEL_STOP | 80 | Model progress was blocked by a model mechanism, for example numericalconvergence thresholds were not met. |
+| DORMANT | 6 | Task proxy exists in a scheduler but is not currently in aconfiguration that permits it to be progressed to a waiting, queued orrun state |
+| WAITING | 9 | Generic waiting state (waiting on one more conditions to be met). Better qualified waiting states follow below |
+| WAITING_TIME | 10 | Waiting purely on a time condition |
+| WAITING_PRECONDITIONS | 11 | Waiting on trigger(s)/event(s)/pre-condition(s) to be set/satisfied priorto execution. This includes a mix of a temporal trigger and otherdependencies. |
+| WAITING_RUNAHEAD | 12 | Task is eligible to run (normal pre-conditions have been met) butis will not yet be submitted/executed due to a "runahead" restrictionwhich is a limit imposed on many cycles ahead/ tasks from a cycling suiteare permitted to run. |
+| WAITING_QUEUE | 13 | Job waiting in a queue or is part of some group or allocation that hasreached a constraint/limit (e.g. there may be a maximum number of jobs aspecific user can run per day). |
+| WAITING_RESOURCES | 14 | The resources requested by the job do not currently exist in an availablestate (e.g. they are busy, reserved or temporarily offline). |
+| WAITING_AUTHORISATION | 15 | The task is ready to run pending an authorisation step (e.g. awaiting approval of an operator via a GUI) |
+| HELD | 20 | Generic held/on-hold state. Better qualified held states follow below |
+| HELD_BY_USER | 21 | User initiated task/job hold |
+| HELD_BY_OPERATOR | 22 | Operator initiated job hold. If operators can't be distinguished fromusers, HELD_BY_USER should be used instead. |
+| HELD_BY_ADMIN | 23 | Administrator-level job hold |
+| HELD_BY_SYSTEM | 24 | System-level or resource-manager job hold. |
+| HELD_BY_RESOURCES | 25 | The resources requested by the job do not currently exist in an availablestate and this is treated as a hold rather than a waiting(WAITING_RESOURCES) state. This is more specific than HELD_BY_SYSTEM. |
+| PREPROCESSING | 29 | In a task pre-processing step, probably run as part of theworkflow scheduler |
+| PREPROCESSING_FAIL | 30 |  |
+| PREPROCESSING_SUCCESS | 31 | Successful completion of a task preprocessing stage |
+| QUEUED | 34 | Queued/getting ready to run |
+| READY | 35 | Ready to run/submit, not waiting and not held |
+| EXPIRED | 36 | A deadline has been passed and this task won't be completed |
+| SUBMITTING | 38 | The task/job has is in the process of being submitted/dispatched |
+| SUBMIT_SUCCESS | 39 | The task has been successfully submitted/dispatched |
+| SUBMIT_FAIL | 40 | The task submit process failed or was killed before the start of taskexecution |
+| SUBMIT_TIMEOUT | 41 | The task submit process appeared to hang/timed-out. |
+| SUBMIT_RETRYING | 42 | As per SUBMIT_FAIL or SUBMIT_TIMEOUT but a resubmit (possibly after aconfigured delay) will be attempted automatically |
+| REJECTED | 44 | Task rejected by batch scheduler or a security layer prior to execution |
+| PREJOB | 45 | Running a pre-job/setup step |
+| PREJOB_FAIL | 46 |  |
+| PREJOB_SUCCESS | 47 | Successful completion of the pre-job step(s) |
+| AUTHENTICATING | 49 |  |
+| AUTHENTICATE_SUCCESS | 50 |  |
+| AUTHENTICATE_FAIL | 51 |  |
+| AUTHENTICATE_TIMEOUT | 52 |  |
+| STARTED | 54 | Task started running/reported commencement of execution,sometimes referred to as the "BEGUN" state |
+| PROGRESS | 55 | Task in progress (used for possible progress updates) |
+| SUCCESS | 56 | Task appears to have concluded normally & successfully |
+| STOPPED | 57 | Task stopped mid execution as part of workflow design |
+| PAUSING | 58 | Task execution in process of pausing |
+| PAUSED | 59 | Task execution paused; task still memory/process resident (not vacated) |
+| PAUSE_FAIL | 60 | Pausing the task failed |
+| PROMPTING | 62 | Task, during the course of execution, is requesting/promptingfor additional interactive input or authorisation |
+| SUSPENDING | 64 | Task in the process of suspending. Usually used as a mechanismto free up resources for other higher priority jobs in a batch schedulercontext which usually involves some sort of snap-shotting of task stateand temporarily stopping task execution.Sometimes referred to as task vacating or a task vacation. |
+| SUSPENDED | 65 | Task suspended/vacated and needs to be resumed to progress/complete. |
+| SUSPEND_FAIL | 66 | Suspending/vacating the task failed |
+| SUSPEND_TIMEOUT | 67 | Suspending failed due to hanging or taking too long |
+| CHECKPOINTING | 68 | Job/task is in the process of creating checkpoint |
+| CHECKPOINT_SUCCESS | 69 |  |
+| CHECKPOINT_FAIL | 70 | Failure during check-pointing |
+| RESTORING | 72 | Restoring/resuming from a check-point or other saved state |
+| RESTORE_FAIL | 73 |  |
+| RESTORE_SUCCESS | 74 |  |
+| POSTJOB | 76 | Running a post-job/clean step. Note: if prior task |
+| POSTJOB_FAIL | 77 |  |
+| POSTVALIDATING | 79 | Running a validation step as part of the task following execution |
+| POSTVALIDATING_FAIL | 80 |  |
+| EXITING | 82 | Job is exiting after having run (normally in a batch scheduler context). |
+| RETRYING | 84 | Retrying after having previously progressed to some |
+| FAILED | 86 | Task failed (desired outcome of the task was not reached) |
+| RETRY_LIMIT_REACHED | 88 | Multiple task retries have all failed. This is a failed state. |
+| ABNORMAL_SUCCESS | 89 | Diagnostics suggest task appears to have succeededbut some warnings/errors/abnormalities were encountered |
+| WARNING | 90 | Task is reporting a warning during execution but has notfinished. This is a potential intermediate state of a task:If it succeeds ABNORMAL_SUCCESS should be reported.If it fails one of the many failure modes should be reported. |
+| ERROR_WITH_CONTINUATION | 91 | An error was found during execution but task is continuing. |
+| KILLING | 93 | An attempt at killing the task has taken place |
+| KILLING_FAIL | 94 | An attempt at killing the task has apparently failed |
+| KILLING_TIMEOUT | 95 | An attempt at killing the task has apparently hung/timed-out and maynot have taken effect |
+| KILLED_BY_COMMAND | 96 | For example via kill or qdel |
+| KILLED_BY_TIME_LIMIT | 97 |  |
+| KILLED_BY_CPU_LIMIT | 98 |  |
+| KILLED_BY_MEMORY_LIMIT | 99 |  |
+| KILLED_BY_PROCESS_LIMIT | 100 |  |
+| KILLED_BY_FILE_SIZE_LIMIT | 101 |  |
+| KILLED_BY_FILE_NUMBER_LIMIT | 102 |  |
+| KILLED_BY_SECURITY_POLICY | 103 |  |
+| KILLED | 106 | Killed by another or unspecified mechanism |
+| CANCELLED | 107 | Program/model run cancelled during execution via some mechanism otherthan kill or a retry limit |
+| DROPPED | 109 | Task definition dropped/omitted before execution from scheduler |
+| SKIPPED | 110 | Task to be skipped |
+| MIGRATING | 111 | Job control responsibility is being migrated to another system |
+| MIGRATED | 112 |  |
+| MIGRATING_FAIL | 113 |  |
+| TRANSIT | 114 | The job/task itself is in the process of being routed or moved to a newdestination |
+| TRANSIT_SUCCESS | 115 |  |
+| TRANSIT_FAIL | 116 |  |
+| BLOCKED | 117 | Task is executing but progress is blocked |
+| HUNG | 118 | Execution has hung and become unresponsive. |
+| UNREACHABLE | 119 | Attempts to determine task state have failed (e.g. network outage).It is unknown if the task is still running or not |
+| LOST | 120 | Attempts to track a task have failed and it is now consideredlost by this system. |
+| ZOMBIE | 121 | Process has become a zombie (process is still running but is becomedetached in some way from the managing process) |
+| RESURRECTING | 122 | Resurrecting is the process of restoring a ZOMBIE or possibly apreviously UNREACHABLE task to a "normal" task |
+| RESURRECTED | 123 |  |
+| RESURRECT_FAIL | 124 |  |
+| FORCE_COMPLETED | 125 | Task forced to be in a completed state from the perspective of ascheduler/job manager. It may in-fact never have run ormay still be running if it had previously launched. |
+| MODEL_STOP | 127 | Model progress was stopped by a model mechanism, for example numericalconvergence thresholds were not met. |
 
 
 
