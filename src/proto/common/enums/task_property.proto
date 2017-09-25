@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package bom.task_property;
+
+option java_package = "bom";
+option java_outer_classname="TaskPropertyProto";
+
+/// A property a task can have
+enum TaskProperty {
+  UNSET = 0;
+  UNKNOWN = 1;
+
+  // Task properties that are likely to be static and known to the task
+  // author(s) and that might best belong in a TaskInfo message
+
+  /// Are repeated re-runs of the task (even following a crash during task
+  // execution) safe and expected to produce the same outcome?
+  IDEMPOTENT = 2;
+
+  /// Is the task specifically _not_ allowed to be automatically re-run for
+  // any reason? For example, known or suspected to not be IDEMPOTENT
+  NOT_RERUNNABLE = 3;
+
+  /// Does this task/job actually represent a reservation request job for a
+  // batch scheduler?
+  RESERVATION = 4;
+
+  /// Set if this task supports "checkpointing" via some mechanism in the event
+  // it is necessary. For example a task that is able to checkpoint prior to
+  // a system shut-down when it receives an appropriate signal in advance.
+  CHECKPOINTABLE = 5;
+
+  /// Set if this task is expected to be "checkpointed" automatically
+  // during execution, from which the task could be resumed/restarted
+  CHECKPOINTED_REGULAR = 6;
+
+  // Job array type (usually a batch-scheduler concept). If not set, assumed
+  // the job is not an "array" job
+  ARRAY = 20; /// Is an array job
+  ARRAY_SINGLE = 21; /// A single subjob
+  ARRAY_RANGE = 22; // A range of subjobs
+
+  /// Task is expected to fail, perhaps as part of some test suite.
+  EXPECTED_TO_FAIL = 40;
+
+  // Task properties that are likely known only at deploy or run-time:
+
+  /// Manual "edit-run" performed where it is known only a "controlled" set of
+  // task settings/configuration items have been adjusted
+  EDITRUN_CONFIG = 70;
+  /// Manual "edit-run" performed where any task changes may have been made
+  EDITRUN = 71;
+
+  /// Task is run in a test mode (what this means is specific to each task,
+  // e.g. a task run in this mode might run a set of unit tests that are
+  // normally not run routinely in production.
+  RUNMODE_TEST = 80;
+  /// Task is a dummy task, usually a simple "sleep" type task
+  RUNMODE_DUMMY = 81;
+}

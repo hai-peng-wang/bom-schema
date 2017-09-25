@@ -9,44 +9,132 @@ option java_outer_classname="ComputingResourceProto";
 // capabilities or limits of a computing environment or
 // limits imposed on jobs or processes by policy or
 // management systems.
-/// TODO: ensure correct mapping to PBS resources is present and fully
-// covered with minimal ambiguity
 enum ComputingResource {
     UNSET = 0;
     UNKNOWN = 1;
 
-    /// Execution walltime available
-    WALLTIME = 2;
-    /// Execution cputime available
-    CPUTIME = 3;
-    /// Total RAM/memory available
-    MEMORY = 4;
-    /// Total virtual memory available
-    VIRT_MEMORY = 5;
-    /// RAM/memory available on a node
-    NODE_MEMORY = 6;
-    /// Total node virtual memory available
-    NODE_VIRT_MEMORY = 7;
-    /// Execution walltime available per process
-    PROC_WALLTIME = 8;
-    /// Execution cputime available per process
-    PROC_CPUTIME = 9;
-    /// Execution RAM/memory available per process
-    PROC_MEMORY = 10;
-    /// Stack size available
-    STACK = 11;
-    /// Persistent disk storage available for job
-    DISK = 12;
-    /// Non-persistent cache storage available for job
-    CACHE = 13;
-    /// SWAP space storage available for job
-    SWAP = 14;
-    /// Maximum supported/allowed individual file creation size
-    NEW_FILE_SIZE = 15;
-    /// Maximum supported/allowed individual file creation number
-    NEW_FILES = 16;
-    /// Maximum supported/allowed open file count
-    OPEN_FILES = 17;
-    /// Maximum number of processes
-    PROCESSES = 18;
+    /// Physical CPU details
+    // number: number of physical CPUs (with respect to specified scope)
+    // amount: speed in MHz
+    // qualifier: specific model/type/variant
+    CPU = 2;
+    /// Virtualised CPU details. Units as per CPU.
+    VCPU = 3;
+    /// Physical CPU cores. Units as per CPU.
+    CORES = 8;
+    /// NUMA details
+    // number: number of NUMAs (with respect to specified scope)
+    // amount: number of parallel environment per NUMA
+    // qualifier: specific variant of NUMA (if applicable)
+    NUMA = 10;
+    /// Accelerator details. Units as per CPU
+    ACCELERATOR = 14;
+
+    /// MPI process details
+    // number: number of MPI processes requests
+    // amount: N/A
+    // qualifier: specific type/mode or other details of
+    // MPI process (if applicable)
+    MPIPROC = 18;
+    /// OMP thread details
+    // number: number of OMP threads (usually per "chunk" or process)
+    // amount: N/A
+    // qualifier: notes/commentary on OMP threads or similar
+    OMPTHREADS = 19;
+    /// Network details
+    // number: number of network interfaces comprising this resource
+    // amount: speed of each interface in Mbit/s
+    // qualifier: specific model/type/variant of network interface
+    NETWORK = 20;
+
+    /// Specified resource is a type of node
+    // number: number of this type of node comprising this resource
+    // amount: N/A
+    // qualifier: specific model/type/variant
+    NODE_COMPUTE = 30;
+    NODE_LOGIN = 31;
+    NODE_DATAMOVER = 32;
+    /// MAMU = "multi-application multi-user"
+    NODE_MAMU = 33;
+    /// MOM = "machine oriented miniserver"
+    NODE_MOM = 34;
+    /// A specific single host.
+    // number: set to 1 or leave unset
+    // amount: if more than one host is specified as independent resources for
+    //         a job/task, then set amount to 1 if work carried out by the job,
+    //         at the level set by the "scope", is allowed/intended to be run in
+    //         parallel across nominated hosts
+    // qualifier: hostname of host, or another unique string identifier if
+    // a hostname is not suitable
+    HOST = 35;
+    /// Resources contained within a particular data-centre site. If more than
+    // number: N/A
+    // amount: if more than one site is specified as independent resources for
+    //         a job/task, then set amount to 1 if work carried out by the job,
+    //         at the level set by the "scope", is allowed/intended to be run in
+    //         parallel across nominated sites (or leave unset if site affinity)
+    //         is required. If site affinity is required, it is intended that
+    //         the order that multiple site resources are specified reflects
+    //         an ordering preference (for resource requests) or the ordering
+    //         in which task execution took place (for resources reported/used)
+    //         in the case where a task was migrated between data-sets during
+    //         the course of execution.
+    // qualifier: name of site nominated to provide resource
+    SITE = 36;
+    /// Specified resource is a specific architecture.
+    // number: N/A
+    // amount: N/A
+    // qualifier: specified architecture (and version if applicable).
+    ARCH = 40;
+    /// AOE - Application Operating Environment. Units as per ARCH, except
+    // this usually refers to an environment at the OS-level.
+    AOE = 41;
+    /// Software requirement. Unit as per ARCH, except this refers to
+    // a particular (usually unusual) software application/framework
+    SOFTWARE = 42;
+
+    /// Execution walltime available. If MIN_WALLTIME also requested by job
+    // this job is considered to be a "shrink-to-fit" job and walltime
+    // is interpreted as a "MAX_WALLTIME".
+    // amount units: milliseconds
+    WALLTIME = 50;
+    /// Minimum execution walltime requested for a "shrink-to-fit" job.
+    // amount units: milliseconds
+    MIN_WALLTIME = 51;
+    /// Execution cputime available. Set TaskResource.scope to distinguish
+    // between a job-wide resource or a per-process resource
+    // amount: time in milliseconds
+    CPUTIME = 52;
+
+    /// RAM/memory available (set TaskResource.scope to distinguish if this
+    // applies job-wide, chunk-wide, per process etc)
+    // amount units: kibibytes (1024 byte increments)
+    // qualifier: can be used to specify the name of a specialist memory variant
+    MEMORY = 70;
+    /// Virtual memory available. Units as per MEMORY
+    VIRT_MEMORY = 71;
+    /// ACCELERATOR memory available. Units as per MEMORY
+    ACCELERATOR_MEMORY = 72;
+    /// Stack size available. Units as per MEMORY
+    STACK = 75;
+
+    /// Persistent disk storage available (generally shared by job)
+    // number: number of disks, RAID arrays or similar providing this resource
+    // amount: size of disk resource kibibytes (per disk if number > 1)
+    // qualifier: specific disk/storage technology model/variant
+    DISK = 80;
+    /// Non-persistent cache/scratch storage available. Units as per DISK
+    CACHE = 81;
+    /// SWAP space storage available. Units as per DISK
+    SWAP = 85;
+
+    /// Maximum supported/allowed individual file details
+    // number: maximum number of files created (if applicable)
+    // amount: maximum size of any individual files written or appended to
+    //         (in kibibytes)
+    // qualifier: a comment/explanation (optional)
+    NEW_FILES = 90;
+    /// As per NEW_FILES, but pertaining to files opened
+    // (for reading or writing)
+    OPEN_FILES = 91;
 }

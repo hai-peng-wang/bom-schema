@@ -339,6 +339,17 @@
           </ul>
         </li>
         <li>
+          <a href="#actor.proto">actor.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.Actor">
+                <span class="badge">M</span>
+                Actor
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
           <a href="#address.proto">address.proto</a>
           <ul>
             <li>
@@ -597,6 +608,17 @@
           </ul>
         </li>
         <li>
+          <a href="#computing_resource_scope.proto">computing_resource_scope.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.computing_resource_scope.ComputingResourceScope">
+                <span class="badge">E</span>
+                ComputingResourceScope
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
           <a href="#data_coverage_content_type.proto">data_coverage_content_type.proto</a>
           <ul>
             <li>
@@ -784,12 +806,12 @@
           </ul>
         </li>
         <li>
-          <a href="#task_actor_type.proto">task_actor_type.proto</a>
+          <a href="#system_actor_type.proto">system_actor_type.proto</a>
           <ul>
             <li>
-              <a href="#bom.task_actor_type.TaskActorType">
+              <a href="#bom.system_actor_type.SystemActorType">
                 <span class="badge">E</span>
-                TaskActorType
+                SystemActorType
               </a>
             </li>
           </ul>
@@ -812,6 +834,17 @@
               <a href="#bom.task_interaction_type.TaskInteractionType">
                 <span class="badge">E</span>
                 TaskInteractionType
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#task_property.proto">task_property.proto</a>
+          <ul>
+            <li>
+              <a href="#bom.task_property.TaskProperty">
+                <span class="badge">E</span>
+                TaskProperty
               </a>
             </li>
           </ul>
@@ -1094,10 +1127,18 @@ of the action</p></td>
           <td><p></p></td>
         </tr>
         <tr>
-          <td>contact</td>
-          <td><a href="#bom.Contact">Contact</a></td>
+          <td>authority</td>
+          <td><a href="#bom.Actor">Actor</a></td>
           <td>optional</td>
-          <td><p>Who is the key contact associated with the action/change</p></td>
+          <td><p>Who is the key contact/user associated with authorising or
+organising the action/change</p></td>
+        </tr>
+        <tr>
+          <td>actor</td>
+          <td><a href="#bom.Actor">Actor</a></td>
+          <td>optional</td>
+          <td><p>Who was responsible for carrying out the change, if different from the
+authorising entity</p></td>
         </tr>
         <tr>
           <td>reason</td>
@@ -1639,11 +1680,37 @@ This is typically the task families to which the task belongs</p></td>
           <td><p>The suite or workflow this task is a part of</p></td>
         </tr>
         <tr>
-          <td>is_idempotent</td>
-          <td><a href="#bool">bool</a></td>
+          <td>type</td>
+          <td><a href="#string">string</a></td>
           <td>optional</td>
-          <td><p>Can repeated re-runs of the task (even following a crash during task
-execution) safe and expected to produce the same result?</p></td>
+          <td><p>Type of task</p></td>
+        </tr>
+        <tr>
+          <td>about</td>
+          <td><a href="#bom.URI">URI</a></td>
+          <td>optional</td>
+          <td><p>Documentation/information about task</p></td>
+        </tr>
+        <tr>
+          <td>troubleshooting</td>
+          <td><a href="#bom.URI">URI</a></td>
+          <td>optional</td>
+          <td><p>General troubleshooting information, if not covered by &quot;about&quot;</p></td>
+        </tr>
+        <tr>
+          <td>project</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>project (in the context of a batch system scheduler, or similar)</p></td>
+        </tr>
+        <tr>
+          <td>properties</td>
+          <td><a href="#bom.task_property.TaskProperty">TaskProperty</a></td>
+          <td>repeated</td>
+          <td><p>Properties this task might have, such as IDEMPOTENT, RESERVATION.
+Note: some properties may not be known until runtime.
+TaskEvent.context.settings provides an additional opportunity to specify
+additional task/job properties.</p></td>
         </tr>
         <tr>
           <td>groups</td>
@@ -1660,24 +1727,6 @@ a  grouping of similar tasks in the context of a workflow</p></td>
 services, archive storage systems etc</p></td>
         </tr>
         <tr>
-          <td>type</td>
-          <td><a href="#string">string</a></td>
-          <td>optional</td>
-          <td><p>Type of task</p></td>
-        </tr>
-        <tr>
-          <td>array_type</td>
-          <td><a href="#bom.job_array_type.JobArrayType">JobArrayType</a></td>
-          <td>optional</td>
-          <td><p>If job/task is an array job or array subjob</p></td>
-        </tr>
-        <tr>
-          <td>project</td>
-          <td><a href="#string">string</a></td>
-          <td>optional</td>
-          <td><p>project (in the context of a batch system scheduler, or similar)</p></td>
-        </tr>
-        <tr>
           <td>production_status</td>
           <td><a href="#bom.ProductionStatus">ProductionStatus</a></td>
           <td>optional</td>
@@ -1689,18 +1738,6 @@ services, archive storage systems etc</p></td>
           <td>optional</td>
           <td><p>Priority of task. Note this can include information about impact and
 urgency</p></td>
-        </tr>
-        <tr>
-          <td>task_url</td>
-          <td><a href="#bom.URI">URI</a></td>
-          <td>optional</td>
-          <td><p>Overview information</p></td>
-        </tr>
-        <tr>
-          <td>task_debug</td>
-          <td><a href="#bom.URI">URI</a></td>
-          <td>optional</td>
-          <td><p>Troubleshooting information</p></td>
         </tr>
         <tr>
           <td>tags</td>
@@ -1724,23 +1761,11 @@ urgency</p></td>
           <td><p></p></td>
         </tr>
         <tr>
-          <td>actor_type</td>
-          <td><a href="#bom.task_actor_type.TaskActorType">TaskActorType</a></td>
+          <td>actor</td>
+          <td><a href="#bom.Actor">Actor</a></td>
           <td>optional</td>
-          <td><p>Type of entity carrying out or initiating the action/interaction</p></td>
-        </tr>
-        <tr>
-          <td>actor_id</td>
-          <td><a href="#bom.Userid">Userid</a></td>
-          <td>optional</td>
-          <td><p>The user/account/identity corresponding to the acting entity, if
-applicable and known</p></td>
-        </tr>
-        <tr>
-          <td>contact</td>
-          <td><a href="#bom.Contact">Contact</a></td>
-          <td>optional</td>
-          <td><p>Entity contact details for humans/organisations</p></td>
+          <td><p>Details of the entity initiating or carrying out this interaction, if
+known</p></td>
         </tr>
         <tr>
           <td>reason</td>
@@ -1756,13 +1781,13 @@ applicable and known</p></td>
 This will generally be the scheduler, or a component of a scheduler</p></td>
         </tr>
         <tr>
-          <td>interaction_detail</td>
+          <td>detail</td>
           <td><a href="#string">string</a></td>
           <td>optional</td>
-          <td><p>Additional details/context</p></td>
+          <td><p>Additional interaction details/context</p></td>
         </tr>
         <tr>
-          <td>interaction_id</td>
+          <td>id</td>
           <td><a href="#bom.Id">Id</a></td>
           <td>optional</td>
           <td><p>ID to track this interaction</p></td>
@@ -1866,24 +1891,58 @@ managed by a job or batch scheduler</p>
       </tbody>
     </table>
     <h3 id="bom.TaskResource">TaskResource</h3>
-    <p></p>
+    <p>Computing resource associated with a task or job:</p>
     <table class="field-table">
       <thead>
         <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
       </thead>
       <tbody>
         <tr>
-          <td>resource</td>
+          <td>type</td>
           <td><a href="#bom.computing_resource.ComputingResource">ComputingResource</a></td>
           <td>optional</td>
-          <td><p></p></td>
+          <td><p>Type of computing resource</p></td>
+        </tr>
+        <tr>
+          <td>scope</td>
+          <td><a href="#bom.computing_resource_scope.ComputingResourceScope">ComputingResourceScope</a></td>
+          <td>optional</td>
+          <td><p>The scope (level of applicability) of this particular resource; e.g. if
+it is job-wide or at a host level.</p></td>
+        </tr>
+        <tr>
+          <td>chunk_id</td>
+          <td><a href="#bom.Id">Id</a></td>
+          <td>optional</td>
+          <td><p>Identifier to help track resources belonging to a particular &quot;chunk&quot; or
+some other grouping (if applicable)</p></td>
+        </tr>
+        <tr>
+          <td>qualifier</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>Qualifying description or name or model of resource,
+e.g. NVIDIA Tesla P100</p></td>
+        </tr>
+        <tr>
+          <td>number</td>
+          <td><a href="#uint64">uint64</a></td>
+          <td>optional</td>
+          <td><p>The number needed of this type of resource, when the resource
+represents discrete entities (e.g. if type = ACCELERATOR,
+qualifier = i)</p></td>
         </tr>
         <tr>
           <td>amount</td>
           <td><a href="#int64">int64</a></td>
           <td>optional</td>
-          <td><p>Value in milliseconds for duration,
-bytes for memory/disk or a count in other contexts</p></td>
+          <td><p>Value per resource in milliseconds for duration,
+kibibytes (1024 bytes) for memory/disk,
+Mbit/s for network performance,
+MHz (megahertz) for CPU clock speeds; or a count in other contexts.
+If values represent a fractional increment using these units, the values
+should be rounded up (i.e. int64 amount = ceiling(value)). Negative
+amounts are permissible with a production-specific meaning.</p></td>
         </tr>
         <tr>
           <td>is_hard_limit</td>
@@ -1895,7 +1954,7 @@ message does not correspond to a resource limit</p></td>
         </tr>
         <tr>
           <td>steward</td>
-          <td><a href="#bom.task_actor_type.TaskActorType">TaskActorType</a></td>
+          <td><a href="#bom.system_actor_type.SystemActorType">SystemActorType</a></td>
           <td>optional</td>
           <td><p>Entity responsible for measuring this resource, or for ensuring
 any limit (if applicable) is respected by some suitable means
@@ -1904,7 +1963,7 @@ any limit (if applicable) is respected by some suitable means
       </tbody>
     </table>
     <h3 id="bom.TaskRetry">TaskRetry</h3>
-    <p>Metadata about expected automatic retries for tasks.</p>
+    <p>Metadata about expected automatic retries/reruns for tasks.</p>
     <table class="field-table">
       <thead>
         <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
@@ -1962,6 +2021,12 @@ this fresh retry attempt is progressed</p></td>
       </thead>
       <tbody>
         <tr>
+          <td>note</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>A note about the settings</p></td>
+        </tr>
+        <tr>
           <td>user</td>
           <td><a href="#bom.Userid">Userid</a></td>
           <td>optional</td>
@@ -1975,41 +2040,26 @@ this fresh retry attempt is progressed</p></td>
 will run as (e.g. task involving sudo commands for another service account)</p></td>
         </tr>
         <tr>
-          <td>is_simulation</td>
-          <td><a href="#bool">bool</a></td>
-          <td>optional</td>
-          <td><p>If task is in a simulation mode; it is not running normal workloads,
-rather a dummy task to help simulate suite behaviour.</p></td>
-        </tr>
-        <tr>
-          <td>is_test</td>
-          <td><a href="#bool">bool</a></td>
-          <td>optional</td>
-          <td><p>If task is in a test mode</p></td>
-        </tr>
-        <tr>
-          <td>is_edit_run</td>
-          <td><a href="#bool">bool</a></td>
-          <td>optional</td>
-          <td><p>If routine task is the result of an edit run of some type</p></td>
-        </tr>
-        <tr>
-          <td>note</td>
-          <td><a href="#string">string</a></td>
-          <td>optional</td>
-          <td><p>A note about the settings</p></td>
-        </tr>
-        <tr>
-          <td>eligible_time</td>
-          <td><a href="#google.protobuf.Timestamp">Timestamp</a></td>
-          <td>optional</td>
-          <td><p>Time from which the task is eligible to run (if applicable)</p></td>
+          <td>properties</td>
+          <td><a href="#bom.task_property.TaskProperty">TaskProperty</a></td>
+          <td>repeated</td>
+          <td><p>Setting properties this task might have, such as RUNMODE_DUMMY,
+RUNMODE_TEST, ARRAY.
+Note 1: some properties may also be set in TaskEvent.task_info
+Note 2: debug settings are handled separetely in &quot;debug&quot; below</p></td>
         </tr>
         <tr>
           <td>debug</td>
           <td><a href="#bom.DebugSettings">DebugSettings</a></td>
           <td>optional</td>
-          <td><p>Debug settings that apply to this task</p></td>
+          <td><p>Time from which the task is eligible to run (if applicable)
+/ Debug settings that apply to this task</p></td>
+        </tr>
+        <tr>
+          <td>eligible_time</td>
+          <td><a href="#google.protobuf.Timestamp">Timestamp</a></td>
+          <td>optional</td>
+          <td><p></p></td>
         </tr>
       </tbody>
     </table>
@@ -2031,6 +2081,24 @@ for real-time systems</p>
           <td><p>Current or new task state</p></td>
         </tr>
         <tr>
+          <td>state_actor</td>
+          <td><a href="#bom.Actor">Actor</a></td>
+          <td>optional</td>
+          <td><p>Details of entity that caused the task state (if relevant and known)</p></td>
+        </tr>
+        <tr>
+          <td>reporter_type</td>
+          <td><a href="#bom.system_actor_type.SystemActorType">SystemActorType</a></td>
+          <td>optional</td>
+          <td><p>Type of entity reporting the new state</p></td>
+        </tr>
+        <tr>
+          <td>reporter</td>
+          <td><a href="#string">string</a></td>
+          <td>optional</td>
+          <td><p>The name of the system or entity reporting the state, e.g. Cylc or PBS</p></td>
+        </tr>
+        <tr>
           <td>diagnostics</td>
           <td><a href="#bom.Diagnostic">Diagnostic</a></td>
           <td>repeated</td>
@@ -2042,18 +2110,6 @@ warnings that may be associated with this task state</p></td>
           <td><a href="#string">string</a></td>
           <td>optional</td>
           <td><p>A message/note about task state</p></td>
-        </tr>
-        <tr>
-          <td>reporter_type</td>
-          <td><a href="#bom.task_actor_type.TaskActorType">TaskActorType</a></td>
-          <td>optional</td>
-          <td><p>Type of entity reporting the new state</p></td>
-        </tr>
-        <tr>
-          <td>reporter</td>
-          <td><a href="#string">string</a></td>
-          <td>optional</td>
-          <td><p>The system or entity reporting the state, e.g. Cylc or PBS</p></td>
         </tr>
         <tr>
           <td>severity</td>
@@ -2171,6 +2227,38 @@ Often this is referred to as the &quot;jobname&quot;</p></td>
           <td><a href="#bom.Id">Id</a></td>
           <td>optional</td>
           <td><p>An ID used internally by the producer of this event</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="actor.proto">actor.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.Actor">Actor</h3>
+    <p>An entity that interacts with a system/component</p>
+    <table class="field-table">
+      <thead>
+        <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>system_actor_type</td>
+          <td><a href="#bom.system_actor_type.SystemActorType">SystemActorType</a></td>
+          <td>optional</td>
+          <td><p>System type of actor, if relevant/applicable</p></td>
+        </tr>
+        <tr>
+          <td>id</td>
+          <td><a href="#bom.Userid">Userid</a></td>
+          <td>optional</td>
+          <td><p>Most relevant user/account identification (Security Principal) details
+corresponding to this actor, if relevant/applicable.</p></td>
+        </tr>
+        <tr>
+          <td>contact</td>
+          <td><a href="#bom.Contact">Contact</a></td>
+          <td>optional</td>
+          <td><p>Contact details of actor, if known</p></td>
         </tr>
       </tbody>
     </table>
@@ -3660,9 +3748,7 @@ component</p></td>
     <p>Computing related resources, as relating to
 capabilities or limits of a computing environment or
 limits imposed on jobs or processes by policy or
-management systems.
-/ TODO: ensure correct mapping to PBS resources is present and fully
-covered with minimal ambiguity</p>
+management systems.</p>
     <table class="enum-table">
       <thead>
         <tr><td>Name</td><td>Number</td><td>Description</td></tr>
@@ -3679,89 +3765,289 @@ covered with minimal ambiguity</p>
           <td><p></p></td>
         </tr>
         <tr>
-          <td>WALLTIME</td>
+          <td>CPU</td>
           <td>2</td>
-          <td><p>Execution walltime available</p></td>
+          <td><p>Physical CPU details
+number: number of physical CPUs (with respect to specified scope)
+amount: speed in MHz
+qualifier: specific model/type/variant</p></td>
+        </tr>
+        <tr>
+          <td>VCPU</td>
+          <td>3</td>
+          <td><p>Virtualised CPU details. Units as per CPU.</p></td>
+        </tr>
+        <tr>
+          <td>CORES</td>
+          <td>8</td>
+          <td><p>Physical CPU cores. Units as per CPU.</p></td>
+        </tr>
+        <tr>
+          <td>NUMA</td>
+          <td>10</td>
+          <td><p>NUMA details
+number: number of NUMAs (with respect to specified scope)
+amount: number of parallel environment per NUMA
+qualifier: specific variant of NUMA (if applicable)</p></td>
+        </tr>
+        <tr>
+          <td>ACCELERATOR</td>
+          <td>14</td>
+          <td><p>Accelerator details. Units as per CPU</p></td>
+        </tr>
+        <tr>
+          <td>MPIPROC</td>
+          <td>18</td>
+          <td><p>MPI process details
+number: number of MPI processes requests
+amount: N/A
+qualifier: specific type/mode or other details of
+MPI process (if applicable)</p></td>
+        </tr>
+        <tr>
+          <td>OMPTHREADS</td>
+          <td>19</td>
+          <td><p>OMP thread details
+number: number of OMP threads (usually per &quot;chunk&quot; or process)
+amount: N/A
+qualifier: notes/commentary on OMP threads or similar</p></td>
+        </tr>
+        <tr>
+          <td>NETWORK</td>
+          <td>20</td>
+          <td><p>Network details
+number: number of network interfaces comprising this resource
+amount: speed of each interface in Mbit/s
+qualifier: specific model/type/variant of network interface</p></td>
+        </tr>
+        <tr>
+          <td>NODE_COMPUTE</td>
+          <td>30</td>
+          <td><p>Specified resource is a type of node
+number: number of this type of node comprising this resource
+amount: N/A
+qualifier: specific model/type/variant</p></td>
+        </tr>
+        <tr>
+          <td>NODE_LOGIN</td>
+          <td>31</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>NODE_DATAMOVER</td>
+          <td>32</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>NODE_MAMU</td>
+          <td>33</td>
+          <td><p>MAMU = &quot;multi-application multi-user&quot;</p></td>
+        </tr>
+        <tr>
+          <td>NODE_MOM</td>
+          <td>34</td>
+          <td><p>MOM = &quot;machine oriented miniserver&quot;</p></td>
+        </tr>
+        <tr>
+          <td>HOST</td>
+          <td>35</td>
+          <td><p>A specific single host.
+number: set to 1 or leave unset
+amount: if more than one host is specified as independent resources for
+        a job/task, then set amount to 1 if work carried out by the job,
+        at the level set by the &quot;scope&quot;, is allowed/intended to be run in
+        parallel across nominated hosts
+qualifier: hostname of host, or another unique string identifier if
+a hostname is not suitable</p></td>
+        </tr>
+        <tr>
+          <td>SITE</td>
+          <td>36</td>
+          <td><p>Resources contained within a particular data-centre site. If more than
+number: N/A
+amount: if more than one site is specified as independent resources for
+        a job/task, then set amount to 1 if work carried out by the job,
+        at the level set by the &quot;scope&quot;, is allowed/intended to be run in
+        parallel across nominated sites (or leave unset if site affinity)
+        is required. If site affinity is required, it is intended that
+        the order that multiple site resources are specified reflects
+        an ordering preference (for resource requests) or the ordering
+        in which task execution took place (for resources reported/used)
+        in the case where a task was migrated between data-sets during
+        the course of execution.
+qualifier: name of site nominated to provide resource</p></td>
+        </tr>
+        <tr>
+          <td>ARCH</td>
+          <td>40</td>
+          <td><p>Specified resource is a specific architecture.
+number: N/A
+amount: N/A
+qualifier: specified architecture (and version if applicable).</p></td>
+        </tr>
+        <tr>
+          <td>AOE</td>
+          <td>41</td>
+          <td><p>AOE - Application Operating Environment. Units as per ARCH, except
+this usually refers to an environment at the OS-level.</p></td>
+        </tr>
+        <tr>
+          <td>SOFTWARE</td>
+          <td>42</td>
+          <td><p>Software requirement. Unit as per ARCH, except this refers to
+a particular (usually unusual) software application/framework</p></td>
+        </tr>
+        <tr>
+          <td>WALLTIME</td>
+          <td>50</td>
+          <td><p>Execution walltime available. If MIN_WALLTIME also requested by job
+this job is considered to be a &quot;shrink-to-fit&quot; job and walltime
+is interpreted as a &quot;MAX_WALLTIME&quot;.
+amount units: milliseconds</p></td>
+        </tr>
+        <tr>
+          <td>MIN_WALLTIME</td>
+          <td>51</td>
+          <td><p>Minimum execution walltime requested for a &quot;shrink-to-fit&quot; job.
+amount units: milliseconds</p></td>
         </tr>
         <tr>
           <td>CPUTIME</td>
-          <td>3</td>
-          <td><p>Execution cputime available</p></td>
+          <td>52</td>
+          <td><p>Execution cputime available. Set TaskResource.scope to distinguish
+between a job-wide resource or a per-process resource
+amount: time in milliseconds</p></td>
         </tr>
         <tr>
           <td>MEMORY</td>
-          <td>4</td>
-          <td><p>Total RAM/memory available</p></td>
+          <td>70</td>
+          <td><p>RAM/memory available (set TaskResource.scope to distinguish if this
+applies job-wide, chunk-wide, per process etc)
+amount units: kibibytes (1024 byte increments)
+qualifier: can be used to specify the name of a specialist memory variant</p></td>
         </tr>
         <tr>
           <td>VIRT_MEMORY</td>
-          <td>5</td>
-          <td><p>Total virtual memory available</p></td>
+          <td>71</td>
+          <td><p>Virtual memory available. Units as per MEMORY</p></td>
         </tr>
         <tr>
-          <td>NODE_MEMORY</td>
-          <td>6</td>
-          <td><p>RAM/memory available on a node</p></td>
-        </tr>
-        <tr>
-          <td>NODE_VIRT_MEMORY</td>
-          <td>7</td>
-          <td><p>Total node virtual memory available</p></td>
-        </tr>
-        <tr>
-          <td>PROC_WALLTIME</td>
-          <td>8</td>
-          <td><p>Execution walltime available per process</p></td>
-        </tr>
-        <tr>
-          <td>PROC_CPUTIME</td>
-          <td>9</td>
-          <td><p>Execution cputime available per process</p></td>
-        </tr>
-        <tr>
-          <td>PROC_MEMORY</td>
-          <td>10</td>
-          <td><p>Execution RAM/memory available per process</p></td>
+          <td>ACCELERATOR_MEMORY</td>
+          <td>72</td>
+          <td><p>ACCELERATOR memory available. Units as per MEMORY</p></td>
         </tr>
         <tr>
           <td>STACK</td>
-          <td>11</td>
-          <td><p>Stack size available</p></td>
+          <td>75</td>
+          <td><p>Stack size available. Units as per MEMORY</p></td>
         </tr>
         <tr>
           <td>DISK</td>
-          <td>12</td>
-          <td><p>Persistent disk storage available for job</p></td>
+          <td>80</td>
+          <td><p>Persistent disk storage available (generally shared by job)
+number: number of disks, RAID arrays or similar providing this resource
+amount: size of disk resource kibibytes (per disk if number &gt; 1)
+qualifier: specific disk/storage technology model/variant</p></td>
         </tr>
         <tr>
           <td>CACHE</td>
-          <td>13</td>
-          <td><p>Non-persistent cache storage available for job</p></td>
+          <td>81</td>
+          <td><p>Non-persistent cache/scratch storage available. Units as per DISK</p></td>
         </tr>
         <tr>
           <td>SWAP</td>
-          <td>14</td>
-          <td><p>SWAP space storage available for job</p></td>
-        </tr>
-        <tr>
-          <td>NEW_FILE_SIZE</td>
-          <td>15</td>
-          <td><p>Maximum supported/allowed individual file creation size</p></td>
+          <td>85</td>
+          <td><p>SWAP space storage available. Units as per DISK</p></td>
         </tr>
         <tr>
           <td>NEW_FILES</td>
-          <td>16</td>
-          <td><p>Maximum supported/allowed individual file creation number</p></td>
+          <td>90</td>
+          <td><p>Maximum supported/allowed individual file details
+number: maximum number of files created (if applicable)
+amount: maximum size of any individual files written or appended to
+        (in kibibytes)
+qualifier: a comment/explanation (optional)</p></td>
         </tr>
         <tr>
           <td>OPEN_FILES</td>
-          <td>17</td>
-          <td><p>Maximum supported/allowed open file count</p></td>
+          <td>91</td>
+          <td><p>As per NEW_FILES, but pertaining to files opened
+(for reading or writing)</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
+      <h2 id="computing_resource_scope.proto">computing_resource_scope.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.computing_resource_scope.ComputingResourceScope">ComputingResourceScope</h3>
+    <p>Scope of a computing resource; i.e. the level the resource is applicable.
+e.g. a resource per process, per execution host or a job-wide shared.
+resource etc</p>
+    <table class="enum-table">
+      <thead>
+        <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UNSET</td>
+          <td>0</td>
+          <td><p></p></td>
         </tr>
         <tr>
-          <td>PROCESSES</td>
-          <td>18</td>
-          <td><p>Maximum number of processes</p></td>
+          <td>UNKNOWN</td>
+          <td>1</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>JOB</td>
+          <td>2</td>
+          <td><p>Generic shared task/job wide resource.</p></td>
+        </tr>
+        <tr>
+          <td>QUEUE</td>
+          <td>3</td>
+          <td><p>Resource global to a particular queue. More specific than JOB_WIDE.</p></td>
+        </tr>
+        <tr>
+          <td>SERVER</td>
+          <td>4</td>
+          <td><p>Resource global to a particular server/cluster.
+More specific than JOB_WIDE</p></td>
+        </tr>
+        <tr>
+          <td>CHUNK</td>
+          <td>50</td>
+          <td><p>Generic &quot;sub-job&quot; or execution host specific resource.
+Note: Resources specified in multiple distinct chunks may potentially
+be provided/provisioned on the same execution host if there is capacity
+and no other constraints</p></td>
+        </tr>
+        <tr>
+          <td>NODE</td>
+          <td>55</td>
+          <td><p>Resource available at a node level</p></td>
+        </tr>
+        <tr>
+          <td>PROCESS</td>
+          <td>60</td>
+          <td><p>Resource available per process spawned by the job</p></td>
+        </tr>
+        <tr>
+          <td>PROCESS_MPI</td>
+          <td>61</td>
+          <td><p>Resources available per MPI process</p></td>
+        </tr>
+        <tr>
+          <td>THREAD</td>
+          <td>70</td>
+          <td><p>Resources available per thread</p></td>
+        </tr>
+        <tr>
+          <td>THREAD_GPU</td>
+          <td>71</td>
+          <td><p>Resources available per GPU or GPU-like accelerator multiprocessing
+thread (e.g. CUDA)</p></td>
         </tr>
       </tbody>
     </table>
@@ -5265,14 +5551,14 @@ operational suite daemon failure</p></td>
       </tbody>
     </table>
     <div class="file-heading">
-      <h2 id="task_actor_type.proto">task_actor_type.proto</h2><a href="#title">Top</a>
+      <h2 id="system_actor_type.proto">system_actor_type.proto</h2><a href="#title">Top</a>
     </div>
     
-    <h3 id="bom.task_actor_type.TaskActorType">TaskActorType</h3>
-    <p>Type of entity involved in an interaction with a task.
+    <h3 id="bom.system_actor_type.SystemActorType">SystemActorType</h3>
+    <p>Type of entity involved in some interaction with a system, task or similar.
 For example, this type can be used to represent the entity
-responsible for initiating the running of a task, the
-entity/system reporting a change in task state or the type
+responsible for initiating the running of a task/process, the
+entity/system reporting a change in state of a system or the type
 of entity responsible for imposing/enforcing resource limits.</p>
     <table class="enum-table">
       <thead>
@@ -5295,38 +5581,56 @@ of entity responsible for imposing/enforcing resource limits.</p>
           <td><p></p></td>
         </tr>
         <tr>
-          <td>ADMIN</td>
+          <td>OPERATOR</td>
           <td>3</td>
+          <td><p>An operator corresponds to an operational user with responsibility for
+helping to manage a particular system. Has the same or higher privileges
+than USER-level but with additional operational responsibilities.</p></td>
+        </tr>
+        <tr>
+          <td>ADMIN</td>
+          <td>4</td>
           <td><p></p></td>
         </tr>
         <tr>
-          <td>THIS_TASK</td>
-          <td>4</td>
-          <td><p>The task itself</p></td>
+          <td>SELF</td>
+          <td>5</td>
+          <td><p>The entity which the interaction occurs (system, task)</p></td>
         </tr>
         <tr>
-          <td>OTHER_TASK</td>
-          <td>5</td>
-          <td><p>Another task, managed in a similar way to this task</p></td>
+          <td>SIMILAR</td>
+          <td>6</td>
+          <td><p>Another entity, similar to this entity that is also managed
+in a similar way to this entity</p></td>
         </tr>
         <tr>
           <td>HOST_SYSTEM</td>
-          <td>6</td>
+          <td>10</td>
           <td><p>Host system could be a physical machine, VM, container etc</p></td>
         </tr>
         <tr>
           <td>BATCH_SCHEDULER</td>
-          <td>7</td>
+          <td>11</td>
           <td><p></p></td>
         </tr>
         <tr>
           <td>WORKFLOW_SCHEDULER</td>
-          <td>8</td>
+          <td>12</td>
           <td><p></p></td>
         </tr>
         <tr>
           <td>ORCHESTRATION_SYSTEM</td>
-          <td>9</td>
+          <td>13</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>SECURITY_SYSTEM</td>
+          <td>20</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>AUTHENTICATION_SYSTEM</td>
+          <td>21</td>
           <td><p></p></td>
         </tr>
       </tbody>
@@ -5362,14 +5666,15 @@ signals back task status updates as events</p></td>
         <tr>
           <td>RPC</td>
           <td>3</td>
-          <td><p>RPC here represents a persistent two-way connection between
-the task or a process spawned by the task and a task manager</p></td>
+          <td><p>RPC here represents a persistent and direct two-way connection between
+the task or a process spawned by the task and a task manager via
+network ports or similar mechanism</p></td>
         </tr>
         <tr>
           <td>POLL</td>
           <td>4</td>
           <td><p>A task manager related component or diagnostic process polls
-the task's execution or outputs of the task (e.g. log files)</p></td>
+the task's execution status or outputs of the task (e.g. log files)</p></td>
         </tr>
       </tbody>
     </table>
@@ -5595,6 +5900,103 @@ debug or trace mode</p></td>
       </tbody>
     </table>
     <div class="file-heading">
+      <h2 id="task_property.proto">task_property.proto</h2><a href="#title">Top</a>
+    </div>
+    
+    <h3 id="bom.task_property.TaskProperty">TaskProperty</h3>
+    <p>A property a task can have</p>
+    <table class="enum-table">
+      <thead>
+        <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UNSET</td>
+          <td>0</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>UNKNOWN</td>
+          <td>1</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>IDEMPOTENT</td>
+          <td>2</td>
+          <td><p>Are repeated re-runs of the task (even following a crash during task
+execution) safe and expected to produce the same outcome?</p></td>
+        </tr>
+        <tr>
+          <td>NOT_RERUNNABLE</td>
+          <td>3</td>
+          <td><p>Is the task specifically _not_ allowed to be automatically re-run for
+any reason? For example, known or suspected to not be IDEMPOTENT</p></td>
+        </tr>
+        <tr>
+          <td>RESERVATION</td>
+          <td>4</td>
+          <td><p>Does this task/job actually represent a reservation request job for a
+batch scheduler?</p></td>
+        </tr>
+        <tr>
+          <td>CHECKPOINTABLE</td>
+          <td>5</td>
+          <td><p>Set if this task supports &quot;checkpointing&quot; via some mechanism in the event
+it is necessary. For example a task that is able to checkpoint prior to
+a system shut-down when it receives an appropriate signal in advance.</p></td>
+        </tr>
+        <tr>
+          <td>CHECKPOINTED_REGULAR</td>
+          <td>6</td>
+          <td><p>Set if this task is expected to be &quot;checkpointed&quot; automatically
+during execution, from which the task could be resumed/restarted</p></td>
+        </tr>
+        <tr>
+          <td>ARRAY</td>
+          <td>20</td>
+          <td><p>Is an array job</p></td>
+        </tr>
+        <tr>
+          <td>ARRAY_SINGLE</td>
+          <td>21</td>
+          <td><p>A single subjob</p></td>
+        </tr>
+        <tr>
+          <td>ARRAY_RANGE</td>
+          <td>22</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>EXPECTED_TO_FAIL</td>
+          <td>40</td>
+          <td><p>Task is expected to fail, perhaps as part of some test suite.</p></td>
+        </tr>
+        <tr>
+          <td>EDITRUN_CONFIG</td>
+          <td>70</td>
+          <td><p>Manual &quot;edit-run&quot; performed where it is known only a &quot;controlled&quot; set of
+task settings/configuration items have been adjusted</p></td>
+        </tr>
+        <tr>
+          <td>EDITRUN</td>
+          <td>71</td>
+          <td><p>Manual &quot;edit-run&quot; performed where any task changes may have been made</p></td>
+        </tr>
+        <tr>
+          <td>RUNMODE_TEST</td>
+          <td>80</td>
+          <td><p>Task is run in a test mode (what this means is specific to each task,
+e.g. a task run in this mode might run a set of unit tests that are
+normally not run routinely in production.</p></td>
+        </tr>
+        <tr>
+          <td>RUNMODE_DUMMY</td>
+          <td>81</td>
+          <td><p>Task is a dummy task, usually a simple &quot;sleep&quot; type task</p></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="file-heading">
       <h2 id="task_state.proto">task_state.proto</h2><a href="#title">Top</a>
     </div>
     
@@ -5697,174 +6099,200 @@ state (e.g. they are busy, reserved or temporarily offline).</p></td>
         </tr>
         <tr>
           <td>HELD</td>
-          <td>20</td>
-          <td><p>Generic held/on-hold state. Better qualified held states follow below</p></td>
-        </tr>
-        <tr>
-          <td>HELD_BY_USER</td>
-          <td>21</td>
-          <td><p>User initiated task/job hold</p></td>
-        </tr>
-        <tr>
-          <td>HELD_BY_OPERATOR</td>
-          <td>22</td>
-          <td><p>Operator initiated job hold. If operators can't be distinguished from
-users, HELD_BY_USER should be used instead.</p></td>
-        </tr>
-        <tr>
-          <td>HELD_BY_ADMIN</td>
-          <td>23</td>
-          <td><p>Administrator-level job hold</p></td>
+          <td>18</td>
+          <td><p>Generic held/on-hold state. Better qualified held states follow below.
+Note: if HELD state is due to an administrator's actions,
+set state = HELD and TaskStatus.state_actor.system_actor_type = ADMIN.
+Similar possibilities exist for USER and OPERATOR holds.</p></td>
         </tr>
         <tr>
           <td>HELD_BY_SYSTEM</td>
-          <td>24</td>
+          <td>19</td>
           <td><p>System-level or resource-manager job hold.</p></td>
         </tr>
         <tr>
           <td>HELD_BY_RESOURCES</td>
-          <td>25</td>
+          <td>20</td>
           <td><p>The resources requested by the job do not currently exist in an available
 state and this is treated as a hold rather than a waiting
 (WAITING_RESOURCES) state. This is more specific than HELD_BY_SYSTEM.</p></td>
         </tr>
         <tr>
+          <td>DROPPED</td>
+          <td>23</td>
+          <td><p>Job deleted from queue by user before execution, or task/task-definition
+dropped/omitted from scheduler prior to job submission.
+Note: if DROPPED state is due to action carried out by the job/task
+user/owner, then this can be indicated by setting state = DROPPED and
+TaskStatus.state_actor.system_actor_type = USER.</p></td>
+        </tr>
+        <tr>
           <td>PREPROCESSING</td>
-          <td>29</td>
+          <td>24</td>
           <td><p>In a task pre-processing step, probably run as part of the
 workflow scheduler</p></td>
         </tr>
         <tr>
           <td>PREPROCESSING_FAIL</td>
-          <td>30</td>
+          <td>25</td>
           <td><p></p></td>
         </tr>
         <tr>
           <td>PREPROCESSING_SUCCESS</td>
-          <td>31</td>
+          <td>26</td>
           <td><p>Successful completion of a task preprocessing stage</p></td>
         </tr>
         <tr>
           <td>QUEUED</td>
-          <td>34</td>
+          <td>29</td>
           <td><p>Queued/getting ready to run</p></td>
         </tr>
         <tr>
           <td>READY</td>
-          <td>35</td>
+          <td>30</td>
           <td><p>Ready to run/submit, not waiting and not held</p></td>
         </tr>
         <tr>
           <td>EXPIRED</td>
-          <td>36</td>
+          <td>31</td>
           <td><p>A deadline has been passed and this task won't be completed</p></td>
         </tr>
         <tr>
           <td>SUBMITTING</td>
-          <td>38</td>
+          <td>35</td>
           <td><p>The task/job has is in the process of being submitted/dispatched</p></td>
         </tr>
         <tr>
           <td>SUBMIT_SUCCESS</td>
-          <td>39</td>
+          <td>36</td>
           <td><p>The task has been successfully submitted/dispatched</p></td>
         </tr>
         <tr>
           <td>SUBMIT_FAIL</td>
-          <td>40</td>
+          <td>37</td>
           <td><p>The task submit process failed or was killed before the start of task
 execution</p></td>
         </tr>
         <tr>
           <td>SUBMIT_TIMEOUT</td>
-          <td>41</td>
+          <td>38</td>
           <td><p>The task submit process appeared to hang/timed-out.</p></td>
         </tr>
         <tr>
           <td>SUBMIT_RETRYING</td>
-          <td>42</td>
+          <td>39</td>
           <td><p>As per SUBMIT_FAIL or SUBMIT_TIMEOUT but a resubmit (possibly after a
 configured delay) will be attempted automatically</p></td>
         </tr>
         <tr>
           <td>REJECTED</td>
-          <td>44</td>
+          <td>41</td>
           <td><p>Task rejected by batch scheduler or a security layer prior to execution</p></td>
         </tr>
         <tr>
           <td>PREJOB</td>
-          <td>45</td>
-          <td><p>Running a pre-job/setup step</p></td>
+          <td>42</td>
+          <td><p>Running a pre-job/setup step, prior to execution of core task</p></td>
         </tr>
         <tr>
           <td>PREJOB_FAIL</td>
-          <td>46</td>
+          <td>43</td>
           <td><p></p></td>
         </tr>
         <tr>
           <td>PREJOB_SUCCESS</td>
-          <td>47</td>
+          <td>44</td>
           <td><p>Successful completion of the pre-job step(s)</p></td>
         </tr>
         <tr>
           <td>AUTHENTICATING</td>
-          <td>49</td>
+          <td>45</td>
           <td><p></p></td>
         </tr>
         <tr>
           <td>AUTHENTICATE_SUCCESS</td>
-          <td>50</td>
+          <td>46</td>
           <td><p></p></td>
         </tr>
         <tr>
           <td>AUTHENTICATE_FAIL</td>
-          <td>51</td>
+          <td>47</td>
           <td><p></p></td>
         </tr>
         <tr>
           <td>AUTHENTICATE_TIMEOUT</td>
-          <td>52</td>
+          <td>48</td>
           <td><p></p></td>
         </tr>
         <tr>
           <td>STARTED</td>
-          <td>54</td>
+          <td>50</td>
           <td><p>Task started running/reported commencement of execution,
 sometimes referred to as the &quot;BEGUN&quot; state</p></td>
         </tr>
         <tr>
           <td>PROGRESS</td>
-          <td>55</td>
+          <td>51</td>
           <td><p>Task in progress (used for possible progress updates)</p></td>
         </tr>
         <tr>
-          <td>SUCCESS</td>
+          <td>ENV_SETUP</td>
+          <td>52</td>
+          <td><p>Environment setup, if distinct from PREJOB and INITIALISING phases.</p></td>
+        </tr>
+        <tr>
+          <td>ENV_SETUP_SUCCESS</td>
+          <td>53</td>
+          <td><p>Environment setup completed successfully.</p></td>
+        </tr>
+        <tr>
+          <td>ENV_SETUP_FAIL</td>
+          <td>54</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>INITIALISING</td>
+          <td>55</td>
+          <td><p>Following execution, task has reached an initialisation phase.</p></td>
+        </tr>
+        <tr>
+          <td>INITIALISE_SUCCESS</td>
           <td>56</td>
+          <td><p>INITIALISING phase has been successfully completed</p></td>
+        </tr>
+        <tr>
+          <td>INITIALISE_FAIL</td>
+          <td>57</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>SUCCESS</td>
+          <td>58</td>
           <td><p>Task appears to have concluded normally &amp; successfully</p></td>
         </tr>
         <tr>
           <td>STOPPED</td>
-          <td>57</td>
+          <td>59</td>
           <td><p>Task stopped mid execution as part of workflow design</p></td>
         </tr>
         <tr>
           <td>PAUSING</td>
-          <td>58</td>
+          <td>60</td>
           <td><p>Task execution in process of pausing</p></td>
         </tr>
         <tr>
           <td>PAUSED</td>
-          <td>59</td>
+          <td>61</td>
           <td><p>Task execution paused; task still memory/process resident (not vacated)</p></td>
         </tr>
         <tr>
           <td>PAUSE_FAIL</td>
-          <td>60</td>
+          <td>62</td>
           <td><p>Pausing the task failed</p></td>
         </tr>
         <tr>
           <td>PROMPTING</td>
-          <td>62</td>
+          <td>63</td>
           <td><p>Task, during the course of execution, is requesting/prompting
 for additional interactive input or authorisation</p></td>
         </tr>
@@ -5875,7 +6303,7 @@ for additional interactive input or authorisation</p></td>
 to free up resources for other higher priority jobs in a batch scheduler
 context which usually involves some sort of snap-shotting of task state
 and temporarily stopping task execution.
-Sometimes referred to as task vacating or a task vacation.</p></td>
+Sometimes referred to as task vacating, a task vacation or job preemption.</p></td>
         </tr>
         <tr>
           <td>SUSPENDED</td>
@@ -5943,18 +6371,33 @@ Sometimes referred to as task vacating or a task vacation.</p></td>
           <td><p></p></td>
         </tr>
         <tr>
-          <td>EXITING</td>
+          <td>ERROR_HANDLING</td>
           <td>82</td>
+          <td><p>Task is in the process of handling an error</p></td>
+        </tr>
+        <tr>
+          <td>ERROR_HANDLING_SUCCESS</td>
+          <td>83</td>
+          <td><p>Task successfully handled an error</p></td>
+        </tr>
+        <tr>
+          <td>ERROR_HANDLING_FAIL</td>
+          <td>84</td>
+          <td><p>Failure during task error handling step</p></td>
+        </tr>
+        <tr>
+          <td>EXITING</td>
+          <td>85</td>
           <td><p>Job is exiting after having run (normally in a batch scheduler context).</p></td>
         </tr>
         <tr>
           <td>RETRYING</td>
-          <td>84</td>
+          <td>86</td>
           <td><p>Retrying after having previously progressed to some</p></td>
         </tr>
         <tr>
           <td>FAILED</td>
-          <td>86</td>
+          <td>87</td>
           <td><p>Task failed (desired outcome of the task was not reached)</p></td>
         </tr>
         <tr>
@@ -6049,11 +6492,6 @@ not have taken effect</p></td>
 than kill or a retry limit</p></td>
         </tr>
         <tr>
-          <td>DROPPED</td>
-          <td>109</td>
-          <td><p>Task definition dropped/omitted before execution from scheduler</p></td>
-        </tr>
-        <tr>
           <td>SKIPPED</td>
           <td>110</td>
           <td><p>Task to be skipped</p></td>
@@ -6121,7 +6559,9 @@ detached in some way from the managing process)</p></td>
           <td>RESURRECTING</td>
           <td>122</td>
           <td><p>Resurrecting is the process of restoring a ZOMBIE or possibly a
-previously UNREACHABLE task to a &quot;normal&quot; task</p></td>
+previously UNREACHABLE task (or, from a workflow scheduler perspective,
+even a task that was hard killed by a resource manager then later
+restarted) to a &quot;normal&quot; task</p></td>
         </tr>
         <tr>
           <td>RESURRECTED</td>
@@ -6145,6 +6585,28 @@ may still be running if it had previously launched.</p></td>
           <td>127</td>
           <td><p>Model progress was stopped by a model mechanism, for example numerical
 convergence thresholds were not met.</p></td>
+        </tr>
+        <tr>
+          <td>LICENSE_ACQUISITION</td>
+          <td>333</td>
+          <td><p>If the task/job needs to acquire a license to execute (at the task or
+sub-task level) then it may be useful to track the license acquisition
+phase:</p></td>
+        </tr>
+        <tr>
+          <td>LICENSE_ACQUISITION_SUCCESS</td>
+          <td>334</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>LICENSE_ACQUISITION_FAIL</td>
+          <td>335</td>
+          <td><p></p></td>
+        </tr>
+        <tr>
+          <td>LICENSE_ACQUISITION_TIMEOUT</td>
+          <td>336</td>
+          <td><p></p></td>
         </tr>
       </tbody>
     </table>

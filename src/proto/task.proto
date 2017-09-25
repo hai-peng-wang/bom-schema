@@ -7,7 +7,7 @@ option java_outer_classname="TaskProto";
 import "common/event_header.proto";
 import "common/tag.proto";
 import "common/address.proto";
-import "common/contact.proto";
+import "common/actor.proto";
 import "common/component.proto";
 import "common/priority.proto";
 import "common/userid.proto";
@@ -16,11 +16,12 @@ import "common/diagnostic.proto";
 import "common/debug_settings.proto";
 import "common/enums/task_communication_method.proto";
 import "common/enums/task_interaction_type.proto";
-import "common/enums/severity.proto";
+import "common/enums/task_property.proto";
 import "common/enums/task_state.proto";
-import "common/enums/task_actor_type.proto";
-import "common/enums/job_array_type.proto";
+import "common/enums/severity.proto";
 import "common/enums/computing_resource.proto";
+import "common/enums/computing_resource_scope.proto";
+import "common/enums/system_actor_type.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/duration.proto";
 
@@ -33,32 +34,33 @@ message TaskInfo {
   string namespace = 2;
   /// The suite or workflow this task is a part of
   string suite = 3;
-  /// Can repeated re-runs of the task (even following a crash during task
-  // execution) safe and expected to produce the same result?
-  bool is_idempotent = 4;
+  /// Type of task
+  string type = 4;
+  URI about = 5; /// Documentation/information about task
+  /// General troubleshooting information, if not covered by "about"
+  URI troubleshooting = 6;
+  /// project (in the context of a batch system scheduler, or similar)
+  string project = 7;
+  /// Properties this task might have, such as IDEMPOTENT, RESERVATION.
+  // Note: some properties may not be known until runtime.
+  // TaskEvent.context.settings provides an additional opportunity to specify
+  // additional task/job properties.
+  repeated bom.task_property.TaskProperty properties = 8;
   /// The group(s) this task is part of, if relevant. Groups are generally
   // a  grouping of similar tasks in the context of a workflow
-  repeated string groups = 5;
+  repeated string groups = 9;
   /// Named resources this task interacts with, e.g. particular databases,
   // services, archive storage systems etc
-  repeated string resources = 6;
-  /// Type of task
-  string type = 7;
-  /// If job/task is an array job or array subjob
-  bom.job_array_type.JobArrayType array_type = 8;
-  /// project (in the context of a batch system scheduler, or similar)
-  string project = 9;
+  repeated string resources = 10;
   /// Production status of task
-  ProductionStatus production_status = 10;
+  ProductionStatus production_status = 11;
   /// Priority of task. Note this can include information about impact and
   // urgency
-  Priority priority = 11;
-  URI task_url = 12; /// Overview information
-  URI task_debug = 13; /// Troubleshooting information
-  repeated Tag tags = 14; /// User-defined additional tags
+  Priority priority = 12;
+  repeated Tag tags = 13; /// User-defined additional tags
 }
 
-/// Metadata about expected automatic retries for tasks.
+/// Metadata about expected automatic retries/reruns for tasks.
 message TaskRetry {
   /// Current known submit number
   int64 submit_number = 1;
@@ -110,47 +112,46 @@ message TaskTimes {
 message TaskStatus {
   /// Current or new task state
   bom.task_state.TaskState state = 1;
+  /// Details of entity that caused the task state (if relevant and known)
+  Actor state_actor = 2;
+  /// Type of entity reporting the new state
+  bom.system_actor_type.SystemActorType reporter_type = 3;
+  /// The name of the system or entity reporting the state, e.g. Cylc or PBS
+  string reporter = 4;
   /// Diagnostics about task including information about errors or
   // warnings that may be associated with this task state
-  repeated Diagnostic diagnostics = 2;
+  repeated Diagnostic diagnostics = 5;
   /// A message/note about task state
-  string message = 3;
-  /// Type of entity reporting the new state
-  bom.task_actor_type.TaskActorType reporter_type = 4;
-  /// The system or entity reporting the state, e.g. Cylc or PBS
-  string reporter = 5;
+  string message = 6;
   /// Severity of new task state. Each diagnostic also has a severity,
   // and this may be left unset if it is possible to infer the task state
   // severity from the diagnostic(s)
-  bom.severity.Severity severity = 6;
-  TaskTimes time_info = 7;
+  bom.severity.Severity severity = 7;
+  TaskTimes time_info = 8;
   /// Number of consecutive task failures in a task series
-  int64 number_of_consecutive_failures = 8;
+  int64 number_of_consecutive_failures = 9;
   /// If task is "late", set late to the length of time the
   // task is late by (valid at the time of event production)
-  google.protobuf.Duration late = 9;
+  google.protobuf.Duration late = 10;
 }
 
 /// Metadata about the entity involved in some interaction
 message TaskInteraction {
   bom.task_interaction_type.TaskInteractionType action_type = 1;
-  /// Type of entity carrying out or initiating the action/interaction
-  bom.task_actor_type.TaskActorType actor_type = 2;
-  /// The user/account/identity corresponding to the acting entity, if
-  // applicable and known
-  Userid actor_id = 3;
-  Contact contact = 4; /// Entity contact details for humans/organisations
-  string reason = 5; /// Motivation for the interaction, if relevant
+  /// Details of the entity initiating or carrying out this interaction, if
+  // known
+  Actor actor = 2;
+  string reason = 3; /// Motivation for the interaction, if relevant
   /// The system/equipment/tool via which the interaction took place.
   // This will generally be the scheduler, or a component of a scheduler
-  Id system = 6;
-  /// Additional details/context
-  string interaction_detail = 7;
+  Id system = 4;
+  /// Additional interaction details/context
+  string detail = 5;
   /// ID to track this interaction
-  Id interaction_id = 8;
+  Id id = 6;
   /// To be set when this interaction is on behalf or as a consequence of
   // another entity or interaction
-  TaskInteraction on_behalf_of = 9;
+  TaskInteraction on_behalf_of = 7;
 }
 
 /// Limit placed on the number of simultaneously running tasks for tasks
@@ -170,40 +171,58 @@ message TaskGroupLimits {
   string resource = 5;
 }
 
+/// Computing resource associated with a task or job:
 message TaskResource {
-  bom.computing_resource.ComputingResource resource = 1;
-  /// Value in milliseconds for duration,
-  // bytes for memory/disk or a count in other contexts
-  int64 amount = 2;
+  /// Type of computing resource
+  bom.computing_resource.ComputingResource type = 1;
+  /// The scope (level of applicability) of this particular resource; e.g. if
+  // it is job-wide or at a host level.
+  bom.computing_resource_scope.ComputingResourceScope scope = 2;
+  /// Identifier to help track resources belonging to a particular "chunk" or
+  // some other grouping (if applicable)
+  Id chunk_id = 3;
+  /// Qualifying description or name or model of resource,
+  // e.g. NVIDIA Tesla P100
+  string qualifier = 4;
+  /// The number needed of this type of resource, when the resource
+  // represents discrete entities (e.g. if type = ACCELERATOR,
+  // qualifier = i)
+  uint64 number = 5;
+  /// Value per resource in milliseconds for duration,
+  // kibibytes (1024 bytes) for memory/disk,
+  // Mbit/s for network performance,
+  // MHz (megahertz) for CPU clock speeds; or a count in other contexts.
+  // If values represent a fractional increment using these units, the values
+  // should be rounded up (i.e. int64 amount = ceiling(value)). Negative
+  // amounts are permissible with a production-specific meaning.
+  int64 amount = 6;
   /// If limit the amount represents a resource limit, whether it is
   // hard (otherwise it is considered "soft"). To be ignored if this
   // message does not correspond to a resource limit
-  bool is_hard_limit = 3;
+  bool is_hard_limit = 7;
   /// Entity responsible for measuring this resource, or for ensuring
   // any limit (if applicable) is respected by some suitable means
   // (e.g. the governor batch scheduler or native system)
-  bom.task_actor_type.TaskActorType steward = 4;
+  bom.system_actor_type.SystemActorType steward = 8;
 }
 
 message TaskSettings {
+  /// A note about the settings
+  string note = 1;
   /// The user/account/identity that the task is to run as
-  Userid user = 1;
+  Userid user = 2;
   /// Other users/accounts that processes/subcomponents launched by the task
   // will run as (e.g. task involving sudo commands for another service account)
-  repeated Userid subusers = 2;
-  /// If task is in a simulation mode; it is not running normal workloads,
-  // rather a dummy task to help simulate suite behaviour.
-  bool is_simulation = 3;
-  /// If task is in a test mode
-  bool is_test = 4;
-  /// If routine task is the result of an edit run of some type
-  bool is_edit_run = 5;
-  /// A note about the settings
-  string note = 6;
+  repeated Userid subusers = 3;
+  /// Setting properties this task might have, such as RUNMODE_DUMMY,
+  // RUNMODE_TEST, ARRAY.
+  // Note 1: some properties may also be set in TaskEvent.task_info
+  // Note 2: debug settings are handled separetely in "debug" below
+  repeated bom.task_property.TaskProperty properties = 4;
   /// Time from which the task is eligible to run (if applicable)
-  google.protobuf.Timestamp eligible_time = 7;
   /// Debug settings that apply to this task
-  DebugSettings debug = 8;
+  DebugSettings debug = 5;
+  google.protobuf.Timestamp eligible_time = 6;
 }
 
 /// A rather imperfect mechanism to identify dynamic task IDs or IDs that

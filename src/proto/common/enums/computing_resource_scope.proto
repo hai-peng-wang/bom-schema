@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package bom.computing_resource_scope;
+
+option java_package = "bom";
+option java_outer_classname="ComputingResourceScopeProto";
+
+/// Scope of a computing resource; i.e. the level the resource is applicable.
+// e.g. a resource per process, per execution host or a job-wide shared.
+// resource etc
+enum ComputingResourceScope {
+    UNSET = 0;
+    UNKNOWN = 1;
+
+    /// Generic shared task/job wide resource.
+    JOB = 2;
+    /// Resource global to a particular queue. More specific than JOB_WIDE.
+    QUEUE = 3;
+    /// Resource global to a particular server/cluster.
+    // More specific than JOB_WIDE
+    SERVER = 4;
+
+
+    /// Generic "sub-job" or execution host specific resource.
+    // Note: Resources specified in multiple distinct chunks may potentially
+    // be provided/provisioned on the same execution host if there is capacity
+    // and no other constraints
+    CHUNK = 50;
+    /// Resource available at a node level
+    NODE = 55;
+    /// Resource available per process spawned by the job
+    PROCESS = 60;
+    /// Resources available per MPI process
+    PROCESS_MPI = 61;
+    /// Resources available per thread
+    THREAD = 70;
+    /// Resources available per GPU or GPU-like accelerator multiprocessing
+    // thread (e.g. CUDA)
+    THREAD_GPU = 71;
+}

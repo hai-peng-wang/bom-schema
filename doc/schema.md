@@ -30,6 +30,8 @@
  * [TaskStatus](#bom.TaskStatus)
  * [TaskTimes](#bom.TaskTimes)
  * [Taskid](#bom.Taskid)
+* [actor.proto](#actor.proto)
+ * [Actor](#bom.Actor)
 * [address.proto](#address.proto)
  * [Address](#bom.Address)
  * [URI](#bom.URI)
@@ -76,6 +78,8 @@
  * [ComponentRelation](#bom.component_relation.ComponentRelation)
 * [computing_resource.proto](#computing_resource.proto)
  * [ComputingResource](#bom.computing_resource.ComputingResource)
+* [computing_resource_scope.proto](#computing_resource_scope.proto)
+ * [ComputingResourceScope](#bom.computing_resource_scope.ComputingResourceScope)
 * [data_coverage_content_type.proto](#data_coverage_content_type.proto)
  * [DataCoverageContentType](#bom.data_coverage_content_type.DataCoverageContentType)
 * [dataset_action_type.proto](#dataset_action_type.proto)
@@ -110,12 +114,14 @@
  * [SecurityDelimitingMarker](#bom.security_delimiting_marker.SecurityDelimitingMarker)
 * [severity.proto](#severity.proto)
  * [Severity](#bom.severity.Severity)
-* [task_actor_type.proto](#task_actor_type.proto)
- * [TaskActorType](#bom.task_actor_type.TaskActorType)
+* [system_actor_type.proto](#system_actor_type.proto)
+ * [SystemActorType](#bom.system_actor_type.SystemActorType)
 * [task_communication_method.proto](#task_communication_method.proto)
  * [TaskCommunicationMethod](#bom.task_communication_method.TaskCommunicationMethod)
 * [task_interaction_type.proto](#task_interaction_type.proto)
  * [TaskInteractionType](#bom.task_interaction_type.TaskInteractionType)
+* [task_property.proto](#task_property.proto)
+ * [TaskProperty](#bom.task_property.TaskProperty)
 * [task_state.proto](#task_state.proto)
  * [TaskState](#bom.task_state.TaskState)
 * [trace_level.proto](#trace_level.proto)
@@ -205,7 +211,8 @@ approval process etc.
 | state | [TaskState](#bom.task_state.TaskState) | optional | If action has taken place and resulted in a successful or failedoutcome, or if the action is in-progress or is scheduled to happen.TaskState is used here as it offers a large range ofuseful action and action resolution states, although many willlikely not be applicable |
 | times | [TimePointOrRange](#bom.TimePointOrRange) | repeated | The time the action reached action_state, or the timethe action is due to commence if it is a scheduled action.If a range is specified it represents the action begin and end timesof the action |
 | time_uncertainty | [Duration](#google.protobuf.Duration) | optional |  |
-| contact | [Contact](#bom.Contact) | optional | Who is the key contact associated with the action/change |
+| authority | [Actor](#bom.Actor) | optional | Who is the key contact/user associated with authorising ororganising the action/change |
+| actor | [Actor](#bom.Actor) | optional | Who was responsible for carrying out the change, if different from theauthorising entity |
 | reason | [string](#string) | optional | Why the action/change took place or is due to take place |
 | outcome_details | [string](#string) | optional | Details about the action outcome, if relevant. e.g. if action typeand state indicate a review that failed, the outcome string canprovide an explanation for this outcome |
 | comment | [string](#string) | optional | Any additional pertinent comments, e.g. where the action happened |
@@ -398,16 +405,15 @@ This information should mostly be known ahead of the scheduling of the task.
 | name | [string](#string) | optional |  |
 | namespace | [string](#string) | optional | Unique namespace for this task within a suite or workflow.This is typically the task families to which the task belongs |
 | suite | [string](#string) | optional | The suite or workflow this task is a part of |
-| is_idempotent | [bool](#bool) | optional | Can repeated re-runs of the task (even following a crash during taskexecution) safe and expected to produce the same result? |
+| type | [string](#string) | optional | Type of task |
+| about | [URI](#bom.URI) | optional | Documentation/information about task |
+| troubleshooting | [URI](#bom.URI) | optional | General troubleshooting information, if not covered by "about" |
+| project | [string](#string) | optional | project (in the context of a batch system scheduler, or similar) |
+| properties | [TaskProperty](#bom.task_property.TaskProperty) | repeated | Properties this task might have, such as IDEMPOTENT, RESERVATION.Note: some properties may not be known until runtime.TaskEvent.context.settings provides an additional opportunity to specifyadditional task/job properties. |
 | groups | [string](#string) | repeated | The group(s) this task is part of, if relevant. Groups are generallya  grouping of similar tasks in the context of a workflow |
 | resources | [string](#string) | repeated | Named resources this task interacts with, e.g. particular databases,services, archive storage systems etc |
-| type | [string](#string) | optional | Type of task |
-| array_type | [JobArrayType](#bom.job_array_type.JobArrayType) | optional | If job/task is an array job or array subjob |
-| project | [string](#string) | optional | project (in the context of a batch system scheduler, or similar) |
 | production_status | [ProductionStatus](#bom.ProductionStatus) | optional | Production status of task |
 | priority | [Priority](#bom.Priority) | optional | Priority of task. Note this can include information about impact andurgency |
-| task_url | [URI](#bom.URI) | optional | Overview information |
-| task_debug | [URI](#bom.URI) | optional | Troubleshooting information |
 | tags | [Tag](#bom.Tag) | repeated | User-defined additional tags |
 
 
@@ -418,13 +424,11 @@ Metadata about the entity involved in some interaction
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | action_type | [TaskInteractionType](#bom.task_interaction_type.TaskInteractionType) | optional |  |
-| actor_type | [TaskActorType](#bom.task_actor_type.TaskActorType) | optional | Type of entity carrying out or initiating the action/interaction |
-| actor_id | [Userid](#bom.Userid) | optional | The user/account/identity corresponding to the acting entity, ifapplicable and known |
-| contact | [Contact](#bom.Contact) | optional | Entity contact details for humans/organisations |
+| actor | [Actor](#bom.Actor) | optional | Details of the entity initiating or carrying out this interaction, ifknown |
 | reason | [string](#string) | optional | Motivation for the interaction, if relevant |
 | system | [Id](#bom.Id) | optional | The system/equipment/tool via which the interaction took place.This will generally be the scheduler, or a component of a scheduler |
-| interaction_detail | [string](#string) | optional | Additional details/context |
-| interaction_id | [Id](#bom.Id) | optional | ID to track this interaction |
+| detail | [string](#string) | optional | Additional interaction details/context |
+| id | [Id](#bom.Id) | optional | ID to track this interaction |
 | on_behalf_of | [TaskInteraction](#bom.TaskInteraction) | optional | To be set when this interaction is on behalf or as a consequence ofanother entity or interaction |
 
 
@@ -463,19 +467,23 @@ managed by a job or batch scheduler
 
 <a name="bom.TaskResource"/>
 ### TaskResource
-
+Computing resource associated with a task or job:
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| resource | [ComputingResource](#bom.computing_resource.ComputingResource) | optional |  |
-| amount | [int64](#int64) | optional | Value in milliseconds for duration,bytes for memory/disk or a count in other contexts |
+| type | [ComputingResource](#bom.computing_resource.ComputingResource) | optional | Type of computing resource |
+| scope | [ComputingResourceScope](#bom.computing_resource_scope.ComputingResourceScope) | optional | The scope (level of applicability) of this particular resource; e.g. ifit is job-wide or at a host level. |
+| chunk_id | [Id](#bom.Id) | optional | Identifier to help track resources belonging to a particular "chunk" orsome other grouping (if applicable) |
+| qualifier | [string](#string) | optional | Qualifying description or name or model of resource,e.g. NVIDIA Tesla P100 |
+| number | [uint64](#uint64) | optional | The number needed of this type of resource, when the resourcerepresents discrete entities (e.g. if type = ACCELERATOR,qualifier = i) |
+| amount | [int64](#int64) | optional | Value per resource in milliseconds for duration,kibibytes (1024 bytes) for memory/disk,Mbit/s for network performance,MHz (megahertz) for CPU clock speeds; or a count in other contexts.If values represent a fractional increment using these units, the valuesshould be rounded up (i.e. int64 amount = ceiling(value)). Negativeamounts are permissible with a production-specific meaning. |
 | is_hard_limit | [bool](#bool) | optional | If limit the amount represents a resource limit, whether it ishard (otherwise it is considered "soft"). To be ignored if thismessage does not correspond to a resource limit |
-| steward | [TaskActorType](#bom.task_actor_type.TaskActorType) | optional | Entity responsible for measuring this resource, or for ensuringany limit (if applicable) is respected by some suitable means(e.g. the governor batch scheduler or native system) |
+| steward | [SystemActorType](#bom.system_actor_type.SystemActorType) | optional | Entity responsible for measuring this resource, or for ensuringany limit (if applicable) is respected by some suitable means(e.g. the governor batch scheduler or native system) |
 
 
 <a name="bom.TaskRetry"/>
 ### TaskRetry
-Metadata about expected automatic retries for tasks.
+Metadata about expected automatic retries/reruns for tasks.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
@@ -493,14 +501,12 @@ Metadata about expected automatic retries for tasks.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| note | [string](#string) | optional | A note about the settings |
 | user | [Userid](#bom.Userid) | optional | The user/account/identity that the task is to run as |
 | subusers | [Userid](#bom.Userid) | repeated | Other users/accounts that processes/subcomponents launched by the taskwill run as (e.g. task involving sudo commands for another service account) |
-| is_simulation | [bool](#bool) | optional | If task is in a simulation mode; it is not running normal workloads,rather a dummy task to help simulate suite behaviour. |
-| is_test | [bool](#bool) | optional | If task is in a test mode |
-| is_edit_run | [bool](#bool) | optional | If routine task is the result of an edit run of some type |
-| note | [string](#string) | optional | A note about the settings |
-| eligible_time | [Timestamp](#google.protobuf.Timestamp) | optional | Time from which the task is eligible to run (if applicable) |
-| debug | [DebugSettings](#bom.DebugSettings) | optional | Debug settings that apply to this task |
+| properties | [TaskProperty](#bom.task_property.TaskProperty) | repeated | Setting properties this task might have, such as RUNMODE_DUMMY,RUNMODE_TEST, ARRAY.Note 1: some properties may also be set in TaskEvent.task_infoNote 2: debug settings are handled separetely in "debug" below |
+| debug | [DebugSettings](#bom.DebugSettings) | optional | Time from which the task is eligible to run (if applicable)/ Debug settings that apply to this task |
+| eligible_time | [Timestamp](#google.protobuf.Timestamp) | optional |  |
 
 
 <a name="bom.TaskStatus"/>
@@ -514,10 +520,11 @@ for real-time systems
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | state | [TaskState](#bom.task_state.TaskState) | optional | Current or new task state |
+| state_actor | [Actor](#bom.Actor) | optional | Details of entity that caused the task state (if relevant and known) |
+| reporter_type | [SystemActorType](#bom.system_actor_type.SystemActorType) | optional | Type of entity reporting the new state |
+| reporter | [string](#string) | optional | The name of the system or entity reporting the state, e.g. Cylc or PBS |
 | diagnostics | [Diagnostic](#bom.Diagnostic) | repeated | Diagnostics about task including information about errors orwarnings that may be associated with this task state |
 | message | [string](#string) | optional | A message/note about task state |
-| reporter_type | [TaskActorType](#bom.task_actor_type.TaskActorType) | optional | Type of entity reporting the new state |
-| reporter | [string](#string) | optional | The system or entity reporting the state, e.g. Cylc or PBS |
 | severity | [Severity](#bom.severity.Severity) | optional | Severity of new task state. Each diagnostic also has a severity,and this may be left unset if it is possible to infer the task stateseverity from the diagnostic(s) |
 | time_info | [TaskTimes](#bom.TaskTimes) | optional |  |
 | number_of_consecutive_failures | [int64](#int64) | optional | Number of consecutive task failures in a task series |
@@ -556,6 +563,28 @@ of tasks) are included in the EventHeader
 | workflow_id | [Id](#bom.Id) | optional |  |
 | batch_id | [Id](#bom.Id) | optional | Batch ststem jobid |
 | session_id | [Id](#bom.Id) | optional | An ID used internally by the producer of this event |
+
+
+
+
+
+
+<a name="actor.proto"/>
+<p align="right"><a href="#top">Top</a></p>
+
+## actor.proto
+
+
+
+<a name="bom.Actor"/>
+### Actor
+An entity that interacts with a system/component
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| system_actor_type | [SystemActorType](#bom.system_actor_type.SystemActorType) | optional | System type of actor, if relevant/applicable |
+| id | [Userid](#bom.Userid) | optional | Most relevant user/account identification (Security Principal) detailscorresponding to this actor, if relevant/applicable. |
+| contact | [Contact](#bom.Contact) | optional | Contact details of actor, if known |
 
 
 
@@ -1213,30 +1242,72 @@ Computing related resources, as relating to
 capabilities or limits of a computing environment or
 limits imposed on jobs or processes by policy or
 management systems.
-/ TODO: ensure correct mapping to PBS resources is present and fully
-covered with minimal ambiguity
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
 | UNSET | 0 |  |
 | UNKNOWN | 1 |  |
-| WALLTIME | 2 | Execution walltime available |
-| CPUTIME | 3 | Execution cputime available |
-| MEMORY | 4 | Total RAM/memory available |
-| VIRT_MEMORY | 5 | Total virtual memory available |
-| NODE_MEMORY | 6 | RAM/memory available on a node |
-| NODE_VIRT_MEMORY | 7 | Total node virtual memory available |
-| PROC_WALLTIME | 8 | Execution walltime available per process |
-| PROC_CPUTIME | 9 | Execution cputime available per process |
-| PROC_MEMORY | 10 | Execution RAM/memory available per process |
-| STACK | 11 | Stack size available |
-| DISK | 12 | Persistent disk storage available for job |
-| CACHE | 13 | Non-persistent cache storage available for job |
-| SWAP | 14 | SWAP space storage available for job |
-| NEW_FILE_SIZE | 15 | Maximum supported/allowed individual file creation size |
-| NEW_FILES | 16 | Maximum supported/allowed individual file creation number |
-| OPEN_FILES | 17 | Maximum supported/allowed open file count |
-| PROCESSES | 18 | Maximum number of processes |
+| CPU | 2 | Physical CPU detailsnumber: number of physical CPUs (with respect to specified scope)amount: speed in MHzqualifier: specific model/type/variant |
+| VCPU | 3 | Virtualised CPU details. Units as per CPU. |
+| CORES | 8 | Physical CPU cores. Units as per CPU. |
+| NUMA | 10 | NUMA detailsnumber: number of NUMAs (with respect to specified scope)amount: number of parallel environment per NUMAqualifier: specific variant of NUMA (if applicable) |
+| ACCELERATOR | 14 | Accelerator details. Units as per CPU |
+| MPIPROC | 18 | MPI process detailsnumber: number of MPI processes requestsamount: N/Aqualifier: specific type/mode or other details ofMPI process (if applicable) |
+| OMPTHREADS | 19 | OMP thread detailsnumber: number of OMP threads (usually per "chunk" or process)amount: N/Aqualifier: notes/commentary on OMP threads or similar |
+| NETWORK | 20 | Network detailsnumber: number of network interfaces comprising this resourceamount: speed of each interface in Mbit/squalifier: specific model/type/variant of network interface |
+| NODE_COMPUTE | 30 | Specified resource is a type of nodenumber: number of this type of node comprising this resourceamount: N/Aqualifier: specific model/type/variant |
+| NODE_LOGIN | 31 |  |
+| NODE_DATAMOVER | 32 |  |
+| NODE_MAMU | 33 | MAMU = "multi-application multi-user" |
+| NODE_MOM | 34 | MOM = "machine oriented miniserver" |
+| HOST | 35 | A specific single host.number: set to 1 or leave unsetamount: if more than one host is specified as independent resources for        a job/task, then set amount to 1 if work carried out by the job,        at the level set by the "scope", is allowed/intended to be run in        parallel across nominated hostsqualifier: hostname of host, or another unique string identifier ifa hostname is not suitable |
+| SITE | 36 | Resources contained within a particular data-centre site. If more thannumber: N/Aamount: if more than one site is specified as independent resources for        a job/task, then set amount to 1 if work carried out by the job,        at the level set by the "scope", is allowed/intended to be run in        parallel across nominated sites (or leave unset if site affinity)        is required. If site affinity is required, it is intended that        the order that multiple site resources are specified reflects        an ordering preference (for resource requests) or the ordering        in which task execution took place (for resources reported/used)        in the case where a task was migrated between data-sets during        the course of execution.qualifier: name of site nominated to provide resource |
+| ARCH | 40 | Specified resource is a specific architecture.number: N/Aamount: N/Aqualifier: specified architecture (and version if applicable). |
+| AOE | 41 | AOE - Application Operating Environment. Units as per ARCH, exceptthis usually refers to an environment at the OS-level. |
+| SOFTWARE | 42 | Software requirement. Unit as per ARCH, except this refers toa particular (usually unusual) software application/framework |
+| WALLTIME | 50 | Execution walltime available. If MIN_WALLTIME also requested by jobthis job is considered to be a "shrink-to-fit" job and walltimeis interpreted as a "MAX_WALLTIME".amount units: milliseconds |
+| MIN_WALLTIME | 51 | Minimum execution walltime requested for a "shrink-to-fit" job.amount units: milliseconds |
+| CPUTIME | 52 | Execution cputime available. Set TaskResource.scope to distinguishbetween a job-wide resource or a per-process resourceamount: time in milliseconds |
+| MEMORY | 70 | RAM/memory available (set TaskResource.scope to distinguish if thisapplies job-wide, chunk-wide, per process etc)amount units: kibibytes (1024 byte increments)qualifier: can be used to specify the name of a specialist memory variant |
+| VIRT_MEMORY | 71 | Virtual memory available. Units as per MEMORY |
+| ACCELERATOR_MEMORY | 72 | ACCELERATOR memory available. Units as per MEMORY |
+| STACK | 75 | Stack size available. Units as per MEMORY |
+| DISK | 80 | Persistent disk storage available (generally shared by job)number: number of disks, RAID arrays or similar providing this resourceamount: size of disk resource kibibytes (per disk if number > 1)qualifier: specific disk/storage technology model/variant |
+| CACHE | 81 | Non-persistent cache/scratch storage available. Units as per DISK |
+| SWAP | 85 | SWAP space storage available. Units as per DISK |
+| NEW_FILES | 90 | Maximum supported/allowed individual file detailsnumber: maximum number of files created (if applicable)amount: maximum size of any individual files written or appended to        (in kibibytes)qualifier: a comment/explanation (optional) |
+| OPEN_FILES | 91 | As per NEW_FILES, but pertaining to files opened(for reading or writing) |
+
+
+
+
+<a name="computing_resource_scope.proto"/>
+<p align="right"><a href="#top">Top</a></p>
+
+## computing_resource_scope.proto
+
+
+
+
+<a name="bom.computing_resource_scope.ComputingResourceScope"/>
+### ComputingResourceScope
+Scope of a computing resource; i.e. the level the resource is applicable.
+e.g. a resource per process, per execution host or a job-wide shared.
+resource etc
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| UNSET | 0 |  |
+| UNKNOWN | 1 |  |
+| JOB | 2 | Generic shared task/job wide resource. |
+| QUEUE | 3 | Resource global to a particular queue. More specific than JOB_WIDE. |
+| SERVER | 4 | Resource global to a particular server/cluster.More specific than JOB_WIDE |
+| CHUNK | 50 | Generic "sub-job" or execution host specific resource.Note: Resources specified in multiple distinct chunks may potentiallybe provided/provisioned on the same execution host if there is capacityand no other constraints |
+| NODE | 55 | Resource available at a node level |
+| PROCESS | 60 | Resource available per process spawned by the job |
+| PROCESS_MPI | 61 | Resources available per MPI process |
+| THREAD | 70 | Resources available per thread |
+| THREAD_GPU | 71 | Resources available per GPU or GPU-like accelerator multiprocessingthread (e.g. CUDA) |
 
 
 
@@ -1818,20 +1889,20 @@ Info and Debug processing.
 
 
 
-<a name="task_actor_type.proto"/>
+<a name="system_actor_type.proto"/>
 <p align="right"><a href="#top">Top</a></p>
 
-## task_actor_type.proto
+## system_actor_type.proto
 
 
 
 
-<a name="bom.task_actor_type.TaskActorType"/>
-### TaskActorType
-Type of entity involved in an interaction with a task.
+<a name="bom.system_actor_type.SystemActorType"/>
+### SystemActorType
+Type of entity involved in some interaction with a system, task or similar.
 For example, this type can be used to represent the entity
-responsible for initiating the running of a task, the
-entity/system reporting a change in task state or the type
+responsible for initiating the running of a task/process, the
+entity/system reporting a change in state of a system or the type
 of entity responsible for imposing/enforcing resource limits.
 
 | Name | Number | Description |
@@ -1839,13 +1910,16 @@ of entity responsible for imposing/enforcing resource limits.
 | UNSET | 0 |  |
 | UNKNOWN | 1 |  |
 | USER | 2 |  |
-| ADMIN | 3 |  |
-| THIS_TASK | 4 | The task itself |
-| OTHER_TASK | 5 | Another task, managed in a similar way to this task |
-| HOST_SYSTEM | 6 | Host system could be a physical machine, VM, container etc |
-| BATCH_SCHEDULER | 7 |  |
-| WORKFLOW_SCHEDULER | 8 |  |
-| ORCHESTRATION_SYSTEM | 9 |  |
+| OPERATOR | 3 | An operator corresponds to an operational user with responsibility forhelping to manage a particular system. Has the same or higher privilegesthan USER-level but with additional operational responsibilities. |
+| ADMIN | 4 |  |
+| SELF | 5 | The entity which the interaction occurs (system, task) |
+| SIMILAR | 6 | Another entity, similar to this entity that is also managedin a similar way to this entity |
+| HOST_SYSTEM | 10 | Host system could be a physical machine, VM, container etc |
+| BATCH_SCHEDULER | 11 |  |
+| WORKFLOW_SCHEDULER | 12 |  |
+| ORCHESTRATION_SYSTEM | 13 |  |
+| SECURITY_SYSTEM | 20 |  |
+| AUTHENTICATION_SYSTEM | 21 |  |
 
 
 
@@ -1868,8 +1942,8 @@ a change in task status.
 | UNSET | 0 |  |
 | UNKNOWN | 1 |  |
 | EVENT | 2 | The task or the environment the task is running insignals back task status updates as events |
-| RPC | 3 | RPC here represents a persistent two-way connection betweenthe task or a process spawned by the task and a task manager |
-| POLL | 4 | A task manager related component or diagnostic process pollsthe task's execution or outputs of the task (e.g. log files) |
+| RPC | 3 | RPC here represents a persistent and direct two-way connection betweenthe task or a process spawned by the task and a task manager vianetwork ports or similar mechanism |
+| POLL | 4 | A task manager related component or diagnostic process pollsthe task's execution status or outputs of the task (e.g. log files) |
 
 
 
@@ -1933,6 +2007,39 @@ Interaction with a task performed by a user or system.
 
 
 
+<a name="task_property.proto"/>
+<p align="right"><a href="#top">Top</a></p>
+
+## task_property.proto
+
+
+
+
+<a name="bom.task_property.TaskProperty"/>
+### TaskProperty
+A property a task can have
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| UNSET | 0 |  |
+| UNKNOWN | 1 |  |
+| IDEMPOTENT | 2 | Are repeated re-runs of the task (even following a crash during taskexecution) safe and expected to produce the same outcome? |
+| NOT_RERUNNABLE | 3 | Is the task specifically _not_ allowed to be automatically re-run forany reason? For example, known or suspected to not be IDEMPOTENT |
+| RESERVATION | 4 | Does this task/job actually represent a reservation request job for abatch scheduler? |
+| CHECKPOINTABLE | 5 | Set if this task supports "checkpointing" via some mechanism in the eventit is necessary. For example a task that is able to checkpoint prior toa system shut-down when it receives an appropriate signal in advance. |
+| CHECKPOINTED_REGULAR | 6 | Set if this task is expected to be "checkpointed" automaticallyduring execution, from which the task could be resumed/restarted |
+| ARRAY | 20 | Is an array job |
+| ARRAY_SINGLE | 21 | A single subjob |
+| ARRAY_RANGE | 22 |  |
+| EXPECTED_TO_FAIL | 40 | Task is expected to fail, perhaps as part of some test suite. |
+| EDITRUN_CONFIG | 70 | Manual "edit-run" performed where it is known only a "controlled" set oftask settings/configuration items have been adjusted |
+| EDITRUN | 71 | Manual "edit-run" performed where any task changes may have been made |
+| RUNMODE_TEST | 80 | Task is run in a test mode (what this means is specific to each task,e.g. a task run in this mode might run a set of unit tests that arenormally not run routinely in production. |
+| RUNMODE_DUMMY | 81 | Task is a dummy task, usually a simple "sleep" type task |
+
+
+
+
 <a name="task_state.proto"/>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -1968,40 +2075,44 @@ RETRYING and also be late
 | WAITING_QUEUE | 13 | Job waiting in a queue or is part of some group or allocation that hasreached a constraint/limit (e.g. there may be a maximum number of jobs aspecific user can run per day). |
 | WAITING_RESOURCES | 14 | The resources requested by the job do not currently exist in an availablestate (e.g. they are busy, reserved or temporarily offline). |
 | WAITING_AUTHORISATION | 15 | The task is ready to run pending an authorisation step (e.g. awaiting approval of an operator via a GUI) |
-| HELD | 20 | Generic held/on-hold state. Better qualified held states follow below |
-| HELD_BY_USER | 21 | User initiated task/job hold |
-| HELD_BY_OPERATOR | 22 | Operator initiated job hold. If operators can't be distinguished fromusers, HELD_BY_USER should be used instead. |
-| HELD_BY_ADMIN | 23 | Administrator-level job hold |
-| HELD_BY_SYSTEM | 24 | System-level or resource-manager job hold. |
-| HELD_BY_RESOURCES | 25 | The resources requested by the job do not currently exist in an availablestate and this is treated as a hold rather than a waiting(WAITING_RESOURCES) state. This is more specific than HELD_BY_SYSTEM. |
-| PREPROCESSING | 29 | In a task pre-processing step, probably run as part of theworkflow scheduler |
-| PREPROCESSING_FAIL | 30 |  |
-| PREPROCESSING_SUCCESS | 31 | Successful completion of a task preprocessing stage |
-| QUEUED | 34 | Queued/getting ready to run |
-| READY | 35 | Ready to run/submit, not waiting and not held |
-| EXPIRED | 36 | A deadline has been passed and this task won't be completed |
-| SUBMITTING | 38 | The task/job has is in the process of being submitted/dispatched |
-| SUBMIT_SUCCESS | 39 | The task has been successfully submitted/dispatched |
-| SUBMIT_FAIL | 40 | The task submit process failed or was killed before the start of taskexecution |
-| SUBMIT_TIMEOUT | 41 | The task submit process appeared to hang/timed-out. |
-| SUBMIT_RETRYING | 42 | As per SUBMIT_FAIL or SUBMIT_TIMEOUT but a resubmit (possibly after aconfigured delay) will be attempted automatically |
-| REJECTED | 44 | Task rejected by batch scheduler or a security layer prior to execution |
-| PREJOB | 45 | Running a pre-job/setup step |
-| PREJOB_FAIL | 46 |  |
-| PREJOB_SUCCESS | 47 | Successful completion of the pre-job step(s) |
-| AUTHENTICATING | 49 |  |
-| AUTHENTICATE_SUCCESS | 50 |  |
-| AUTHENTICATE_FAIL | 51 |  |
-| AUTHENTICATE_TIMEOUT | 52 |  |
-| STARTED | 54 | Task started running/reported commencement of execution,sometimes referred to as the "BEGUN" state |
-| PROGRESS | 55 | Task in progress (used for possible progress updates) |
-| SUCCESS | 56 | Task appears to have concluded normally & successfully |
-| STOPPED | 57 | Task stopped mid execution as part of workflow design |
-| PAUSING | 58 | Task execution in process of pausing |
-| PAUSED | 59 | Task execution paused; task still memory/process resident (not vacated) |
-| PAUSE_FAIL | 60 | Pausing the task failed |
-| PROMPTING | 62 | Task, during the course of execution, is requesting/promptingfor additional interactive input or authorisation |
-| SUSPENDING | 64 | Task in the process of suspending. Usually used as a mechanismto free up resources for other higher priority jobs in a batch schedulercontext which usually involves some sort of snap-shotting of task stateand temporarily stopping task execution.Sometimes referred to as task vacating or a task vacation. |
+| HELD | 18 | Generic held/on-hold state. Better qualified held states follow below.Note: if HELD state is due to an administrator's actions,set state = HELD and TaskStatus.state_actor.system_actor_type = ADMIN.Similar possibilities exist for USER and OPERATOR holds. |
+| HELD_BY_SYSTEM | 19 | System-level or resource-manager job hold. |
+| HELD_BY_RESOURCES | 20 | The resources requested by the job do not currently exist in an availablestate and this is treated as a hold rather than a waiting(WAITING_RESOURCES) state. This is more specific than HELD_BY_SYSTEM. |
+| DROPPED | 23 | Job deleted from queue by user before execution, or task/task-definitiondropped/omitted from scheduler prior to job submission.Note: if DROPPED state is due to action carried out by the job/taskuser/owner, then this can be indicated by setting state = DROPPED andTaskStatus.state_actor.system_actor_type = USER. |
+| PREPROCESSING | 24 | In a task pre-processing step, probably run as part of theworkflow scheduler |
+| PREPROCESSING_FAIL | 25 |  |
+| PREPROCESSING_SUCCESS | 26 | Successful completion of a task preprocessing stage |
+| QUEUED | 29 | Queued/getting ready to run |
+| READY | 30 | Ready to run/submit, not waiting and not held |
+| EXPIRED | 31 | A deadline has been passed and this task won't be completed |
+| SUBMITTING | 35 | The task/job has is in the process of being submitted/dispatched |
+| SUBMIT_SUCCESS | 36 | The task has been successfully submitted/dispatched |
+| SUBMIT_FAIL | 37 | The task submit process failed or was killed before the start of taskexecution |
+| SUBMIT_TIMEOUT | 38 | The task submit process appeared to hang/timed-out. |
+| SUBMIT_RETRYING | 39 | As per SUBMIT_FAIL or SUBMIT_TIMEOUT but a resubmit (possibly after aconfigured delay) will be attempted automatically |
+| REJECTED | 41 | Task rejected by batch scheduler or a security layer prior to execution |
+| PREJOB | 42 | Running a pre-job/setup step, prior to execution of core task |
+| PREJOB_FAIL | 43 |  |
+| PREJOB_SUCCESS | 44 | Successful completion of the pre-job step(s) |
+| AUTHENTICATING | 45 |  |
+| AUTHENTICATE_SUCCESS | 46 |  |
+| AUTHENTICATE_FAIL | 47 |  |
+| AUTHENTICATE_TIMEOUT | 48 |  |
+| STARTED | 50 | Task started running/reported commencement of execution,sometimes referred to as the "BEGUN" state |
+| PROGRESS | 51 | Task in progress (used for possible progress updates) |
+| ENV_SETUP | 52 | Environment setup, if distinct from PREJOB and INITIALISING phases. |
+| ENV_SETUP_SUCCESS | 53 | Environment setup completed successfully. |
+| ENV_SETUP_FAIL | 54 |  |
+| INITIALISING | 55 | Following execution, task has reached an initialisation phase. |
+| INITIALISE_SUCCESS | 56 | INITIALISING phase has been successfully completed |
+| INITIALISE_FAIL | 57 |  |
+| SUCCESS | 58 | Task appears to have concluded normally & successfully |
+| STOPPED | 59 | Task stopped mid execution as part of workflow design |
+| PAUSING | 60 | Task execution in process of pausing |
+| PAUSED | 61 | Task execution paused; task still memory/process resident (not vacated) |
+| PAUSE_FAIL | 62 | Pausing the task failed |
+| PROMPTING | 63 | Task, during the course of execution, is requesting/promptingfor additional interactive input or authorisation |
+| SUSPENDING | 64 | Task in the process of suspending. Usually used as a mechanismto free up resources for other higher priority jobs in a batch schedulercontext which usually involves some sort of snap-shotting of task stateand temporarily stopping task execution.Sometimes referred to as task vacating, a task vacation or job preemption. |
 | SUSPENDED | 65 | Task suspended/vacated and needs to be resumed to progress/complete. |
 | SUSPEND_FAIL | 66 | Suspending/vacating the task failed |
 | SUSPEND_TIMEOUT | 67 | Suspending failed due to hanging or taking too long |
@@ -2015,9 +2126,12 @@ RETRYING and also be late
 | POSTJOB_FAIL | 77 |  |
 | POSTVALIDATING | 79 | Running a validation step as part of the task following execution |
 | POSTVALIDATING_FAIL | 80 |  |
-| EXITING | 82 | Job is exiting after having run (normally in a batch scheduler context). |
-| RETRYING | 84 | Retrying after having previously progressed to some |
-| FAILED | 86 | Task failed (desired outcome of the task was not reached) |
+| ERROR_HANDLING | 82 | Task is in the process of handling an error |
+| ERROR_HANDLING_SUCCESS | 83 | Task successfully handled an error |
+| ERROR_HANDLING_FAIL | 84 | Failure during task error handling step |
+| EXITING | 85 | Job is exiting after having run (normally in a batch scheduler context). |
+| RETRYING | 86 | Retrying after having previously progressed to some |
+| FAILED | 87 | Task failed (desired outcome of the task was not reached) |
 | RETRY_LIMIT_REACHED | 88 | Multiple task retries have all failed. This is a failed state. |
 | ABNORMAL_SUCCESS | 89 | Diagnostics suggest task appears to have succeededbut some warnings/errors/abnormalities were encountered |
 | WARNING | 90 | Task is reporting a warning during execution but has notfinished. This is a potential intermediate state of a task:If it succeeds ABNORMAL_SUCCESS should be reported.If it fails one of the many failure modes should be reported. |
@@ -2035,7 +2149,6 @@ RETRYING and also be late
 | KILLED_BY_SECURITY_POLICY | 103 |  |
 | KILLED | 106 | Killed by another or unspecified mechanism |
 | CANCELLED | 107 | Program/model run cancelled during execution via some mechanism otherthan kill or a retry limit |
-| DROPPED | 109 | Task definition dropped/omitted before execution from scheduler |
 | SKIPPED | 110 | Task to be skipped |
 | MIGRATING | 111 | Job control responsibility is being migrated to another system |
 | MIGRATED | 112 |  |
@@ -2048,11 +2161,15 @@ RETRYING and also be late
 | UNREACHABLE | 119 | Attempts to determine task state have failed (e.g. network outage).It is unknown if the task is still running or not |
 | LOST | 120 | Attempts to track a task have failed and it is now consideredlost by this system. |
 | ZOMBIE | 121 | Process has become a zombie (process is still running but is becomedetached in some way from the managing process) |
-| RESURRECTING | 122 | Resurrecting is the process of restoring a ZOMBIE or possibly apreviously UNREACHABLE task to a "normal" task |
+| RESURRECTING | 122 | Resurrecting is the process of restoring a ZOMBIE or possibly apreviously UNREACHABLE task (or, from a workflow scheduler perspective,even a task that was hard killed by a resource manager then laterrestarted) to a "normal" task |
 | RESURRECTED | 123 |  |
 | RESURRECT_FAIL | 124 |  |
 | FORCE_COMPLETED | 125 | Task forced to be in a completed state from the perspective of ascheduler/job manager. It may in-fact never have run ormay still be running if it had previously launched. |
 | MODEL_STOP | 127 | Model progress was stopped by a model mechanism, for example numericalconvergence thresholds were not met. |
+| LICENSE_ACQUISITION | 333 | If the task/job needs to acquire a license to execute (at the task orsub-task level) then it may be useful to track the license acquisitionphase: |
+| LICENSE_ACQUISITION_SUCCESS | 334 |  |
+| LICENSE_ACQUISITION_FAIL | 335 |  |
+| LICENSE_ACQUISITION_TIMEOUT | 336 |  |
 
 
 

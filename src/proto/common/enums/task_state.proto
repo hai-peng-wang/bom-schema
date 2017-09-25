@@ -60,80 +60,95 @@ enum TaskState {
   WAITING_AUTHORISATION = 15;
 
   // Held states are like waiting states but are likely to require some level
-  // of intervention (often manual) to remove the hold and progress the task.
+  // of intervention (often manual) to remove/release the hold and progress
+  // the task.
 
-  /// Generic held/on-hold state. Better qualified held states follow below
-  HELD = 20;
-  /// User initiated task/job hold
-  HELD_BY_USER = 21;
-  /// Operator initiated job hold. If operators can't be distinguished from
-  // users, HELD_BY_USER should be used instead.
-  HELD_BY_OPERATOR = 22;
-  /// Administrator-level job hold
-  HELD_BY_ADMIN = 23;
+  /// Generic held/on-hold state. Better qualified held states follow below.
+  // Note: if HELD state is due to an administrator's actions,
+  // set state = HELD and TaskStatus.state_actor.system_actor_type = ADMIN.
+  // Similar possibilities exist for USER and OPERATOR holds.
+  HELD = 18;
   /// System-level or resource-manager job hold.
-  HELD_BY_SYSTEM = 24;
+  HELD_BY_SYSTEM = 19;
   /// The resources requested by the job do not currently exist in an available
   // state and this is treated as a hold rather than a waiting
   // (WAITING_RESOURCES) state. This is more specific than HELD_BY_SYSTEM.
-  HELD_BY_RESOURCES = 25;
+  HELD_BY_RESOURCES = 20;
+
+  /// Job deleted from queue by user before execution, or task/task-definition
+  // dropped/omitted from scheduler prior to job submission.
+  // Note: if DROPPED state is due to action carried out by the job/task
+  // user/owner, then this can be indicated by setting state = DROPPED and
+  // TaskStatus.state_actor.system_actor_type = USER.
+  DROPPED = 23;
 
   /// In a task pre-processing step, probably run as part of the
   // workflow scheduler
-  PREPROCESSING = 29;
-  PREPROCESSING_FAIL = 30;
+  PREPROCESSING = 24;
+  PREPROCESSING_FAIL = 25;
   /// Successful completion of a task preprocessing stage
-  PREPROCESSING_SUCCESS = 31;
+  PREPROCESSING_SUCCESS = 26;
 
-  QUEUED = 34; /// Queued/getting ready to run
-  READY = 35; /// Ready to run/submit, not waiting and not held
-  EXPIRED = 36; /// A deadline has been passed and this task won't be completed
+  QUEUED = 29; /// Queued/getting ready to run
+  READY = 30; /// Ready to run/submit, not waiting and not held
+  EXPIRED = 31; /// A deadline has been passed and this task won't be completed
 
   /// The task/job has is in the process of being submitted/dispatched
-  SUBMITTING = 38;
-  SUBMIT_SUCCESS = 39; /// The task has been successfully submitted/dispatched
+  SUBMITTING = 35;
+  SUBMIT_SUCCESS = 36; /// The task has been successfully submitted/dispatched
   /// The task submit process failed or was killed before the start of task
   // execution
-  SUBMIT_FAIL = 40;
+  SUBMIT_FAIL = 37;
   /// The task submit process appeared to hang/timed-out.
-  SUBMIT_TIMEOUT = 41;
+  SUBMIT_TIMEOUT = 38;
   /// As per SUBMIT_FAIL or SUBMIT_TIMEOUT but a resubmit (possibly after a
   // configured delay) will be attempted automatically
-  SUBMIT_RETRYING = 42;
+  SUBMIT_RETRYING = 39;
 
   /// Task rejected by batch scheduler or a security layer prior to execution
-  REJECTED = 44;
+  REJECTED = 41;
 
-  PREJOB = 45; /// Running a pre-job/setup step
-  PREJOB_FAIL = 46;
-  PREJOB_SUCCESS = 47; /// Successful completion of the pre-job step(s)
+  PREJOB = 42; /// Running a pre-job/setup step, prior to execution of core task
+  PREJOB_FAIL = 43;
+  PREJOB_SUCCESS = 44; /// Successful completion of the pre-job step(s)
 
-  AUTHENTICATING = 49;
-  AUTHENTICATE_SUCCESS = 50;
-  AUTHENTICATE_FAIL = 51;
-  AUTHENTICATE_TIMEOUT = 52;
+  AUTHENTICATING = 45;
+  AUTHENTICATE_SUCCESS = 46;
+  AUTHENTICATE_FAIL = 47;
+  AUTHENTICATE_TIMEOUT = 48;
 
   /// Task started running/reported commencement of execution,
   // sometimes referred to as the "BEGUN" state
-  STARTED = 54;
-  PROGRESS = 55; /// Task in progress (used for possible progress updates)
-  SUCCESS = 56; /// Task appears to have concluded normally & successfully
-  STOPPED = 57; /// Task stopped mid execution as part of workflow design
+  STARTED = 50;
+  PROGRESS = 51; /// Task in progress (used for possible progress updates)
+  /// Environment setup, if distinct from PREJOB and INITIALISING phases.
+  ENV_SETUP = 52;
+  /// Environment setup completed successfully.
+  ENV_SETUP_SUCCESS = 53;
+  ENV_SETUP_FAIL = 54;
+  /// Following execution, task has reached an initialisation phase.
+  INITIALISING = 55;
+  /// INITIALISING phase has been successfully completed
+  INITIALISE_SUCCESS = 56;
+  INITIALISE_FAIL = 57;
+
+  SUCCESS = 58; /// Task appears to have concluded normally & successfully
+  STOPPED = 59; /// Task stopped mid execution as part of workflow design
   /// Task execution in process of pausing
-  PAUSING = 58;
+  PAUSING = 60;
   /// Task execution paused; task still memory/process resident (not vacated)
-  PAUSED = 59;
-  PAUSE_FAIL = 60; /// Pausing the task failed
+  PAUSED = 61;
+  PAUSE_FAIL = 62; /// Pausing the task failed
 
   /// Task, during the course of execution, is requesting/prompting
   // for additional interactive input or authorisation
-  PROMPTING = 62;
+  PROMPTING = 63;
 
   /// Task in the process of suspending. Usually used as a mechanism
   // to free up resources for other higher priority jobs in a batch scheduler
   // context which usually involves some sort of snap-shotting of task state
   // and temporarily stopping task execution.
-  // Sometimes referred to as task vacating or a task vacation.
+  // Sometimes referred to as task vacating, a task vacation or job preemption.
   SUSPENDING = 64;
   /// Task suspended/vacated and needs to be resumed to progress/complete.
   SUSPENDED = 65;
@@ -158,12 +173,19 @@ enum TaskState {
   POSTVALIDATING = 79;
   POSTVALIDATING_FAIL = 80;
 
+  /// Task is in the process of handling an error
+  ERROR_HANDLING = 82;
+  /// Task successfully handled an error
+  ERROR_HANDLING_SUCCESS = 83;
+  /// Failure during task error handling step
+  ERROR_HANDLING_FAIL = 84;
+
   /// Job is exiting after having run (normally in a batch scheduler context).
-  EXITING = 82;
+  EXITING = 85;
 
-  RETRYING = 84; /// Retrying after having previously progressed to some
+  RETRYING = 86; /// Retrying after having previously progressed to some
 
-  FAILED = 86; /// Task failed (desired outcome of the task was not reached)
+  FAILED = 87; /// Task failed (desired outcome of the task was not reached)
   /// Multiple task retries have all failed. This is a failed state.
   RETRY_LIMIT_REACHED = 88;
 
@@ -198,9 +220,6 @@ enum TaskState {
   CANCELLED = 107;
 
   // A collection of possibly more exotic states follows
-
-  /// Task definition dropped/omitted before execution from scheduler
-  DROPPED = 109;
   SKIPPED = 110; /// Task to be skipped
 
   /// Job control responsibility is being migrated to another system
@@ -229,7 +248,9 @@ enum TaskState {
   ZOMBIE = 121;
 
   /// Resurrecting is the process of restoring a ZOMBIE or possibly a
-  // previously UNREACHABLE task to a "normal" task
+  // previously UNREACHABLE task (or, from a workflow scheduler perspective,
+  // even a task that was hard killed by a resource manager then later
+  // restarted) to a "normal" task
   RESURRECTING = 122;
   RESURRECTED = 123;
   RESURRECT_FAIL = 124;
@@ -242,4 +263,12 @@ enum TaskState {
   /// Model progress was stopped by a model mechanism, for example numerical
   // convergence thresholds were not met.
   MODEL_STOP = 127;
+
+  /// If the task/job needs to acquire a license to execute (at the task or
+  // sub-task level) then it may be useful to track the license acquisition
+  // phase:
+  LICENSE_ACQUISITION = 333;
+  LICENSE_ACQUISITION_SUCCESS = 334;
+  LICENSE_ACQUISITION_FAIL = 335;
+  LICENSE_ACQUISITION_TIMEOUT = 336;
 }

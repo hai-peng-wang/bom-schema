@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package bom.system_actor_type;
+
+option java_package = "bom";
+option java_outer_classname="SystemActorTypeProto";
+
+/// Type of entity involved in some interaction with a system, task or similar.
+// For example, this type can be used to represent the entity
+// responsible for initiating the running of a task/process, the
+// entity/system reporting a change in state of a system or the type
+// of entity responsible for imposing/enforcing resource limits.
+enum SystemActorType {
+  UNSET = 0;
+  UNKNOWN = 1;
+
+  USER = 2;
+  /// An operator corresponds to an operational user with responsibility for
+  // helping to manage a particular system. Has the same or higher privileges
+  // than USER-level but with additional operational responsibilities.
+  OPERATOR = 3;
+  ADMIN = 4;
+  SELF = 5; /// The entity which the interaction occurs (system, task)
+  /// Another entity, similar to this entity that is also managed
+  // in a similar way to this entity
+  SIMILAR = 6;
+  /// Host system could be a physical machine, VM, container etc
+  HOST_SYSTEM = 10;
+  BATCH_SCHEDULER = 11;
+  WORKFLOW_SCHEDULER = 12;
+  ORCHESTRATION_SYSTEM = 13;
+
+  SECURITY_SYSTEM = 20;
+  AUTHENTICATION_SYSTEM = 21;
+}

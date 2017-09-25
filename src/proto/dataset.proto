@@ -7,6 +7,7 @@ option java_outer_classname="DatasetProto";
 import "common/tag.proto";
 import "common/address.proto";
 import "common/time.proto";
+import "common/actor.proto";
 import "common/version.proto";
 import "common/contact.proto";
 import "common/security_marking.proto";
@@ -73,16 +74,20 @@ message DatasetAction {
   oneof t_uncertainty {
     google.protobuf.Duration time_uncertainty = 5;
   }
-  /// Who is the key contact associated with the action/change
-  Contact contact = 6;
+  /// Who is the key contact/user associated with authorising or
+  // organising the action/change
+  Actor authority = 6;
+  /// Who was responsible for carrying out the change, if different from the
+  // authorising entity
+  Actor actor = 7;
   /// Why the action/change took place or is due to take place
-  string reason = 7;
+  string reason = 8;
   /// Details about the action outcome, if relevant. e.g. if action type
   // and state indicate a review that failed, the outcome string can
   // provide an explanation for this outcome
-  string outcome_details = 8;
+  string outcome_details = 9;
   /// Any additional pertinent comments, e.g. where the action happened
-  string comment = 9;
+  string comment = 10;
 }
 
 /// Temporal information pertaining to a subset of data in a dataset.

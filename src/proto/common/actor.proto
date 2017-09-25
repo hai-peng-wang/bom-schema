@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package bom;
+
+option java_outer_classname="ActorProto";
+import "common/contact.proto";
+import "common/userid.proto";
+import "common/enums/system_actor_type.proto";
+
+/// An entity that interacts with a system/component
+message Actor {
+  /// System type of actor, if relevant/applicable
+  bom.system_actor_type.SystemActorType system_actor_type = 1;
+
+  /// Most relevant user/account identification (Security Principal) details
+  // corresponding to this actor, if relevant/applicable.
+  Userid id = 2;
+  /// Contact details of actor, if known
+  Contact contact = 3;
+}

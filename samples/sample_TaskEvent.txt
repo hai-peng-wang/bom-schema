@@ -105,22 +105,22 @@ task_info {
   name: "fractalCloudCalc"
   namespace: "ensemble05/cloud_micro"
   suite: "ACCESS-GE3"
-  is_idempotent: true
-  project: "pr_G3"
-  production_status {
-    status: STAGING
-  }
-  priority {
-    impact: MODERATE
-    urgency: LOW
-  }
-  task_debug {
+  troubleshooting {
     scheme: "http"
     address {
       hostname: "bom"
     }
     queries {
     }
+  }
+  project: "pr_G3"
+  properties: IDEMPOTENT
+  production_status {
+    status: STAGING
+  }
+  priority {
+    impact: MODERATE
+    urgency: LOW
   }
 }
 task_context {
@@ -133,11 +133,12 @@ task_context {
     }
   }
   settings {
+    note: "Edited fractal similarity parameter to 3.14159 just \"because\""
     user {
       name: "ACCESS_stage"
     }
-    is_edit_run: true
-    note: "Edited fractal similarity parameter to 3.14159 just \"because\""
+    properties: EDITRUN
+    properties: CHECKPOINTABLE
     debug {
       debug_level: NORMAL
     }
@@ -157,19 +158,22 @@ task_manager_context {
 }
 task_status {
   state: KILLED_BY_MEMORY_LIMIT
+  state_actor {
+    system_actor_type: BATCH_SCHEDULER
+  }
+  reporter_type: WORKFLOW_SCHEDULER
   diagnostics {
     type: RESOURCE_EXHAUSTED
     severity: ERROR
     return_status: -27
     signal: "SIGUSR2"
     timestamp {
-      seconds: 1504844125
+      seconds: 1506352084
     }
     model_diagnostic {
       iteration: 54
     }
   }
-  reporter_type: WORKFLOW_SCHEDULER
   severity: ERROR
   time_info {
     series_created_timestamp {
@@ -181,3 +185,4 @@ task_status {
   }
   number_of_consecutive_failures: 2
 }
+

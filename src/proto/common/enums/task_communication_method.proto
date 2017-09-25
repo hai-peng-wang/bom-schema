@@ -14,10 +14,11 @@ enum TaskCommunicationMethod {
   /// The task or the environment the task is running in
   // signals back task status updates as events
   EVENT = 2;
-  /// RPC here represents a persistent two-way connection between
-  // the task or a process spawned by the task and a task manager
+  /// RPC here represents a persistent and direct two-way connection between
+  // the task or a process spawned by the task and a task manager via
+  // network ports or similar mechanism
   RPC = 3;
   /// A task manager related component or diagnostic process polls
-  // the task's execution or outputs of the task (e.g. log files)
+  // the task's execution status or outputs of the task (e.g. log files)
   POLL = 4;
 }

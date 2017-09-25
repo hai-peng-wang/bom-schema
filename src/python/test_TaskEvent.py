@@ -17,11 +17,12 @@ from prod_status_pb2 import ProdStatus
 from impact_pb2 import Impact
 from debug_level_pb2 import DebugLevel
 from task_state_pb2 import TaskState
+from task_property_pb2 import TaskProperty
 from component_level_pb2 import ComponentLevel
 from component_relation_pb2 import ComponentRelation
 from error_type_pb2 import ErrorType
 from severity_pb2 import Severity
-from task_actor_type_pb2 import TaskActorType
+from system_actor_type_pb2 import SystemActorType
 
 def uri_to_schema(uri):
     loc = urlparse.urlparse(uri)
@@ -156,12 +157,12 @@ proto_setattr(task_event, **{
     'name' : 'fractalCloudCalc',
     'namespace' : 'ensemble05/cloud_micro',
     'suite' : 'ACCESS-GE3',
-    'is_idempotent' : True,
+    'properties' : [TaskProperty.Value('IDEMPOTENT')],
     'project' : 'pr_G3',
     'production_status.status' : ProdStatus.Value('STAGING'),
     'priority.impact' : Impact.Value('MODERATE'),
     'priority.urgency' : Impact.Value('LOW'),
-    'task_debug' : uri_to_schema('http://bom/help/G3/cloudfun')
+    'troubleshooting' : uri_to_schema('http://bom/help/G3/cloudfun')
   },
   'task_context' : {
     'id.workflow_id.id_str' : 'myworkflow_id123',
@@ -173,7 +174,7 @@ proto_setattr(task_event, **{
     },
     'settings' : {
       'user.name' : 'ACCESS_stage',
-      'is_edit_run' : True,
+      'properties' : [TaskProperty.Value('EDITRUN'), TaskProperty.Value('CHECKPOINTABLE')],
       'note' : 'Edited fractal similarity parameter to 3.14159 just "because"',
       'debug.debug_level' : DebugLevel.Value('NORMAL')
     },
@@ -183,6 +184,7 @@ proto_setattr(task_event, **{
   'task_manager_context.component_id' : 3,
   'task_status' : {
     'state' : TaskState.Value('KILLED_BY_MEMORY_LIMIT'),
+    'state_actor.system_actor_type' : SystemActorType.Value('BATCH_SCHEDULER'),
     'diagnostics' : [
       {
         'type' : ErrorType.Value('RESOURCE_EXHAUSTED'),
@@ -194,7 +196,7 @@ proto_setattr(task_event, **{
                                           #(somehow!?) before task was killed
       }
     ],
-    'reporter_type' : TaskActorType.Value('WORKFLOW_SCHEDULER'),
+    'reporter_type' : SystemActorType.Value('WORKFLOW_SCHEDULER'),
     'severity' : Severity.Value('ERROR'),
     'time_info.series_created_timestamp.seconds' : 1504840001,
     'time_info.instance_end_timestamp.seconds' : 1504840399,
