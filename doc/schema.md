@@ -1279,6 +1279,7 @@ management systems.
 | NEW_FILES | 90 | Maximum supported/allowed individual file detailsnumber: maximum number of files created (if applicable)amount: maximum size of any individual files written or appended to        (in kibibytes)qualifiers: a comment/explanation (optional) |
 | OPEN_FILES | 91 | As per NEW_FILES, but pertaining to files opened(for reading or writing) |
 | SUSPEND_TARGETS | 110 | Groups of jobs queues that this job is allowed to suspend(i.e. preempt or vacate) if required.number: N/Aamount: N/Aqualifiers: A list of targets that can be suspended/preempted. This list            can include queues (in which case any/all jobs in that queue            are targets), particular resources (in which case any/all            jobs that request/use this resource are eligible targets) or            other job specifications known to the resource manager. |
+| CUSTOM | 127 | Custom resources (system or site specific)The definition of number and amount will depend on the nature of theresource. qualifiers should be used to name the custom resource(s) |
 
 
 

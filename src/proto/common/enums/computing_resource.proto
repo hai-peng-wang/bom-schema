@@ -145,4 +145,9 @@ enum ComputingResource {
     //             jobs that request/use this resource are eligible targets) or
     //             other job specifications known to the resource manager.
     SUSPEND_TARGETS = 110;
+
+    /// Custom resources (system or site specific)
+    // The definition of number and amount will depend on the nature of the
+    // resource. qualifiers should be used to name the custom resource(s)
+    CUSTOM = 127;
 }
