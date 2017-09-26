@@ -181,20 +181,25 @@ message TaskResource {
   /// Identifier to help track resources belonging to a particular "chunk" or
   // some other grouping (if applicable)
   Id chunk_id = 3;
-  /// Qualifying description or name or model of resource,
-  // e.g. NVIDIA Tesla P100
-  string qualifier = 4;
+  /// A list of names or models of resource, or some other qualifying
+  // information. Typically qualifiers will consist of a single string (e.g.
+  // ["NVIDIA Tesla P100"]) but a list allows multiple applicable resources
+  // to be specified.
+  repeated string qualifiers = 4;
   /// The number needed of this type of resource, when the resource
   // represents discrete entities (e.g. if type = ACCELERATOR,
   // qualifier = i)
   uint64 number = 5;
-  /// Value per resource in milliseconds for duration,
+  /// Value per resource:
+  // in milliseconds for duration,
   // kibibytes (1024 bytes) for memory/disk,
   // Mbit/s for network performance,
   // MHz (megahertz) for CPU clock speeds; or a count in other contexts.
-  // If values represent a fractional increment using these units, the values
+  // Units and other information are defined in ComputingResource documentation.
+  // If values represent a fractional increment in these units, the values
   // should be rounded up (i.e. int64 amount = ceiling(value)). Negative
-  // amounts are permissible with a production-specific meaning.
+  // amounts are permissible but the interpretation of what such amounts
+  // represent is left to any event producing applications involved to define.
   int64 amount = 6;
   /// If limit the amount represents a resource limit, whether it is
   // hard (otherwise it is considered "soft"). To be ignored if this

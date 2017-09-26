@@ -474,9 +474,9 @@ Computing resource associated with a task or job:
 | type | [ComputingResource](#bom.computing_resource.ComputingResource) | optional | Type of computing resource |
 | scope | [ComputingResourceScope](#bom.computing_resource_scope.ComputingResourceScope) | optional | The scope (level of applicability) of this particular resource; e.g. ifit is job-wide or at a host level. |
 | chunk_id | [Id](#bom.Id) | optional | Identifier to help track resources belonging to a particular "chunk" orsome other grouping (if applicable) |
-| qualifier | [string](#string) | optional | Qualifying description or name or model of resource,e.g. NVIDIA Tesla P100 |
+| qualifiers | [string](#string) | repeated | A list of names or models of resource, or some other qualifyinginformation. Typically qualifiers will consist of a single string (e.g.["NVIDIA Tesla P100"]) but a list allows multiple applicable resourcesto be specified. |
 | number | [uint64](#uint64) | optional | The number needed of this type of resource, when the resourcerepresents discrete entities (e.g. if type = ACCELERATOR,qualifier = i) |
-| amount | [int64](#int64) | optional | Value per resource in milliseconds for duration,kibibytes (1024 bytes) for memory/disk,Mbit/s for network performance,MHz (megahertz) for CPU clock speeds; or a count in other contexts.If values represent a fractional increment using these units, the valuesshould be rounded up (i.e. int64 amount = ceiling(value)). Negativeamounts are permissible with a production-specific meaning. |
+| amount | [int64](#int64) | optional | Value per resource:in milliseconds for duration,kibibytes (1024 bytes) for memory/disk,Mbit/s for network performance,MHz (megahertz) for CPU clock speeds; or a count in other contexts.Units and other information are defined in ComputingResource documentation.If values represent a fractional increment in these units, the valuesshould be rounded up (i.e. int64 amount = ceiling(value)). Negativeamounts are permissible but the interpretation of what such amountsrepresent is left to any event producing applications involved to define. |
 | is_hard_limit | [bool](#bool) | optional | If limit the amount represents a resource limit, whether it ishard (otherwise it is considered "soft"). To be ignored if thismessage does not correspond to a resource limit |
 | steward | [SystemActorType](#bom.system_actor_type.SystemActorType) | optional | Entity responsible for measuring this resource, or for ensuringany limit (if applicable) is respected by some suitable means(e.g. the governor batch scheduler or native system) |
 
@@ -1247,36 +1247,37 @@ management systems.
 | ---- | ------ | ----------- |
 | UNSET | 0 |  |
 | UNKNOWN | 1 |  |
-| CPU | 2 | Physical CPU detailsnumber: number of physical CPUs (with respect to specified scope)amount: speed in MHzqualifier: specific model/type/variant |
+| CPU | 2 | Physical CPU detailsnumber: number of physical CPUs (with respect to specified scope)amount: speed in MHzqualifiers: specific model/type/variant(s) |
 | VCPU | 3 | Virtualised CPU details. Units as per CPU. |
 | CORES | 8 | Physical CPU cores. Units as per CPU. |
-| NUMA | 10 | NUMA detailsnumber: number of NUMAs (with respect to specified scope)amount: number of parallel environment per NUMAqualifier: specific variant of NUMA (if applicable) |
+| NUMA | 10 | NUMA detailsnumber: number of NUMAs (with respect to specified scope)amount: number of parallel environment per NUMAqualifiers: specific variant(s) of NUMA (if applicable) |
 | ACCELERATOR | 14 | Accelerator details. Units as per CPU |
-| MPIPROC | 18 | MPI process detailsnumber: number of MPI processes requestsamount: N/Aqualifier: specific type/mode or other details ofMPI process (if applicable) |
-| OMPTHREADS | 19 | OMP thread detailsnumber: number of OMP threads (usually per "chunk" or process)amount: N/Aqualifier: notes/commentary on OMP threads or similar |
-| NETWORK | 20 | Network detailsnumber: number of network interfaces comprising this resourceamount: speed of each interface in Mbit/squalifier: specific model/type/variant of network interface |
-| NODE_COMPUTE | 30 | Specified resource is a type of nodenumber: number of this type of node comprising this resourceamount: N/Aqualifier: specific model/type/variant |
+| MPIPROC | 18 | MPI process detailsnumber: number of MPI processes requestsamount: N/Aqualifiers: specific type/mode(s) or other details of            MPI process (if applicable) |
+| OMPTHREADS | 19 | OMP thread detailsnumber: number of OMP threads (usually per "chunk" or process)amount: N/Aqualifiers: notes/commentary on OMP threads or similar |
+| NETWORK | 20 | Network detailsnumber: number of network interfaces comprising this resourceamount: speed of each interface in Mbit/squalifiers: specific model/type/variant(s) of network interface |
+| NODE_COMPUTE | 30 | Specified resource is a type of nodenumber: number of this type of node comprising this resourceamount: N/Aqualifiers: specific model/type/variant(s) |
 | NODE_LOGIN | 31 |  |
 | NODE_DATAMOVER | 32 |  |
 | NODE_MAMU | 33 | MAMU = "multi-application multi-user" |
 | NODE_MOM | 34 | MOM = "machine oriented miniserver" |
-| HOST | 35 | A specific single host.number: set to 1 or leave unsetamount: if more than one host is specified as independent resources for        a job/task, then set amount to 1 if work carried out by the job,        at the level set by the "scope", is allowed/intended to be run in        parallel across nominated hostsqualifier: hostname of host, or another unique string identifier ifa hostname is not suitable |
-| SITE | 36 | Resources contained within a particular data-centre site. If more thannumber: N/Aamount: if more than one site is specified as independent resources for        a job/task, then set amount to 1 if work carried out by the job,        at the level set by the "scope", is allowed/intended to be run in        parallel across nominated sites (or leave unset if site affinity)        is required. If site affinity is required, it is intended that        the order that multiple site resources are specified reflects        an ordering preference (for resource requests) or the ordering        in which task execution took place (for resources reported/used)        in the case where a task was migrated between data-sets during        the course of execution.qualifier: name of site nominated to provide resource |
-| ARCH | 40 | Specified resource is a specific architecture.number: N/Aamount: N/Aqualifier: specified architecture (and version if applicable). |
+| HOST | 35 | Specific host(s)number: leave unset; number inferred from length of qualifiers list.amount: set to 1 if work carried out by the job (at the level set by        the "scope"), is allowed/intended to be run in parallel across        nominated hosts.qualifiers: hostname of host(s), or other unique string identifiers            representing individual host(s). |
+| SITE | 36 | Resources contained within particular data-centre site(s). If more thannumber: N/Aamount: if more than one site is specified, then set this amount to 1        if the job is allowed/intended to be run in parallel across        nominated sites (or leave unset if site affinity desired).        If site affinity is required, it is intended that        the order that multiple sites are listed (in "qualifiers")        represents a preferential order for job placement, or for        possible job migration during the course of execution.qualifiers: name of site(s) nominated to provide resources |
+| ARCH | 40 | Specified resource is a specified architecture or list of permissiblearchitectures.number: N/Aamount: N/Aqualifiers: specific architecture(s) (and version if applicable). |
 | AOE | 41 | AOE - Application Operating Environment. Units as per ARCH, exceptthis usually refers to an environment at the OS-level. |
 | SOFTWARE | 42 | Software requirement. Unit as per ARCH, except this refers toa particular (usually unusual) software application/framework |
 | WALLTIME | 50 | Execution walltime available. If MIN_WALLTIME also requested by jobthis job is considered to be a "shrink-to-fit" job and walltimeis interpreted as a "MAX_WALLTIME".amount units: milliseconds |
 | MIN_WALLTIME | 51 | Minimum execution walltime requested for a "shrink-to-fit" job.amount units: milliseconds |
 | CPUTIME | 52 | Execution cputime available. Set TaskResource.scope to distinguishbetween a job-wide resource or a per-process resourceamount: time in milliseconds |
-| MEMORY | 70 | RAM/memory available (set TaskResource.scope to distinguish if thisapplies job-wide, chunk-wide, per process etc)amount units: kibibytes (1024 byte increments)qualifier: can be used to specify the name of a specialist memory variant |
+| MEMORY | 70 | RAM/memory available (set TaskResource.scope to distinguish if thisapplies job-wide, chunk-wide, per process etc)amount units: kibibytes (1024 byte increments)qualifiers: can be used to specify the name of memory variant(s) |
 | VIRT_MEMORY | 71 | Virtual memory available. Units as per MEMORY |
 | ACCELERATOR_MEMORY | 72 | ACCELERATOR memory available. Units as per MEMORY |
 | STACK | 75 | Stack size available. Units as per MEMORY |
-| DISK | 80 | Persistent disk storage available (generally shared by job)number: number of disks, RAID arrays or similar providing this resourceamount: size of disk resource kibibytes (per disk if number > 1)qualifier: specific disk/storage technology model/variant |
+| DISK | 80 | Persistent disk storage available (generally shared by job)number: number of disks, RAID arrays or similar providing this resourceamount: size of disk resource kibibytes (per disk if number > 1)qualifiers: specific disk/storage technology model/variant(s) |
 | CACHE | 81 | Non-persistent cache/scratch storage available. Units as per DISK |
 | SWAP | 85 | SWAP space storage available. Units as per DISK |
-| NEW_FILES | 90 | Maximum supported/allowed individual file detailsnumber: maximum number of files created (if applicable)amount: maximum size of any individual files written or appended to        (in kibibytes)qualifier: a comment/explanation (optional) |
+| NEW_FILES | 90 | Maximum supported/allowed individual file detailsnumber: maximum number of files created (if applicable)amount: maximum size of any individual files written or appended to        (in kibibytes)qualifiers: a comment/explanation (optional) |
 | OPEN_FILES | 91 | As per NEW_FILES, but pertaining to files opened(for reading or writing) |
+| SUSPEND_TARGETS | 110 | Groups of jobs queues that this job is allowed to suspend(i.e. preempt or vacate) if required.number: N/Aamount: N/Aqualifiers: A list of targets that can be suspended/preempted. This list            can include queues (in which case any/all jobs in that queue            are targets), particular resources (in which case any/all            jobs that request/use this resource are eligible targets) or            other job specifications known to the resource manager. |
 
 
 

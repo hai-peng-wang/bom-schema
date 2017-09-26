@@ -1918,11 +1918,13 @@ it is job-wide or at a host level.</p></td>
 some other grouping (if applicable)</p></td>
         </tr>
         <tr>
-          <td>qualifier</td>
+          <td>qualifiers</td>
           <td><a href="#string">string</a></td>
-          <td>optional</td>
-          <td><p>Qualifying description or name or model of resource,
-e.g. NVIDIA Tesla P100</p></td>
+          <td>repeated</td>
+          <td><p>A list of names or models of resource, or some other qualifying
+information. Typically qualifiers will consist of a single string (e.g.
+[&quot;NVIDIA Tesla P100&quot;]) but a list allows multiple applicable resources
+to be specified.</p></td>
         </tr>
         <tr>
           <td>number</td>
@@ -1936,13 +1938,16 @@ qualifier = i)</p></td>
           <td>amount</td>
           <td><a href="#int64">int64</a></td>
           <td>optional</td>
-          <td><p>Value per resource in milliseconds for duration,
+          <td><p>Value per resource:
+in milliseconds for duration,
 kibibytes (1024 bytes) for memory/disk,
 Mbit/s for network performance,
 MHz (megahertz) for CPU clock speeds; or a count in other contexts.
-If values represent a fractional increment using these units, the values
+Units and other information are defined in ComputingResource documentation.
+If values represent a fractional increment in these units, the values
 should be rounded up (i.e. int64 amount = ceiling(value)). Negative
-amounts are permissible with a production-specific meaning.</p></td>
+amounts are permissible but the interpretation of what such amounts
+represent is left to any event producing applications involved to define.</p></td>
         </tr>
         <tr>
           <td>is_hard_limit</td>
@@ -3770,7 +3775,7 @@ management systems.</p>
           <td><p>Physical CPU details
 number: number of physical CPUs (with respect to specified scope)
 amount: speed in MHz
-qualifier: specific model/type/variant</p></td>
+qualifiers: specific model/type/variant(s)</p></td>
         </tr>
         <tr>
           <td>VCPU</td>
@@ -3788,7 +3793,7 @@ qualifier: specific model/type/variant</p></td>
           <td><p>NUMA details
 number: number of NUMAs (with respect to specified scope)
 amount: number of parallel environment per NUMA
-qualifier: specific variant of NUMA (if applicable)</p></td>
+qualifiers: specific variant(s) of NUMA (if applicable)</p></td>
         </tr>
         <tr>
           <td>ACCELERATOR</td>
@@ -3801,8 +3806,8 @@ qualifier: specific variant of NUMA (if applicable)</p></td>
           <td><p>MPI process details
 number: number of MPI processes requests
 amount: N/A
-qualifier: specific type/mode or other details of
-MPI process (if applicable)</p></td>
+qualifiers: specific type/mode(s) or other details of
+            MPI process (if applicable)</p></td>
         </tr>
         <tr>
           <td>OMPTHREADS</td>
@@ -3810,7 +3815,7 @@ MPI process (if applicable)</p></td>
           <td><p>OMP thread details
 number: number of OMP threads (usually per &quot;chunk&quot; or process)
 amount: N/A
-qualifier: notes/commentary on OMP threads or similar</p></td>
+qualifiers: notes/commentary on OMP threads or similar</p></td>
         </tr>
         <tr>
           <td>NETWORK</td>
@@ -3818,7 +3823,7 @@ qualifier: notes/commentary on OMP threads or similar</p></td>
           <td><p>Network details
 number: number of network interfaces comprising this resource
 amount: speed of each interface in Mbit/s
-qualifier: specific model/type/variant of network interface</p></td>
+qualifiers: specific model/type/variant(s) of network interface</p></td>
         </tr>
         <tr>
           <td>NODE_COMPUTE</td>
@@ -3826,7 +3831,7 @@ qualifier: specific model/type/variant of network interface</p></td>
           <td><p>Specified resource is a type of node
 number: number of this type of node comprising this resource
 amount: N/A
-qualifier: specific model/type/variant</p></td>
+qualifiers: specific model/type/variant(s)</p></td>
         </tr>
         <tr>
           <td>NODE_LOGIN</td>
@@ -3851,39 +3856,36 @@ qualifier: specific model/type/variant</p></td>
         <tr>
           <td>HOST</td>
           <td>35</td>
-          <td><p>A specific single host.
-number: set to 1 or leave unset
-amount: if more than one host is specified as independent resources for
-        a job/task, then set amount to 1 if work carried out by the job,
-        at the level set by the &quot;scope&quot;, is allowed/intended to be run in
-        parallel across nominated hosts
-qualifier: hostname of host, or another unique string identifier if
-a hostname is not suitable</p></td>
+          <td><p>Specific host(s)
+number: leave unset; number inferred from length of qualifiers list.
+amount: set to 1 if work carried out by the job (at the level set by
+        the &quot;scope&quot;), is allowed/intended to be run in parallel across
+        nominated hosts.
+qualifiers: hostname of host(s), or other unique string identifiers
+            representing individual host(s).</p></td>
         </tr>
         <tr>
           <td>SITE</td>
           <td>36</td>
-          <td><p>Resources contained within a particular data-centre site. If more than
+          <td><p>Resources contained within particular data-centre site(s). If more than
 number: N/A
-amount: if more than one site is specified as independent resources for
-        a job/task, then set amount to 1 if work carried out by the job,
-        at the level set by the &quot;scope&quot;, is allowed/intended to be run in
-        parallel across nominated sites (or leave unset if site affinity)
-        is required. If site affinity is required, it is intended that
-        the order that multiple site resources are specified reflects
-        an ordering preference (for resource requests) or the ordering
-        in which task execution took place (for resources reported/used)
-        in the case where a task was migrated between data-sets during
-        the course of execution.
-qualifier: name of site nominated to provide resource</p></td>
+amount: if more than one site is specified, then set this amount to 1
+        if the job is allowed/intended to be run in parallel across
+        nominated sites (or leave unset if site affinity desired).
+        If site affinity is required, it is intended that
+        the order that multiple sites are listed (in &quot;qualifiers&quot;)
+        represents a preferential order for job placement, or for
+        possible job migration during the course of execution.
+qualifiers: name of site(s) nominated to provide resources</p></td>
         </tr>
         <tr>
           <td>ARCH</td>
           <td>40</td>
-          <td><p>Specified resource is a specific architecture.
+          <td><p>Specified resource is a specified architecture or list of permissible
+architectures.
 number: N/A
 amount: N/A
-qualifier: specified architecture (and version if applicable).</p></td>
+qualifiers: specific architecture(s) (and version if applicable).</p></td>
         </tr>
         <tr>
           <td>AOE</td>
@@ -3924,7 +3926,7 @@ amount: time in milliseconds</p></td>
           <td><p>RAM/memory available (set TaskResource.scope to distinguish if this
 applies job-wide, chunk-wide, per process etc)
 amount units: kibibytes (1024 byte increments)
-qualifier: can be used to specify the name of a specialist memory variant</p></td>
+qualifiers: can be used to specify the name of memory variant(s)</p></td>
         </tr>
         <tr>
           <td>VIRT_MEMORY</td>
@@ -3947,7 +3949,7 @@ qualifier: can be used to specify the name of a specialist memory variant</p></t
           <td><p>Persistent disk storage available (generally shared by job)
 number: number of disks, RAID arrays or similar providing this resource
 amount: size of disk resource kibibytes (per disk if number &gt; 1)
-qualifier: specific disk/storage technology model/variant</p></td>
+qualifiers: specific disk/storage technology model/variant(s)</p></td>
         </tr>
         <tr>
           <td>CACHE</td>
@@ -3966,13 +3968,26 @@ qualifier: specific disk/storage technology model/variant</p></td>
 number: maximum number of files created (if applicable)
 amount: maximum size of any individual files written or appended to
         (in kibibytes)
-qualifier: a comment/explanation (optional)</p></td>
+qualifiers: a comment/explanation (optional)</p></td>
         </tr>
         <tr>
           <td>OPEN_FILES</td>
           <td>91</td>
           <td><p>As per NEW_FILES, but pertaining to files opened
 (for reading or writing)</p></td>
+        </tr>
+        <tr>
+          <td>SUSPEND_TARGETS</td>
+          <td>110</td>
+          <td><p>Groups of jobs queues that this job is allowed to suspend
+(i.e. preempt or vacate) if required.
+number: N/A
+amount: N/A
+qualifiers: A list of targets that can be suspended/preempted. This list
+            can include queues (in which case any/all jobs in that queue
+            are targets), particular resources (in which case any/all
+            jobs that request/use this resource are eligible targets) or
+            other job specifications known to the resource manager.</p></td>
         </tr>
       </tbody>
     </table>
