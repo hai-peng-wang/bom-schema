@@ -2051,7 +2051,7 @@ will run as (e.g. task involving sudo commands for another service account)</p><
           <td><p>Setting properties this task might have, such as RUNMODE_DUMMY,
 RUNMODE_TEST, ARRAY.
 Note 1: some properties may also be set in TaskEvent.task_info
-Note 2: debug settings are handled separetely in &quot;debug&quot; below</p></td>
+Note 2: debug settings are handled separately in &quot;debug&quot; below</p></td>
         </tr>
         <tr>
           <td>debug</td>
@@ -2065,6 +2065,18 @@ Note 2: debug settings are handled separetely in &quot;debug&quot; below</p></td
           <td><a href="#google.protobuf.Timestamp">Timestamp</a></td>
           <td>optional</td>
           <td><p></p></td>
+        </tr>
+        <tr>
+          <td>niceness</td>
+          <td><a href="#int64">int64</a></td>
+          <td>optional</td>
+          <td><p>How &quot;nice&quot; is the task process (if applicable). Typically, in UNIX,
+-20 hints that the process should be managed with the highest priority,
+0 implies a neutral/default priority and 19 the lowest priority (but
+&quot;nicest&quot; to competing processes). Similar concepts may apply to other
+paradigms.
+Note: It is usually possible for niceness be adjusted at run-time,
+      if so this value can be updated in event messages to reflect this.</p></td>
         </tr>
       </tbody>
     </table>

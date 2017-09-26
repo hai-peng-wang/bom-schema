@@ -222,12 +222,20 @@ message TaskSettings {
   /// Setting properties this task might have, such as RUNMODE_DUMMY,
   // RUNMODE_TEST, ARRAY.
   // Note 1: some properties may also be set in TaskEvent.task_info
-  // Note 2: debug settings are handled separetely in "debug" below
+  // Note 2: debug settings are handled separately in "debug" below
   repeated bom.task_property.TaskProperty properties = 4;
   /// Time from which the task is eligible to run (if applicable)
   /// Debug settings that apply to this task
   DebugSettings debug = 5;
   google.protobuf.Timestamp eligible_time = 6;
+  /// How "nice" is the task process (if applicable). Typically, in UNIX,
+  // -20 hints that the process should be managed with the highest priority,
+  // 0 implies a neutral/default priority and 19 the lowest priority (but
+  // "nicest" to competing processes). Similar concepts may apply to other
+  // paradigms.
+  // Note: It is usually possible for niceness be adjusted at run-time,
+  //       if so this value can be updated in event messages to reflect this.
+  int64 niceness = 7;
 }
 
 /// A rather imperfect mechanism to identify dynamic task IDs or IDs that

@@ -504,9 +504,10 @@ Metadata about expected automatic retries/reruns for tasks.
 | note | [string](#string) | optional | A note about the settings |
 | user | [Userid](#bom.Userid) | optional | The user/account/identity that the task is to run as |
 | subusers | [Userid](#bom.Userid) | repeated | Other users/accounts that processes/subcomponents launched by the taskwill run as (e.g. task involving sudo commands for another service account) |
-| properties | [TaskProperty](#bom.task_property.TaskProperty) | repeated | Setting properties this task might have, such as RUNMODE_DUMMY,RUNMODE_TEST, ARRAY.Note 1: some properties may also be set in TaskEvent.task_infoNote 2: debug settings are handled separetely in "debug" below |
+| properties | [TaskProperty](#bom.task_property.TaskProperty) | repeated | Setting properties this task might have, such as RUNMODE_DUMMY,RUNMODE_TEST, ARRAY.Note 1: some properties may also be set in TaskEvent.task_infoNote 2: debug settings are handled separately in "debug" below |
 | debug | [DebugSettings](#bom.DebugSettings) | optional | Time from which the task is eligible to run (if applicable)/ Debug settings that apply to this task |
 | eligible_time | [Timestamp](#google.protobuf.Timestamp) | optional |  |
+| niceness | [int64](#int64) | optional | How "nice" is the task process (if applicable). Typically, in UNIX,-20 hints that the process should be managed with the highest priority,0 implies a neutral/default priority and 19 the lowest priority (but"nicest" to competing processes). Similar concepts may apply to otherparadigms.Note: It is usually possible for niceness be adjusted at run-time,      if so this value can be updated in event messages to reflect this. |
 
 
 <a name="bom.TaskStatus"/>
