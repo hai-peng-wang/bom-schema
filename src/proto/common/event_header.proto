@@ -27,7 +27,7 @@ message EventHeader {
   /// For those producers that can support this: a number that starts at 1
   // and increments by 1 with each new event message of this type over the
   // lifetime of this event message producer's instance. Upon producer restarts,
-  // this seuqence number is permitted to be reset to 1.
+  // this sequence number is permitted to be reset to 1.
   // This metadata is useful in a number of contexts, e.g. a missing number
   // in a sequence is possible evidence of a lost event. An unexpected sequence
   // number is possible evidence of spoofed message injection by a 3rd party.
